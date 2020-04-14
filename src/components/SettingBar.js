@@ -17,6 +17,11 @@ const SettingBarDiv = styled.div`
   flex-direction: column;
   box-shadow: 0px 3px 2px 1px #e3e3e3;
 `;
+const FontDiv = styled.div`
+  display: flex;
+  align-self: flex-end;
+  align-items: center;
+`;
 const InputWrapper = styled.div`
   display: flex;
   flex-direction: column;
@@ -155,17 +160,19 @@ function SettingBar({ coinInfo }) {
   }, []);
   return (
     <SettingBarDiv>
-      <FontAwesomeIcon
-        icon={faCog}
-        style={{
-          alignSelf: "flex-end",
-          marginLeft: "5px",
-          marginRight: "5px",
-          marginTop: "5px",
-          cursor: "pointer",
-        }}
-        onClick={onToggle}
-      />
+      <FontDiv>
+        <FontAwesomeIcon
+          icon={faCog}
+          style={{
+            alignSelf: "flex-end",
+            marginLeft: "5px",
+            marginRight: "5px",
+            marginTop: "5px",
+            cursor: "pointer",
+          }}
+          onClick={onToggle}
+        />
+      </FontDiv>
       <InputWrapper ref={wrapper} style={{ display: "none" }}>
         <SelectContainer>
           <Select options={getOptions()} onChange={onSelectChange} />
