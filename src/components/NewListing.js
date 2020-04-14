@@ -2,9 +2,11 @@ import React, { useState, useCallback, useRef } from "react";
 import { useSelector } from "react-redux";
 import styled from "styled-components";
 import { v4 } from "uuid";
-import { faWindowMinimize } from "@fortawesome/free-solid-svg-icons";
+import { faMinus, faPlus } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 const NewListingDiv = styled.div`
+  display: flex;
+  flex-direction: column;
   width: 40%;
   height: 35vh;
   background: #c4cfd8;
@@ -22,6 +24,10 @@ const FontDiv = styled.div`
   align-self: "flex-end";
   align-items: "center";
   justify-content: "center";
+  svg {
+    cursor: pointer;
+    margin-bottom: 10px;
+  }
 `;
 const NewListingUl = styled.ul`
   display: flex;
@@ -65,6 +71,7 @@ function NewListing() {
     (state) => state.coin
   );
   const [selected, setSelected] = useState(0);
+  const [isHide, setHide] = useState(false);
   const container = useRef();
   const onChangeSelect = useCallback((e) => {
     const {
@@ -75,14 +82,22 @@ function NewListing() {
     setSelected(parseInt(id, 10));
   }, []);
   const onToggle = useCallback(() => {
-    if (container.current.style.display === "flex")
+    if (container.current.style.display === "flex") {
       container.current.style.display = "none";
-    else container.current.style.display = "flex";
+      setHide(true);
+    } else {
+      container.current.style.display = "flex";
+      setHide(false);
+    }
   }, []);
   return (
     <NewListingDiv>
       <FontDiv>
-        <FontAwesomeIcon icon={faWindowMinimize} onClick={onToggle} />
+        {isHide ? (
+          <FontAwesomeIcon icon={faMinus} onClick={onToggle} />
+        ) : (
+          <FontAwesomeIcon icon={faPlus} onClick={onToggle} />
+        )}
       </FontDiv>
       <NewListingUl>
         <NewListingli

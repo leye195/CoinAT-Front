@@ -63,6 +63,8 @@ const ApiInput = styled.input`
   border: none;
   margin: 3px;
   flex: 1;
+  border-radius: 5px;
+  padding: 2px;
 `;
 const SecretInput = styled.input`
   height: 20px;
@@ -70,6 +72,8 @@ const SecretInput = styled.input`
   border: none;
   margin: 3px;
   flex: 1;
+  border-radius: 5px;
+  padding: 2px;
 `;
 const SettingBtn = styled.button`
   font-size: 0.6rem;
