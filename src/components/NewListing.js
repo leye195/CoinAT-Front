@@ -17,6 +17,12 @@ const NewListingDiv = styled.div`
   box-shadow: 2px 2px 6px 1px;
   overflow: scroll;
 `;
+const FontDiv = styled.div`
+  display: "flex";
+  align-self: "flex-end";
+  align-items: "center";
+  justify-content: "center";
+`;
 const NewListingUl = styled.ul`
   display: flex;
   padding: 0;
@@ -75,7 +81,9 @@ function NewListing() {
   }, []);
   return (
     <NewListingDiv>
-      <FontAwesomeIcon icon={faWindowMinimize} onClick={onToggle} />
+      <FontDiv>
+        <FontAwesomeIcon icon={faWindowMinimize} onClick={onToggle} />
+      </FontDiv>
       <NewListingUl>
         <NewListingli
           data-id={0}
