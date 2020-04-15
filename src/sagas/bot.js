@@ -1,22 +1,15 @@
-import {
-  all,
-  takeEvery,
-  takeLatest,
-  fork,
-  put,
-  call,
-  delay,
-  throttle,
-} from "redux-saga/effects";
+import { all, takeLatest, fork, put, call } from "redux-saga/effects";
 import axios from "axios";
 import {
   SEND_MESSAGE_REQUEST,
   SEND_MESSAGE_FAILURE,
   SEND_MESSAGE_SUCCESS,
 } from "../reducers/bot";
-
+import dotenv from "dotenv";
+dotenv.config();
+const API_URL = process.env.REACT_APP_API;
 function sendMessageAPI(data) {
-  return axios.post("http://localhost:8989/bot", data);
+  return axios.post(`${API_URL}bot`, data);
 }
 function* sendMessage(action) {
   try {

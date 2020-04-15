@@ -1,21 +1,22 @@
 import React, { useState, useCallback, useRef } from "react";
 import styled from "styled-components";
-import Select from "react-select";
 import { useSelector, useDispatch } from "react-redux";
 import { sendMessage } from "../reducers/bot";
 import { faCog } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-
+import { setUpbit, setBinance } from "../reducers/coin";
+import Select from "react-select";
 const SettingBarDiv = styled.div`
   position: fixed;
-  right: 0;
+  top: 0;
+  right: 10px;
   padding-bottom: 10px;
   background: #c4cfd8;
   border-bottom-left-radius: 5px;
   border-bottom-right-radius: 5px;
   display: flex;
   flex-direction: column;
-  box-shadow: 0px 3px 2px 1px #e3e3e3;
+  box-shadow: -1px 1px 3px 0px #696969;
 `;
 const InputWrapper = styled.div`
   display: flex;
@@ -32,15 +33,23 @@ const SelectContainer = styled.div`
     flex: 1;
   }
 `;
+/*const Select = styled.select`
+  flex: 1;
+  height: 25px;
+  border: none;
+  background-color: white;
+`;*/
 const SelectInput = styled.input`
-  width: 35px;
-  padding: 8px 10px;
+  width: 30px;
+  height: 25px;
+  padding: 0px 5px;
+  border: none;
+  margin-left: 5px;
 `;
 const SelectBtn = styled.button`
   color: white;
   background-color: #bdc3c7;
-  padding: 10px;
-  font-size: 0.8rem;
+  padding: 6px;
   cursor: pointer;
   font-weight: 800;
   border: none;
@@ -59,15 +68,14 @@ const ApiContainer = styled.div`
 `;
 const ApiInput = styled.input`
   height: 20px;
-  height: 20px;
   border: none;
   margin: 3px;
   flex: 1;
   border-radius: 5px;
   padding: 2px;
 `;
+
 const SecretInput = styled.input`
-  height: 20px;
   height: 20px;
   border: none;
   margin: 3px;
@@ -93,15 +101,10 @@ function SettingBar({ coinInfo }) {
   const dispatch = useDispatch();
   const timer = useRef();
   const wrapper = useRef();
-  const getOptions = () => {
-    const options = coinList.map((v) => {
-      return {
-        value: v,
-        label: v,
-      };
-    });
-    return options;
-  };
+  const upbitApi = useRef();
+  const upbitSec = useRef();
+  const binanceApi = useRef();
+  const binanceSec = useRef();
   const onSelectChange = useCallback((selectedOption) => {
     setSelected(selectedOption.value);
   }, []);
@@ -157,6 +160,67 @@ function SettingBar({ coinInfo }) {
       wrapper.current.style.display = "none";
     else wrapper.current.style.display = "flex";
   }, []);
+  const onClickUpbit = useCallback(
+    (e) => {
+      const { target } = e;
+      if (target.innerHTML === "확인") {
+        if (upbitApi.current.value === "" || upbitSec.current.value === "") {
+          alert("API 혹은 Secret키를 입력해주세요");
+          return;
+        }
+        dispatch(
+          setUpbit({
+            upbitApi: upbitApi.current.value,
+            upbitSec: upbitSec.current.value,
+          })
+        );
+        target.innerHTML = "취소";
+      } else {
+        upbitApi.current.value = "";
+        upbitSec.current.value = "";
+        dispatch(
+          setUpbit({
+            upbitApi: "",
+            upbitSec: "",
+          })
+        );
+        target.innerHTML = "확인";
+      }
+    },
+    [dispatch]
+  );
+  const onClickBinance = useCallback(
+    (e) => {
+      const { target } = e;
+      if (target.innerHTML === "확인") {
+        if (
+          binanceApi.current.value === "" ||
+          binanceSec.current.value === ""
+        ) {
+          alert("API 혹은 Secret키를 입력해주세요");
+          return;
+        }
+        dispatch(
+          setBinance({
+            binanceApi: binanceApi.current.value,
+            binanceSec: binanceSec.current.value,
+          })
+        );
+        target.innerHTML = "취소";
+      } else {
+        binanceApi.current.value = "";
+        binanceSec.current.value = "";
+        dispatch(
+          setBinance({
+            binanceApi: "",
+            binanceSec: "",
+          })
+        );
+        target.innerHTML = "확인";
+      }
+    },
+    [dispatch]
+  );
   return (
     <SettingBarDiv>
       <FontAwesomeIcon
@@ -172,7 +236,12 @@ function SettingBar({ coinInfo }) {
       />
       <InputWrapper ref={wrapper} style={{ display: "none" }}>
         <SelectContainer>
-          <Select options={getOptions()} onChange={onSelectChange} />
+          <Select
+            onChange={onSelectChange}
+            options={coinList.map((v) => {
+              return { value: v, label: v };
+            })}
+          />
           <SelectInput
             type="number"
             min={0}
@@ -184,18 +253,26 @@ function SettingBar({ coinInfo }) {
           <SelectBtn onClick={onSetting}>설정</SelectBtn>
         </SelectContainer>
         <ApiContainer>
-          <ApiInput type="text" placeholder="업비트 api" />
-          <SecretInput type="password" placeholder="업비트 secret" />
-          <SettingBtn>확인</SettingBtn>
+          <ApiInput ref={upbitApi} type="text" placeholder="업비트 api" />
+          <SecretInput
+            ref={upbitSec}
+            type="password"
+            placeholder="업비트 secret"
+          />
+          <SettingBtn onClick={onClickUpbit}>확인</SettingBtn>
         </ApiContainer>
         <ApiContainer>
-          <ApiInput type="text" placeholder="바이낸스 api" />
-          <SecretInput type="password" placeholder="바이낸스 secret" />
-          <SettingBtn>확인</SettingBtn>
+          <ApiInput ref={binanceApi} type="text" placeholder="바이낸스 api" />
+          <SecretInput
+            ref={binanceSec}
+            type="password"
+            placeholder="바이낸스 secret"
+          />
+          <SettingBtn onClick={onClickBinance}>확인</SettingBtn>
         </ApiContainer>
       </InputWrapper>
     </SettingBarDiv>
   );
 }
 
-export default SettingBar;
+export default React.memo(SettingBar);

@@ -1,13 +1,4 @@
-import {
-  all,
-  takeEvery,
-  takeLatest,
-  fork,
-  put,
-  call,
-  delay,
-  throttle,
-} from "redux-saga/effects";
+import { all, takeLatest, fork, put, call } from "redux-saga/effects";
 import {
   UPBIT_BITCOIN_KRW_SUCCESS,
   UPBIT_BITCOIN_KRW_FAILURE,
@@ -24,8 +15,17 @@ import {
   BINANCE_NEWLISTING_REQUEST,
   BINANCE_NEWLISTING_SUCCESS,
   BINANCE_NEWLISTING_FAILURE,
+  UPBIT_CHECK_COIN_REQUEST,
+  UPBIT_CHECK_COIN_SUCCESS,
+  UPBIT_CHECK_COIN_FAILURE,
+  BINANCE_CHECK_COIN_REQUEST,
+  BINANCE_CHECK_COIN_SUCCESS,
+  BINANCE_CHECK_COIN_FAILURE,
 } from "../reducers/coin";
 import axios from "axios";
+import dotenv from "dotenv";
+dotenv.config();
+const API_URL = process.env.REACT_APP_API;
 function loadBitKrwAPI() {
   return axios.get("https://api.upbit.com/v1/ticker?markets=KRW-BTC");
 }
@@ -115,7 +115,7 @@ function* watchUpbitNewListing() {
 }
 
 function loadBinanceNewListingAPI() {
-  return axios.get("http://localhost:8989/coin/notice");
+  return axios.get(`${API_URL}coin/notice`);
 }
 function* loadBinanceNewListing() {
   try {
@@ -126,13 +126,55 @@ function* loadBinanceNewListing() {
     });
   } catch (e) {
     yield put({
-      type: UPBIT_BTC_NEWLISTING_FAILURE,
+      type: BINANCE_NEWLISTING_FAILURE,
       error: e,
     });
   }
 }
 function* watchBinanceNewListing() {
   yield takeLatest(BINANCE_NEWLISTING_REQUEST, loadBinanceNewListing);
+}
+
+function upbitNewCoinAPI(data) {
+  return axios.post(`${API_URL}coin/notice/upbit`, data);
+}
+function* upbitNewCoin(action) {
+  try {
+    const result = yield call(upbitNewCoinAPI, action.payload);
+    yield put({
+      type: UPBIT_CHECK_COIN_SUCCESS,
+      payload: result.data,
+    });
+  } catch (e) {
+    yield put({
+      type: UPBIT_CHECK_COIN_FAILURE,
+      error: e,
+    });
+  }
+}
+function* watchUpbitNewCoin() {
+  yield takeLatest(UPBIT_CHECK_COIN_REQUEST, upbitNewCoin);
+}
+
+function binanceNewCoinAPI(data) {
+  return axios.post(`${API_URL}coin/notice/binance`, data);
+}
+function* binanceNewCoin(action) {
+  try {
+    const result = yield call(binanceNewCoinAPI, action.payload);
+    yield put({
+      type: BINANCE_CHECK_COIN_SUCCESS,
+      payload: result.data,
+    });
+  } catch (e) {
+    yield put({
+      type: BINANCE_CHECK_COIN_FAILURE,
+      error: e,
+    });
+  }
+}
+function* watchBinanceNewCoin() {
+  yield takeLatest(BINANCE_CHECK_COIN_REQUEST, binanceNewCoin);
 }
 
 export default function* coinSaga() {
@@ -142,5 +184,7 @@ export default function* coinSaga() {
     fork(watchBitUsdt),
     fork(watchUpbitNewListing),
     fork(watchBinanceNewListing),
+    fork(watchUpbitNewCoin),
+    fork(watchBinanceNewCoin),
   ]);
 }

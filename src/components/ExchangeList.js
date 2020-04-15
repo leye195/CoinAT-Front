@@ -9,7 +9,6 @@ import {
   loadUpbitBitKrw,
   loadBinanceBitUsdt,
   loadUpbitNewListing,
-  loadBianceNewListing,
 } from "../reducers/coin";
 import { useDispatch, useSelector } from "react-redux";
 import { v4 } from "uuid";
@@ -42,6 +41,15 @@ const ExchangeCoinsContainer = styled.div`
   display: flex;
   flex-direction: column;
   padding: 5px;
+  @media (min-width: 1025px) {
+    width: 70%;
+  }
+  @media (max-width: 1024px) {
+    width: 60%;
+  }
+  @media (max-width: 768px) {
+    width: 100%;
+  }
 `;
 const CoinContainer = styled.div`
   display: flex;
@@ -57,7 +65,7 @@ const CoinContainer = styled.div`
 `;
 const Coin = styled.div`
   cursor: ${(props) => (props.head ? "pointer" : "normal")};
-  width: 15%;
+  width: 30%;
   word-break: break-all;
   font-size: 0.8rem;
   margin-right: 5px;
@@ -83,6 +91,9 @@ function ExchangeList() {
   const { coinList, upbitBitKrw } = useSelector((state) => state.coin);
   const timer = useRef(null);
   const getExchangeTickers = useCallback(async () => {
+    if (timer.current) {
+      timer.current = setTimeout(getExchangeTickers, 2500);
+    }
     if (isFirstLoading === false && loading === false) setLoading(true);
     const upbit = new ccxt.upbit();
     const binance = new ccxt.binance();
@@ -90,14 +101,14 @@ function ExchangeList() {
       tickers2 = await binance.fetchTickers(coinList.map((v) => `${v}/BTC`));
     tickers1 = Object.keys(tickers1)
       .map((v) => {
-        const converted = (
+        /*const converted = (
           tickers2[
             `${tickers1[v].symbol.slice(
               0,
               tickers1[v].symbol.indexOf("/")
             )}/BTC`
           ].last * upbitBitKrw
-        ).toFixed(2);
+        ).toFixed(2);*/
         return {
           symbol: tickers1[v].symbol.slice(0, tickers1[v].symbol.indexOf("/")),
           last: tickers1[v].last,
@@ -128,15 +139,13 @@ function ExchangeList() {
     if (loading === true) setLoading(false);
     if (isFirstLoading === false) setIsFirstLoading(true);
     setUpbitCoinInfo(tickers1);
-  }, [loading, isFirstLoading, coinList, dispatch, upbitBitKrw, sortType]);
+  }, [loading, isFirstLoading, coinList, dispatch, sortType]);
   useEffect(() => {
-    timer.current = setInterval(async () => {
-      await getExchangeTickers();
-    }, 3500);
+    timer.current = setTimeout(getExchangeTickers, 2500);
     return () => {
-      clearInterval(timer.current);
+      clearTimeout(timer.current);
     };
-  }, [getExchangeTickers, timer]);
+  }, [getExchangeTickers]);
   const onSelectExchange = useCallback((e) => {
     setSelected(parseInt(e.target.dataset.id, 10));
     setIsFirstLoading(false);
@@ -198,18 +207,9 @@ function ExchangeList() {
   return (
     <div>
       <ExchangesContainer>
-        {exchangeList.map((v, idx) => {
-          return (
-            <ExchangeItem
-              key={v4()}
-              data-id={idx}
-              onClick={onSelectExchange}
-              selected={selected === idx}
-            >
-              {v}
-            </ExchangeItem>
-          );
-        })}
+        <ExchangeItem>Upbit</ExchangeItem>
+        <ExchangeItem>Binance</ExchangeItem>
+        <SettingBar coinInfo={upbitCoinInfo} />
       </ExchangesContainer>
       <CurrentExchangeBar />
       <ExchangesWrapper>
@@ -255,10 +255,9 @@ function ExchangeList() {
           })}
         </ExchangeCoinsContainer>
         <NewListing />
-        <SettingBar coinInfo={upbitCoinInfo} />
       </ExchangesWrapper>
       <Loading isLoading={loading} />
     </div>
   );
 }
-export default ExchangeList;
+export default React.memo(ExchangeList);

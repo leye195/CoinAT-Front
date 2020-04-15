@@ -1,6 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import ExchangeList from "./components/ExchangeList";
+import SettingBar from "./components/SettingBar";
 const Header = styled.div`
   display: flex;
   align-items: center;
@@ -14,12 +15,14 @@ const Title = styled.p`
 `;
 function App() {
   return (
-    <div>
-      <Header>
-        <Title>CoinAT</Title>
-      </Header>
-      <ExchangeList />
-    </div>
+    <>
+      <div>
+        <Header>
+          <Title>CoinAT</Title>
+        </Header>
+        <ExchangeList />
+      </div>
+    </>
   );
 }
 
