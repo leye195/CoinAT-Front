@@ -19,10 +19,10 @@ const NewListingDiv = styled.div`
   box-shadow: 2px 2px 6px 1px;
   overflow: scroll;
   @media (min-width: 1025px) {
-    width: auto;
+    width: ${(props) => (props.hide ? "auto" : "270px")};
   }
   @media (max-width: 1024px) {
-    width: auto;
+    width: ${(props) => (props.hide ? "auto" : "250px")};
   }
   @media (max-width: 768px) {
     width: ${(props) => (props.hide ? "auto" : "200px")};

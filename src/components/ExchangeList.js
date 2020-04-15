@@ -9,12 +9,12 @@ import {
   loadUpbitBitKrw,
   loadBinanceBitUsdt,
   loadUpbitNewListing,
-  setBinance,
+  loadBianceNewListing,
 } from "../reducers/coin";
 import { useDispatch, useSelector } from "react-redux";
 import { v4 } from "uuid";
 import NewListing from "./NewListing";
-const exchangeList = ["Upbit", "Binance"];
+//const exchangeList = ["Upbit", "Binance"];
 const ExchangesWrapper = styled.div`
   display: flex;
   flex-direction: row;
@@ -79,11 +79,9 @@ const Coin = styled.div`
       font-size: 0.6rem;
     }
   }
-  &:last-child {
-  }
 `;
 function ExchangeList() {
-  const [selected, setSelected] = useState(0);
+  // const [selected, setSelected] = useState(0);
   const [upbitCoinInfo, setUpbitCoinInfo] = useState([]);
   const [isFirstLoading, setIsFirstLoading] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -102,14 +100,6 @@ function ExchangeList() {
       tickers2 = await binance.fetchTickers(coinList.map((v) => `${v}/BTC`));
     tickers1 = Object.keys(tickers1)
       .map((v) => {
-        /*const converted = (
-          tickers2[
-            `${tickers1[v].symbol.slice(
-              0,
-              tickers1[v].symbol.indexOf("/")
-            )}/BTC`
-          ].last * upbitBitKrw
-        ).toFixed(2);*/
         return {
           symbol: tickers1[v].symbol.slice(0, tickers1[v].symbol.indexOf("/")),
           last: tickers1[v].last,
@@ -146,11 +136,11 @@ function ExchangeList() {
     dispatch(loadUsdToKrw());
     dispatch(loadBinanceBitUsdt());
     dispatch(loadUpbitNewListing());
-    //dispatch(loadBianceNewListing());
+    dispatch(loadBianceNewListing());
     if (loading === true) setLoading(false);
     if (isFirstLoading === false) setIsFirstLoading(true);
     setUpbitCoinInfo(tickers1);
-  }, [loading, isFirstLoading, coinList, dispatch, sortType]);
+  }, [loading, isFirstLoading, coinList, dispatch, sortType, upbitBitKrw]);
   useEffect(() => {
     timer.current = setTimeout(getExchangeTickers, 2500);
     return () => {
@@ -225,7 +215,7 @@ function ExchangeList() {
         }
       }
     },
-    [sortType, upbitCoinInfo]
+    [sortType, upbitCoinInfo, upbitBitKrw]
   );
   return (
     <div>
@@ -261,7 +251,6 @@ function ExchangeList() {
               ((v.last - convertedBinance) / v.last) *
               100
             ).toFixed(2);
-            //console.log(percent);
             return (
               <CoinContainer key={v4()}>
                 <Coin>{v.symbol}</Coin>
