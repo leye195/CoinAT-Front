@@ -9,6 +9,7 @@ import {
   loadUpbitBitKrw,
   loadBinanceBitUsdt,
   loadUpbitNewListing,
+  setBinance,
 } from "../reducers/coin";
 import { useDispatch, useSelector } from "react-redux";
 import { v4 } from "uuid";
@@ -124,12 +125,22 @@ function ExchangeList() {
         };
       })
       .sort((x, y) => {
+        const convertedX = x.blast * upbitBitKrw,
+          convertedY = y.blast * upbitBitKrw;
         if (sortType === -1) return x.symbol > y.symbol ? 1 : -1;
         else if (sortType === 1) return x.symbol < y.symbol ? 1 : -1;
         else if (sortType === -2) return x.last > y.last ? 1 : -1;
         else if (sortType === 2) return x.last < y.last ? 1 : -1;
         else if (sortType === -3) return x.blast > y.blast ? 1 : -1;
         else if (sortType === 3) return x.blast < y.blast ? 1 : -1;
+        else if (sortType === -4)
+          return (x.last - convertedX) / x.last > (y.last - convertedY) / y.last
+            ? 1
+            : -1;
+        else if (sortType === 4)
+          return (x.last - convertedX) / x.last < (y.last - convertedY) / y.last
+            ? 1
+            : -1;
       });
     dispatch(loadUpbitBitKrw());
     dispatch(loadUsdToKrw());
@@ -146,10 +157,6 @@ function ExchangeList() {
       clearTimeout(timer.current);
     };
   }, [getExchangeTickers]);
-  const onSelectExchange = useCallback((e) => {
-    setSelected(parseInt(e.target.dataset.id, 10));
-    setIsFirstLoading(false);
-  }, []);
   const onSort = useCallback(
     (e) => {
       const {
@@ -196,8 +203,24 @@ function ExchangeList() {
         }
       } else if (parseInt(id, 10) === 4) {
         if (sortType === 4) {
+          upbitCoinInfo.sort((x, y) => {
+            const convertedX = x.blast * upbitBitKrw,
+              convertedY = y.blast * upbitBitKrw;
+            return ((x.last - convertedX) / x.last) * 100 >
+              ((y.last - convertedY) / y.last) * 100
+              ? 1
+              : -1;
+          });
           setSortType(-4);
         } else {
+          upbitCoinInfo.sort((x, y) => {
+            const convertedX = x.blast * upbitBitKrw,
+              convertedY = y.blast * upbitBitKrw;
+            return ((x.last - convertedX) / x.last) * 100 <
+              ((y.last - convertedY) / y.last) * 100
+              ? 1
+              : -1;
+          });
           setSortType(4);
         }
       }
@@ -227,7 +250,7 @@ function ExchangeList() {
               <Coin head={true} onClick={onSort} data-id={3}>
                 바이낸스(BTC)
               </Coin>
-              <Coin head={true} onClick={onSort}>
+              <Coin head={true} onClick={onSort} data-id={4}>
                 차이(%)
               </Coin>
             </CoinContainer>
