@@ -2,7 +2,7 @@ import React from "react";
 import styled from "styled-components";
 import { useSelector } from "react-redux";
 
-const ExchangeContainer = styled.div`
+const ExchangeContainer = styled.section`
   display: flex;
   align-items: center;
   justify-content: center;
@@ -10,19 +10,28 @@ const ExchangeContainer = styled.div`
   font-weight: 800;
   color: white;
   text-shadow: 1px 1px 5px #545454;
-  font-size: 0.5rem;
-  height: 20px;
+  height: 35px;
   @media (max-width: 768px) {
     width: 100%;
-    height: 30px;
+    height: 33px;
   }
 `;
 const Info = styled.p`
   padding-left: 5px;
   padding-right: 2px;
-  font-size: 0.3rem;
+  font-size: 1rem;
   margin: 0;
   padding: 4px;
+  @media (max-width: 768px) {
+    font-size: 0.85rem;
+    word-break: inherit;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  @media (max-width: 581px) {
+    font-size: 0.75rem;
+  }
 `;
 function CurrentExchangeBar() {
   const { upbitBitKrw, usdToKrw, binanceBitUsdt } = useSelector(

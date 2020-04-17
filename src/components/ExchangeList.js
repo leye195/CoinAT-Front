@@ -10,12 +10,13 @@ import {
   loadBinanceBitUsdt,
   loadUpbitNewListing,
   loadBianceNewListing,
+  loadCoinInfo,
 } from "../reducers/coin";
 import { useDispatch, useSelector } from "react-redux";
 import { v4 } from "uuid";
 import NewListing from "./NewListing";
 //const exchangeList = ["Upbit", "Binance"];
-const ExchangesWrapper = styled.div`
+const ExchangesWrapper = styled.section`
   display: flex;
   flex-direction: row;
   justify-content: space-between;
@@ -74,13 +75,16 @@ const Coin = styled.div`
   cursor: ${(props) => (props.head ? "pointer" : "normal")};
   width: 30%;
   word-break: break-all;
-  font-size: 0.5rem;
+  font-size: 0.85rem;
   color: black;
   margin-left: 3px;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  @media (max-width: 768px) {
+    font-size: 0.7rem;
+  }
   &:first-child {
   }
   &:nth-child(2) {
@@ -99,9 +103,12 @@ const Coin = styled.div`
     font-weight: ${(props) =>
       props.head === true ? "800" : props.up === true ? "600" : "600"};
     p {
-      font-size: 0.5rem;
+      font-size: 0.85rem;
       margin-bottom: 0;
       margin-top: 0;
+      @media (max-width: 768px) {
+        font-size: 0.7rem;
+      }
       @media (max-width: 425px) {
         align-self: flex-start;
       }
@@ -173,10 +180,23 @@ function ExchangeList() {
     dispatch(loadBinanceBitUsdt());
     dispatch(loadUpbitNewListing());
     dispatch(loadBianceNewListing());
+    dispatch(
+      loadCoinInfo({
+        coinInfo: upbitCoinInfo,
+      })
+    );
     if (loading === true) setLoading(false);
     if (isFirstLoading === false) setIsFirstLoading(true);
     setUpbitCoinInfo(tickers1);
-  }, [loading, isFirstLoading, coinList, dispatch, sortType, upbitBitKrw]);
+  }, [
+    loading,
+    isFirstLoading,
+    coinList,
+    dispatch,
+    sortType,
+    upbitBitKrw,
+    upbitCoinInfo,
+  ]);
   useEffect(() => {
     timer.current = setTimeout(getExchangeTickers, 2500);
     return () => {
@@ -254,12 +274,12 @@ function ExchangeList() {
     [sortType, upbitCoinInfo, upbitBitKrw]
   );
   return (
-    <div>
+    <main>
       <ExchangesContainer>
         <ExchangeItem>Upbit</ExchangeItem>
         <ExchangeItem>Binance</ExchangeItem>
-        <SettingBar coinInfo={upbitCoinInfo} />
       </ExchangesContainer>
+      <SettingBar coinInfo={upbitCoinInfo} />
       <CurrentExchangeBar />
       <ExchangesWrapper>
         <ExchangeCoinsContainer>
@@ -305,7 +325,7 @@ function ExchangeList() {
         <NewListing />
       </ExchangesWrapper>
       <Loading isLoading={loading} />
-    </div>
+    </main>
   );
 }
 export default React.memo(ExchangeList);

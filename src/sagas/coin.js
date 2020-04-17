@@ -21,6 +21,9 @@ import {
   BINANCE_CHECK_COIN_REQUEST,
   BINANCE_CHECK_COIN_SUCCESS,
   BINANCE_CHECK_COIN_FAILURE,
+  COIN_LIST_FAILURE,
+  COIN_LIST_SUCCESS,
+  COIN_LIST_REQUEST,
 } from "../reducers/coin";
 import axios from "axios";
 import dotenv from "dotenv";
@@ -177,6 +180,27 @@ function* watchBinanceNewCoin() {
   yield takeLatest(BINANCE_CHECK_COIN_REQUEST, binanceNewCoin);
 }
 
+function coinListAPI() {
+  return axios.get(`${API_URL}coin`);
+}
+function* coinList() {
+  try {
+    const result = yield call(coinListAPI);
+    yield put({
+      type: COIN_LIST_SUCCESS,
+      payload: result.data,
+    });
+  } catch (e) {
+    yield put({
+      type: COIN_LIST_FAILURE,
+      error: e,
+    });
+  }
+}
+function* watchCoinList() {
+  yield takeLatest(COIN_LIST_REQUEST, coinList);
+}
+
 export default function* coinSaga() {
   yield all([
     fork(watchBitKrw),
@@ -186,5 +210,6 @@ export default function* coinSaga() {
     fork(watchBinanceNewListing),
     fork(watchUpbitNewCoin),
     fork(watchBinanceNewCoin),
+    fork(watchCoinList),
   ]);
 }

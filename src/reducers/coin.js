@@ -2,6 +2,12 @@ import { createAction, handleActions } from "redux-actions";
 import produce from "immer";
 import moment from "moment";
 
+export const COIN_INFO_REQUEST = "COIN_INFO_REQUEST";
+
+export const COIN_LIST_REQUEST = "COIN_LIST_REQUEST";
+export const COIN_LIST_SUCCESS = "COIN_LIST_SUCCESS";
+export const COIN_LIST_FAILURE = "COIN_LIST_FAILURE";
+
 export const UPBIT_BITCOIN_KRW_REQUEST = "UPBIT_BITCOIN_KRW_REQUEST";
 export const UPBIT_BITCOIN_KRW_SUCCESS = "UPBIT_BITCOIN_KRW_SUCCESS";
 export const UPBIT_BITCOIN_KRW_FAILURE = "UPBIT_BITCOIN_KRW_FAILURE";
@@ -33,6 +39,8 @@ export const BINANCE_CHECK_COIN_FAILURE = "BINANCE_CHECK_COIN_FAILURE";
 export const UPBIT_SETTING = "UPBIT_SETTING";
 export const BINANCE_SETTING = "BINANCE_SETTING";
 
+export const loadCoinInfo = createAction(COIN_INFO_REQUEST);
+export const loadCoinList = createAction(COIN_LIST_REQUEST);
 export const loadUpbitBitKrw = createAction(UPBIT_BITCOIN_KRW_REQUEST);
 export const loadUsdToKrw = createAction(CURRENCY_REQUEST);
 export const loadBinanceBitUsdt = createAction(BINANCE_BITCOIN_USDT_REQUEST);
@@ -61,6 +69,7 @@ const initialState = {
   upbitSec: "",
   binanceApi: "",
   binanceSec: "",
+  coinInfo: [],
   coinList: [
     "ADA",
     "ADX",
@@ -72,6 +81,7 @@ const initialState = {
     "BCH",
     "BTG",
     "CVC",
+    "CHZ",
     "DCR",
     "ELF",
     "ENJ",
@@ -94,7 +104,6 @@ const initialState = {
     "MANA",
     "MBL",
     "MCO",
-    "MFT",
     "MTL",
     "NEO",
     "OMG",
@@ -127,6 +136,19 @@ const initialState = {
 };
 export default handleActions(
   {
+    [COIN_INFO_REQUEST]: (state, action) =>
+      produce(state, (draft) => {
+        draft.coinInfo = action.payload.coinInfo;
+      }),
+    [COIN_LIST_REQUEST]: (state, action) => produce(state, (draft) => {}),
+    [COIN_LIST_SUCCESS]: (state, action) =>
+      produce(state, (draft) => {
+        const coinList = action.payload.map((coin) => {
+          return coin.name;
+        });
+        draft.coinList = coinList;
+      }),
+    [COIN_LIST_FAILURE]: (state, action) => produce(state, (draft) => {}),
     [UPBIT_BITCOIN_KRW_REQUEST]: (state, action) =>
       produce(state, (draft) => {
         draft.isbitkrwLoading = true;

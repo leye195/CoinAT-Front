@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useRef } from "react";
+import React, { useState, useCallback, useRef, useEffect } from "react";
 import styled from "styled-components";
 import { useSelector, useDispatch } from "react-redux";
 import { sendMessage } from "../reducers/bot";
@@ -93,83 +93,86 @@ const SettingBtn = styled.button`
   border-bottom-right-radius: 5px;
   padding: 5px;
 `;
-function SettingBar({ coinInfo }) {
-  const { coinList, upbitBitKrw } = useSelector((state) => state.coin);
-  const [selected, setSelected] = useState(-1);
-  const [percent, setPercent] = useState(0.0);
-  //const [currentPer, setCurrentPer] = useState(0.0);
+function SettingBar() {
+  const { coinList, coinInfo, upbitBitKrw } = useSelector(
+    (state) => state.coin
+  );
   const dispatch = useDispatch();
   const timer = useRef();
+  const selected = useRef(0.0);
+  const percent = useRef(0.0);
   const wrapper = useRef();
   const upbitApi = useRef();
   const upbitSec = useRef();
   const binanceApi = useRef();
   const binanceSec = useRef();
   const currentPer = useRef();
-
-  const onSelectChange = useCallback((selectedOption) => {
-    setSelected(selectedOption.value);
-  }, []);
-  const onPercentChange = useCallback((e) => {
-    const { target } = e;
-    if (target.value >= 0 && target.value <= 100) {
-      setPercent(target.value);
-    } else {
-      target.value = 0;
-    }
-  }, []);
   /**
    * coinPer: 현재 프리미엄 %
    * percent: 설정된 %
    * currentPer: 변화 값 저장, 비교용으로 사용
    */
-  const startBot = useCallback(() => {
-    const selectedCoin = coinInfo.filter((v) => v.symbol === selected)[0];
-    const converted = selectedCoin.blast * upbitBitKrw;
-    const coinPer = parseFloat(
-      (((selectedCoin.last - converted) / converted) * 100).toFixed(2),
-      10
-    );
-    const p = parseFloat(percent, 10);
-    console.log(selectedCoin, currentPer.current, coinPer);
-    if (
-      Math.abs(coinPer, 10) > p &&
-      coinPer !== parseFloat(currentPer.current, 10)
-    ) {
-      console.log(
-        parseFloat(currentPer.current, 10),
-        coinPer,
-        parseFloat(currentPer.current, 10) !== coinPer
-      );
-      currentPer.current = coinPer;
-      //setCurrentPer(coinPer);
-      /*console.log(selectedCoin, coinPer);
-        dispatch(
-          sendMessage({
-            coinInfo: selectedCoin,
-            binance: converted,
-            percent: coinPer,
-          })
-        );*/
+  const startBot = useCallback(
+    (coin, krw) => {
+      const selectedCoin = coin?.filter(
+        (v) => v.symbol === selected.current
+      )[0];
+      if (selectedCoin) {
+        const converted = selectedCoin.blast * krw;
+        const coinPer = parseFloat(
+          (((selectedCoin.last - converted) / converted) * 100).toFixed(2),
+          10
+        );
+        const p = parseFloat(percent.current, 10);
+        if (Math.abs(coinPer) > p) {
+          if (!currentPer.current || currentPer.current !== coinPer) {
+            currentPer.current = coinPer;
+            dispatch(
+              sendMessage({
+                coinInfo: selectedCoin,
+                binance: converted,
+                percent: coinPer,
+              })
+            );
+          }
+        }
+      }
+    },
+    [dispatch]
+  );
+  useEffect(() => {
+    if (timer.current) {
+      //console.log(percent.current);
+      startBot(coinInfo, upbitBitKrw);
     }
-    timer.current = setTimeout(startBot, 2000);
-  }, [selected, percent, coinInfo, upbitBitKrw, currentPer]);
+  }, [coinInfo, upbitBitKrw, startBot]);
+  const onSelectChange = useCallback((selectedOption) => {
+    selected.current = selectedOption.value;
+    //setSelected(selectedOption.value);
+  }, []);
+  const onPercentChange = useCallback((e) => {
+    const { target } = e;
+    if (target.value >= 0 && target.value <= 100) {
+      percent.current = parseFloat(target.value, 10);
+    } else {
+      target.value = 0.0;
+    }
+  }, []);
+
   const onSetting = useCallback(
     (e) => {
       const { target } = e;
       if (selected !== -1 && percent !== -1) {
         if (target.innerHTML === "설정") {
-          timer.current = setTimeout(startBot, 2000);
-          //timer.current = setInterval(async () => await startBot(), 2000);
           target.innerHTML = "취소";
+          timer.current = true;
         } else {
           target.innerHTML = "설정";
-          clearTimeout(timer.current);
-          //clearInterval(timer.current);
+          timer.current = false;
         }
       }
     },
-    [selected, percent, startBot]
+    [percent, selected]
   );
   const onToggle = useCallback(() => {
     if (

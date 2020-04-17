@@ -1,7 +1,9 @@
-import React from "react";
+import React, { useEffect } from "react";
 import styled from "styled-components";
 import ExchangeList from "./components/ExchangeList";
-const Header = styled.div`
+import { useDispatch } from "react-redux";
+import { loadCoinList } from "./reducers/coin";
+const Header = styled.header`
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -10,21 +12,23 @@ const Header = styled.div`
   margin-top: 0;
   height: 20px;
   @media (max-width: 768px) {
-    font-size: 0.4rem;
+    font-size: 0.85rem;
   }
 `;
 const Title = styled.p`
   font-family: 800;
 `;
 function App() {
+  const dispatch = useDispatch();
+  useEffect(() => {
+    dispatch(loadCoinList());
+  });
   return (
     <>
-      <div>
-        <Header>
-          <Title>CoinAT</Title>
-        </Header>
-        <ExchangeList />
-      </div>
+      <Header>
+        <Title>CoinAT</Title>
+      </Header>
+      <ExchangeList />
     </>
   );
 }

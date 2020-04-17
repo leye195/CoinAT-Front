@@ -26,6 +26,7 @@ const NewListingDiv = styled.div`
   }
   @media (max-width: 768px) {
     width: ${(props) => (props.hide ? "auto" : "200px")};
+    opacity: ${(props) => (props.hide ? "0.2" : "1.0")};
   }
 `;
 const FontDiv = styled.div`
