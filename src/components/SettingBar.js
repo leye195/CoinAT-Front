@@ -96,8 +96,8 @@ const SettingBtn = styled.button`
 function SettingBar({ coinInfo }) {
   const { coinList, upbitBitKrw } = useSelector((state) => state.coin);
   const [selected, setSelected] = useState(-1);
-  const [percent, setPercent] = useState(-1);
-  const [currentPer, setCurrentPer] = useState(-1);
+  const [percent, setPercent] = useState(0.0);
+  //const [currentPer, setCurrentPer] = useState(0.0);
   const dispatch = useDispatch();
   const timer = useRef();
   const wrapper = useRef();
@@ -105,6 +105,8 @@ function SettingBar({ coinInfo }) {
   const upbitSec = useRef();
   const binanceApi = useRef();
   const binanceSec = useRef();
+  const currentPer = useRef();
+
   const onSelectChange = useCallback((selectedOption) => {
     setSelected(selectedOption.value);
   }, []);
@@ -116,37 +118,54 @@ function SettingBar({ coinInfo }) {
       target.value = 0;
     }
   }, []);
+  /**
+   * coinPer: 현재 프리미엄 %
+   * percent: 설정된 %
+   * currentPer: 변화 값 저장, 비교용으로 사용
+   */
   const startBot = useCallback(() => {
     const selectedCoin = coinInfo.filter((v) => v.symbol === selected)[0];
     const converted = selectedCoin.blast * upbitBitKrw;
-    const coinPer = (
-      ((selectedCoin.last - converted) / converted) *
-      100
-    ).toFixed(2);
-    if (Math.abs(coinPer) > percent) {
-      if (currentPer !== Math.abs(coinPer)) {
-        console.log(selectedCoin, coinPer);
+    const coinPer = parseFloat(
+      (((selectedCoin.last - converted) / converted) * 100).toFixed(2),
+      10
+    );
+    const p = parseFloat(percent, 10);
+    console.log(selectedCoin, currentPer.current, coinPer);
+    if (
+      Math.abs(coinPer, 10) > p &&
+      coinPer !== parseFloat(currentPer.current, 10)
+    ) {
+      console.log(
+        parseFloat(currentPer.current, 10),
+        coinPer,
+        parseFloat(currentPer.current, 10) !== coinPer
+      );
+      currentPer.current = coinPer;
+      //setCurrentPer(coinPer);
+      /*console.log(selectedCoin, coinPer);
         dispatch(
           sendMessage({
             coinInfo: selectedCoin,
             binance: converted,
             percent: coinPer,
           })
-        );
-      }
-      setCurrentPer(coinPer);
+        );*/
     }
-  }, [selected, percent, coinInfo, dispatch, upbitBitKrw, currentPer]);
+    timer.current = setTimeout(startBot, 2000);
+  }, [selected, percent, coinInfo, upbitBitKrw, currentPer]);
   const onSetting = useCallback(
     (e) => {
       const { target } = e;
       if (selected !== -1 && percent !== -1) {
         if (target.innerHTML === "설정") {
-          timer.current = setInterval(startBot, 2000);
+          timer.current = setTimeout(startBot, 2000);
+          //timer.current = setInterval(async () => await startBot(), 2000);
           target.innerHTML = "취소";
         } else {
           target.innerHTML = "설정";
-          clearInterval(timer.current);
+          clearTimeout(timer.current);
+          //clearInterval(timer.current);
         }
       }
     },
@@ -231,6 +250,7 @@ function SettingBar({ coinInfo }) {
           marginRight: "5px",
           marginTop: "5px",
           cursor: "pointer",
+          fontSize: "1.0rem",
         }}
         onClick={onToggle}
       />

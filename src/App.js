@@ -1,7 +1,6 @@
 import React from "react";
 import styled from "styled-components";
 import ExchangeList from "./components/ExchangeList";
-import SettingBar from "./components/SettingBar";
 const Header = styled.div`
   display: flex;
   align-items: center;
@@ -9,6 +8,10 @@ const Header = styled.div`
   margin: 10px;
   margin-bottom: 0;
   margin-top: 0;
+  height: 20px;
+  @media (max-width: 768px) {
+    font-size: 0.4rem;
+  }
 `;
 const Title = styled.p`
   font-family: 800;

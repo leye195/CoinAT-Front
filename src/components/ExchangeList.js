@@ -31,6 +31,11 @@ const ExchangesContainer = styled.ul`
   border-bottom: 0;
   margin-top: 5px;
   margin-bottom: 0;
+  font-size: 0.4rem;
+  @media (max-width: 768px) {
+    margin-top: 0px;
+    padding: 0px;
+  }
 `;
 const ExchangeItem = styled.li`
   padding-left: 10px;
@@ -43,7 +48,8 @@ const ExchangeCoinsContainer = styled.div`
   flex-direction: column;
   padding: 5px;
   @media (min-width: 1025px) {
-    width: 70%;
+    width: 60%;
+    margin: 0 auto;
   }
   @media (max-width: 1024px) {
     width: 60%;
@@ -55,7 +61,7 @@ const ExchangeCoinsContainer = styled.div`
 const CoinContainer = styled.div`
   display: flex;
   flex-direction: row;
-  padding: 5px;
+  padding: 2px;
   border-bottom: 1px solid #e3e3e3;
   &:first-child {
     font-weight: 800;
@@ -68,16 +74,46 @@ const Coin = styled.div`
   cursor: ${(props) => (props.head ? "pointer" : "normal")};
   width: 30%;
   word-break: break-all;
-  font-size: 0.8rem;
-  margin-right: 5px;
+  font-size: 0.5rem;
+  color: black;
+  margin-left: 3px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
   &:first-child {
   }
   &:nth-child(2) {
+    color: ${(props) => (props.head === true ? "black" : "#27ae60")};
+    font-weight: ${(props) => (props.head === true ? "800" : "600")};
+  }
+  &:nth-child(4) {
   }
   &:nth-child(5) {
+    color: ${(props) =>
+      props.head === true
+        ? "black"
+        : props.up === true
+        ? "#e74c3c"
+        : "#0984e3"};
+    font-weight: ${(props) =>
+      props.head === true ? "800" : props.up === true ? "600" : "600"};
     p {
-      font-size: 0.6rem;
+      font-size: 0.5rem;
+      margin-bottom: 0;
+      margin-top: 0;
+      @media (max-width: 425px) {
+        align-self: flex-start;
+      }
     }
+  }
+  &:nth-child(6) {
+    color: ${(props) =>
+      props.head === true
+        ? "black"
+        : props.up === true
+        ? "#e74c3c"
+        : "#0984e3"};
   }
 `;
 function ExchangeList() {
@@ -257,11 +293,11 @@ function ExchangeList() {
                 <Coin>{v.last}₩</Coin>
                 <Coin>{v.low}₩ </Coin>
                 <Coin>{v.high}₩</Coin>
-                <Coin>
+                <Coin up={percent > 0}>
                   {v.blast?.toFixed(8)}
-                  <p>= {convertedBinance}₩</p>
+                  <p>{convertedBinance}₩</p>
                 </Coin>
-                <Coin>{percent}%</Coin>
+                <Coin up={percent > 0}>{percent}%</Coin>
               </CoinContainer>
             );
           })}
