@@ -120,7 +120,7 @@ function SettingBar({ coinInfo }) {
     const selectedCoin = coinInfo.filter((v) => v.symbol === selected)[0];
     const converted = selectedCoin.blast * upbitBitKrw;
     const coinPer = (
-      ((selectedCoin.last - converted) / selectedCoin.last) *
+      ((selectedCoin.last - converted) / converted) *
       100
     ).toFixed(2);
     if (Math.abs(coinPer) > percent) {

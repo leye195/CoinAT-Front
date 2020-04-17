@@ -32,7 +32,7 @@ function CurrentExchangeBar() {
         <Info>{`바이낸스: ${convertUsdToKrw()} BTC/KRW`}</Info>
         <Info>{`차이: ${(
           ((parseFloat(upbitBitKrw, 10) - convertUsdToKrw()) /
-            parseFloat(upbitBitKrw, 10)) *
+            convertUsdToKrw()) *
           100
         ).toFixed(2)}%`}</Info>
       </ExchangeContainer>

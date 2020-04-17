@@ -56,7 +56,9 @@ const NewListingli = styled.li`
   margin-bottom: 5px;
   word-break: keep-all;
 `;
-const InfoContainer = styled.div``;
+const InfoContainer = styled.div`
+  border-top: 1px solid #0404043b;
+`;
 const UpbitInfoUl = styled.ul`
   display: flex;
   flex-direction: column;

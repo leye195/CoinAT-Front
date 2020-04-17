@@ -196,8 +196,8 @@ function ExchangeList() {
           upbitCoinInfo.sort((x, y) => {
             const convertedX = x.blast * upbitBitKrw,
               convertedY = y.blast * upbitBitKrw;
-            return ((x.last - convertedX) / x.last) * 100 >
-              ((y.last - convertedY) / y.last) * 100
+            return ((x.last - convertedX) / convertedX) * 100 >
+              ((y.last - convertedY) / convertedY) * 100
               ? 1
               : -1;
           });
@@ -206,8 +206,8 @@ function ExchangeList() {
           upbitCoinInfo.sort((x, y) => {
             const convertedX = x.blast * upbitBitKrw,
               convertedY = y.blast * upbitBitKrw;
-            return ((x.last - convertedX) / x.last) * 100 <
-              ((y.last - convertedY) / y.last) * 100
+            return ((x.last - convertedX) / convertedX) * 100 <
+              ((y.last - convertedY) / convertedY) * 100
               ? 1
               : -1;
           });
@@ -248,15 +248,15 @@ function ExchangeList() {
           {upbitCoinInfo.map((v, idx) => {
             const convertedBinance = (v.blast * upbitBitKrw).toFixed(2);
             const percent = (
-              ((v.last - convertedBinance) / v.last) *
+              ((v.last - convertedBinance) / convertedBinance) *
               100
             ).toFixed(2);
             return (
               <CoinContainer key={v4()}>
                 <Coin>{v.symbol}</Coin>
-                <Coin>{v.last}</Coin>
-                <Coin>{v.low} </Coin>
-                <Coin>{v.high}</Coin>
+                <Coin>{v.last}₩</Coin>
+                <Coin>{v.low}₩ </Coin>
+                <Coin>{v.high}₩</Coin>
                 <Coin>
                   {v.blast?.toFixed(8)}
                   <p>= {convertedBinance}₩</p>
