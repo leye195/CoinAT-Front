@@ -93,10 +93,8 @@ const SettingBtn = styled.button`
   border-bottom-right-radius: 5px;
   padding: 5px;
 `;
-function SettingBar() {
-  const { coinList, coinInfo, upbitBitKrw } = useSelector(
-    (state) => state.coin
-  );
+function SettingBar({ coinInfo, upbitBitKrw }) {
+  const { coinList } = useSelector((state) => state.coin);
   const dispatch = useDispatch();
   const timer = useRef();
   const selected = useRef(0.0);
@@ -142,7 +140,6 @@ function SettingBar() {
   );
   useEffect(() => {
     if (timer.current) {
-      //console.log(percent.current);
       startBot(coinInfo, upbitBitKrw);
     }
   }, [coinInfo, upbitBitKrw, startBot]);

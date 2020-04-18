@@ -119,8 +119,16 @@ const Coin = styled.div`
       props.head === true
         ? "black"
         : props.up === true
-        ? "#e74c3c"
-        : "#0984e3"};
+        ? "#ff2e18"
+        : "#0012ff"};
+    border-radius: 10px;
+    background-color: ${(props) =>
+      props.head === true
+        ? "white"
+        : props.up === true
+        ? "#ff747363"
+        : "#007fff47"};
+    border-radius: 10px;
   }
 `;
 function ExchangeList() {
@@ -128,7 +136,7 @@ function ExchangeList() {
   const [upbitCoinInfo, setUpbitCoinInfo] = useState([]);
   const [isFirstLoading, setIsFirstLoading] = useState(false);
   const [loading, setLoading] = useState(true);
-  const [sortType, setSortType] = useState(0);
+  const [sortType, setSortType] = useState(-1);
   const dispatch = useDispatch();
   const { coinList, upbitBitKrw } = useSelector((state) => state.coin);
   const timer = useRef(null);
@@ -136,6 +144,7 @@ function ExchangeList() {
     if (timer.current) {
       timer.current = setTimeout(getExchangeTickers, 2500);
     }
+    //console.log(coinList);
     if (isFirstLoading === false && loading === false) setLoading(true);
     const upbit = new ccxt.upbit();
     const binance = new ccxt.binance();
@@ -180,23 +189,10 @@ function ExchangeList() {
     dispatch(loadBinanceBitUsdt());
     dispatch(loadUpbitNewListing());
     dispatch(loadBianceNewListing());
-    dispatch(
-      loadCoinInfo({
-        coinInfo: upbitCoinInfo,
-      })
-    );
     if (loading === true) setLoading(false);
     if (isFirstLoading === false) setIsFirstLoading(true);
     setUpbitCoinInfo(tickers1);
-  }, [
-    loading,
-    isFirstLoading,
-    coinList,
-    dispatch,
-    sortType,
-    upbitBitKrw,
-    upbitCoinInfo,
-  ]);
+  }, [loading, isFirstLoading, coinList, dispatch, sortType, upbitBitKrw]);
   useEffect(() => {
     timer.current = setTimeout(getExchangeTickers, 2500);
     return () => {
@@ -279,7 +275,7 @@ function ExchangeList() {
         <ExchangeItem>Upbit</ExchangeItem>
         <ExchangeItem>Binance</ExchangeItem>
       </ExchangesContainer>
-      <SettingBar coinInfo={upbitCoinInfo} />
+      <SettingBar coinInfo={upbitCoinInfo} upbitBitKrw={upbitBitKrw} />
       <CurrentExchangeBar />
       <ExchangesWrapper>
         <ExchangeCoinsContainer>

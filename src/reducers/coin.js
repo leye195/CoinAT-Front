@@ -138,7 +138,8 @@ export default handleActions(
   {
     [COIN_INFO_REQUEST]: (state, action) =>
       produce(state, (draft) => {
-        draft.coinInfo = action.payload.coinInfo;
+        if (draft.coinInfo.length < action.payload.coinInfo.length)
+          draft.coinInfo = action.payload.coinInfo;
       }),
     [COIN_LIST_REQUEST]: (state, action) => produce(state, (draft) => {}),
     [COIN_LIST_SUCCESS]: (state, action) =>
