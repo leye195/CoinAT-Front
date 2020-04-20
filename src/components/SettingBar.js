@@ -1,11 +1,10 @@
 import React, { useCallback, useState, useRef, useEffect } from "react";
 import styled from "styled-components";
-import { useSelector, useDispatch } from "react-redux";
-import { sendMessage, cancelMessage } from "../reducers/bot";
+import { useDispatch } from "react-redux";
+import { sendMessage } from "../reducers/bot";
 import { faCog } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { setUpbit, setBinance } from "../reducers/coin";
-import Select from "react-select";
 import ItemList from "./ItemList";
 const SettingBarDiv = styled.div`
   position: fixed;
@@ -34,12 +33,6 @@ const SelectContainer = styled.div`
     flex: 1;
   }
 `;
-/*const Select = styled.select`
-  flex: 1;
-  height: 25px;
-  border: none;
-  background-color: white;
-`;*/
 const SelectBtn = styled.button`
   color: white;
   background-color: #bdc3c7;
@@ -97,7 +90,6 @@ function SettingBar({ coinInfo, upbitBitKrw }) {
   const upbitSec = useRef();
   const binanceApi = useRef();
   const binanceSec = useRef();
-  //const currentPer = useRef();
 
   const [coins, setCoins] = useState([]);
   const [coinPer, setCoinPer] = useState({});
@@ -123,7 +115,7 @@ function SettingBar({ coinInfo, upbitBitKrw }) {
               (((coin.last - converted) / converted) * 100).toFixed(2),
               10
             );
-            if (per > p) {
+            if (Math.abs(per) > p) {
               if (Object.keys(checkPer.current).indexOf(coin.symbol) === -1) {
                 checkPer.current = {
                   ...checkPer.current,
@@ -134,7 +126,7 @@ function SettingBar({ coinInfo, upbitBitKrw }) {
                     coinInfo: {
                       symbol: coin.symbol,
                       upbit: coin.last,
-                      binance: converted,
+                      binance: coin.converted,
                       percent: per,
                     },
                   })
@@ -150,7 +142,7 @@ function SettingBar({ coinInfo, upbitBitKrw }) {
                       coinInfo: {
                         symbol: coin.symbol,
                         upbit: coin.last,
-                        binance: converted,
+                        binance: coin.converted,
                         percent: per,
                       },
                     })
@@ -196,13 +188,12 @@ function SettingBar({ coinInfo, upbitBitKrw }) {
         } else {
           target.innerHTML = "설정";
           timer.current = false;
-          dispatch(cancelMessage());
         }
       } else {
         alert("최소 한개의 % 설정이 필요합니다");
       }
     },
-    [coinPer, dispatch]
+    [coinPer]
   );
   const onToggle = useCallback(() => {
     if (
@@ -308,7 +299,7 @@ function SettingBar({ coinInfo, upbitBitKrw }) {
         </ApiContainer>
         <ItemList coins={coins} onChangePercent={onChangePercent} />
         <SelectContainer>
-          <SelectBtn onClick={onSetting}>알림 설정</SelectBtn>
+          <SelectBtn onClick={onSetting}>설정</SelectBtn>
         </SelectContainer>
       </InputWrapper>
     </SettingBarDiv>

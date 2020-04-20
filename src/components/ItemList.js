@@ -1,5 +1,6 @@
 import React, { useRef, useEffect, useCallback } from "react";
 import styled from "styled-components";
+import { v4 } from "uuid";
 
 const ItemListDiv = styled.div`
   display: flex;
@@ -68,4 +69,4 @@ function ItemList({ coins, onChangePercent }) {
     </ItemListDiv>
   );
 }
-export default ItemList;
+export default React.memo(ItemList);
