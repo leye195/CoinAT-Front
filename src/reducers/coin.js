@@ -2,6 +2,7 @@ import { createAction, handleActions } from "redux-actions";
 import produce from "immer";
 import moment from "moment";
 
+export const SETTING_BTC = "SETTING_BTC";
 export const COIN_INFO_REQUEST = "COIN_INFO_REQUEST";
 
 export const COIN_LIST_REQUEST = "COIN_LIST_REQUEST";
@@ -50,6 +51,7 @@ export const checkUpbitCoin = createAction(UPBIT_CHECK_COIN_REQUEST);
 export const checkBinanceCoin = createAction(BINANCE_CHECK_COIN_REQUEST);
 export const setUpbit = createAction(UPBIT_SETTING);
 export const setBinance = createAction(BINANCE_SETTING);
+export const setBtc = createAction(SETTING_BTC);
 
 const initialState = {
   isbitkrwLoading: false,
@@ -69,6 +71,7 @@ const initialState = {
   upbitSec: "",
   binanceApi: "",
   binanceSec: "",
+  btc: {},
   coinInfo: [],
   coinList: [
     "ADA",
@@ -136,6 +139,10 @@ const initialState = {
 };
 export default handleActions(
   {
+    [SETTING_BTC]: (state, action) =>
+      produce(state, (draft) => {
+        draft.btc = action.payload;
+      }),
     [COIN_INFO_REQUEST]: (state, action) =>
       produce(state, (draft) => {
         if (draft.coinInfo.length < action.payload.coinInfo.length)

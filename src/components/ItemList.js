@@ -11,6 +11,8 @@ const ItemListDiv = styled.div`
 const ItemListUl = styled.ul`
   display: flex;
   flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
   list-style: none;
   width: 100%;
   height: 200px;
@@ -33,14 +35,18 @@ const ItemListLi = styled.li`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 5px;
+  padding: 10px;
+  border: 1px solid #e3e3e3;
+  border-left: 0;
+  border-right: 0;
+  width: 100%;
 `;
 const ItemSpan = styled.span`
   font-size: 0.8rem;
 `;
 const ItemInput = styled.input`
   background-color: white;
-  border: 1px solid #e3e3e3;
+  border: 2px solid #e3e3e3;
   width: 30%;
   padding: 5px;
 `;
@@ -48,6 +54,18 @@ function ItemList({ coins, onChangePercent }) {
   return (
     <ItemListDiv>
       <ItemListUl>
+        <ItemListLi>
+          <ItemSpan>BTC</ItemSpan>
+          <ItemInput
+            type="number"
+            min={0}
+            max={100}
+            step={0.1}
+            placeholder="N%"
+            onChange={onChangePercent}
+            data-name={"BTC"}
+          />
+        </ItemListLi>
         {coins &&
           coins.map((coin) => {
             return (

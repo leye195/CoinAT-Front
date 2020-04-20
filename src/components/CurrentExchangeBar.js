@@ -1,6 +1,7 @@
-import React from "react";
+import React, { useEffect, useCallback } from "react";
 import styled from "styled-components";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
+import { setBtc } from "../reducers/coin";
 
 const ExchangeContainer = styled.section`
   display: flex;
@@ -34,13 +35,31 @@ const Info = styled.p`
   }
 `;
 function CurrentExchangeBar() {
+  const dispatch = useDispatch();
   const { upbitBitKrw, usdToKrw, binanceBitUsdt } = useSelector(
     (state) => state.coin
   );
-  const convertUsdToKrw = () => {
+  const convertUsdToKrw = useCallback(() => {
     const converted = parseFloat(binanceBitUsdt, 10) * usdToKrw;
     return converted.toFixed(2);
-  };
+  }, [binanceBitUsdt, usdToKrw]);
+  useEffect(() => {
+    const converted = convertUsdToKrw(),
+      percent = (
+        ((parseFloat(upbitBitKrw, 10) - convertUsdToKrw()) /
+          convertUsdToKrw()) *
+        100
+      ).toFixed(2);
+    dispatch(
+      setBtc({
+        symbol: "BTC",
+        last: upbitBitKrw,
+        converted: parseFloat(converted, 10),
+        percent: parseFloat(percent, 10),
+      })
+    );
+  }, [convertUsdToKrw, dispatch, upbitBitKrw]);
+
   return (
     <>
       <ExchangeContainer>
