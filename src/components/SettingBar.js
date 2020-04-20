@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useRef, useEffect } from "react";
+import React, { useCallback, useRef, useEffect } from "react";
 import styled from "styled-components";
 import { useSelector, useDispatch } from "react-redux";
 import { sendMessage } from "../reducers/bot";
@@ -116,7 +116,7 @@ function SettingBar({ coinInfo, upbitBitKrw }) {
         (v) => v.symbol === selected.current
       )[0];
       if (selectedCoin) {
-        const converted = selectedCoin.blast * krw;
+        const converted = (selectedCoin.blast * krw).toFixed(2);
         const coinPer = parseFloat(
           (((selectedCoin.last - converted) / converted) * 100).toFixed(2),
           10
