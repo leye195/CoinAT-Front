@@ -1,6 +1,6 @@
 # CoinAT - Front
 
-- CoinAT with React, Redux, Redux-Saga
+- CoinAT with React, Redux, Redux-Saga and Styled-Components
 - 업비트, 바이낸스에 공통으로 상장되어 코인들의 가격을 비교
 
 ### ToDo

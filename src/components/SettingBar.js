@@ -1,11 +1,12 @@
-import React, { useCallback, useRef, useEffect } from "react";
+import React, { useCallback, useState, useRef, useEffect } from "react";
 import styled from "styled-components";
 import { useSelector, useDispatch } from "react-redux";
-import { sendMessage } from "../reducers/bot";
+import { sendMessage, cancelMessage } from "../reducers/bot";
 import { faCog } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { setUpbit, setBinance } from "../reducers/coin";
 import Select from "react-select";
+import ItemList from "./ItemList";
 const SettingBarDiv = styled.div`
   position: fixed;
   top: 0;
@@ -39,13 +40,6 @@ const SelectContainer = styled.div`
   border: none;
   background-color: white;
 `;*/
-const SelectInput = styled.input`
-  width: 30px;
-  height: 25px;
-  padding: 0px 5px;
-  border: none;
-  margin-left: 5px;
-`;
 const SelectBtn = styled.button`
   color: white;
   background-color: #bdc3c7;
@@ -56,6 +50,7 @@ const SelectBtn = styled.button`
   border-top-right-radius: 10px;
   border-bottom-right-radius: 10px;
   box-shadow: 1px 0px 3px 0px #949494;
+  width: 100%;
 `;
 
 const ApiContainer = styled.div`
@@ -92,84 +87,122 @@ const SettingBtn = styled.button`
   border-top-right-radius: 5px;
   border-bottom-right-radius: 5px;
   padding: 5px;
+  width: 100%;
 `;
 function SettingBar({ coinInfo, upbitBitKrw }) {
-  const { coinList } = useSelector((state) => state.coin);
   const dispatch = useDispatch();
   const timer = useRef();
-  const selected = useRef(0.0);
-  const percent = useRef(0.0);
   const wrapper = useRef();
   const upbitApi = useRef();
   const upbitSec = useRef();
   const binanceApi = useRef();
   const binanceSec = useRef();
-  const currentPer = useRef();
+  //const currentPer = useRef();
+
+  const [coins, setCoins] = useState([]);
+  const [coinPer, setCoinPer] = useState({});
+  const checkPer = useRef({});
+
   /**
    * coinPer: 현재 프리미엄 %
    * percent: 설정된 %
    * currentPer: 변화 값 저장, 비교용으로 사용
    */
   const startBot = useCallback(
-    (coin, krw) => {
-      const selectedCoin = coin?.filter(
-        (v) => v.symbol === selected.current
-      )[0];
-      if (selectedCoin) {
-        const converted = (selectedCoin.blast * krw).toFixed(2);
-        const coinPer = parseFloat(
-          (((selectedCoin.last - converted) / converted) * 100).toFixed(2),
-          10
-        );
-        const p = parseFloat(percent.current, 10);
-        if (Math.abs(coinPer) > p) {
-          if (!currentPer.current || currentPer.current !== coinPer) {
-            currentPer.current = coinPer;
-            dispatch(
-              sendMessage({
-                coinInfo: selectedCoin,
-                binance: converted,
-                percent: coinPer,
-              })
+    (coinlist, krw) => {
+      const coinPerLength = Object.keys(coinPer).length;
+      if (coinPerLength > 0) {
+        coinlist.forEach((coin) => {
+          if (
+            Object.keys(coinPer).indexOf(coin.symbol) !== -1 &&
+            coinPer[coin.symbol] !== ""
+          ) {
+            const converted = (coin.blast * krw).toFixed(2);
+            const p = parseFloat(coinPer[coin.symbol], 10);
+            const per = parseFloat(
+              (((coin.last - converted) / converted) * 100).toFixed(2),
+              10
             );
+            if (per > p) {
+              if (Object.keys(checkPer.current).indexOf(coin.symbol) === -1) {
+                checkPer.current = {
+                  ...checkPer.current,
+                  [coin.symbol]: per,
+                };
+                dispatch(
+                  sendMessage({
+                    coinInfo: {
+                      symbol: coin.symbol,
+                      upbit: coin.last,
+                      binance: converted,
+                      percent: per,
+                    },
+                  })
+                );
+              } else {
+                if (checkPer.current[coin.symbol] !== per) {
+                  checkPer.current = {
+                    ...checkPer.current,
+                    [coin.symbol]: per,
+                  };
+                  dispatch(
+                    sendMessage({
+                      coinInfo: {
+                        symbol: coin.symbol,
+                        upbit: coin.last,
+                        binance: converted,
+                        percent: per,
+                      },
+                    })
+                  );
+                }
+              }
+            }
           }
-        }
+        });
       }
     },
-    [dispatch]
+    [coinPer, dispatch]
   );
   useEffect(() => {
     if (timer.current) {
       startBot(coinInfo, upbitBitKrw);
     }
-  }, [coinInfo, upbitBitKrw, startBot]);
-  const onSelectChange = useCallback((selectedOption) => {
-    selected.current = selectedOption.value;
-    //setSelected(selectedOption.value);
-  }, []);
-  const onPercentChange = useCallback((e) => {
-    const { target } = e;
-    if (target.value >= 0 && target.value <= 100) {
-      percent.current = parseFloat(target.value, 10);
-    } else {
-      target.value = 0.0;
+    if (coins.length === 0) {
+      setCoins(coinInfo);
     }
-  }, []);
+  }, [coinInfo, upbitBitKrw, startBot, coins]);
+  const onChangePercent = useCallback(
+    (e) => {
+      const {
+        target: { value, dataset },
+      } = e;
+      setCoinPer({
+        ...coinPer,
+        [dataset.name]: value,
+      });
+    },
+    [coinPer]
+  );
 
   const onSetting = useCallback(
     (e) => {
       const { target } = e;
-      if (selected !== -1 && percent !== -1) {
+      const percentsLength = Object.keys(coinPer).length;
+      if (percentsLength > 0) {
         if (target.innerHTML === "설정") {
           target.innerHTML = "취소";
           timer.current = true;
         } else {
           target.innerHTML = "설정";
           timer.current = false;
+          dispatch(cancelMessage());
         }
+      } else {
+        alert("최소 한개의 % 설정이 필요합니다");
       }
     },
-    [percent, selected]
+    [coinPer, dispatch]
   );
   const onToggle = useCallback(() => {
     if (
@@ -255,23 +288,6 @@ function SettingBar({ coinInfo, upbitBitKrw }) {
         onClick={onToggle}
       />
       <InputWrapper ref={wrapper} style={{ display: "none" }}>
-        <SelectContainer>
-          <Select
-            onChange={onSelectChange}
-            options={coinList.map((v) => {
-              return { value: v, label: v };
-            })}
-          />
-          <SelectInput
-            type="number"
-            min={0}
-            max={100}
-            step={0.1}
-            placeholder="N%"
-            onChange={onPercentChange}
-          />
-          <SelectBtn onClick={onSetting}>설정</SelectBtn>
-        </SelectContainer>
         <ApiContainer>
           <ApiInput ref={upbitApi} type="text" placeholder="업비트 api" />
           <SecretInput
@@ -290,6 +306,10 @@ function SettingBar({ coinInfo, upbitBitKrw }) {
           />
           <SettingBtn onClick={onClickBinance}>확인</SettingBtn>
         </ApiContainer>
+        <ItemList coins={coins} onChangePercent={onChangePercent} />
+        <SelectContainer>
+          <SelectBtn onClick={onSetting}>알림 설정</SelectBtn>
+        </SelectContainer>
       </InputWrapper>
     </SettingBarDiv>
   );

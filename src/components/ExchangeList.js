@@ -188,7 +188,7 @@ function ExchangeList() {
     dispatch(loadUsdToKrw());
     dispatch(loadBinanceBitUsdt());
     dispatch(loadUpbitNewListing());
-    dispatch(loadBianceNewListing());
+    //dispatch(loadBianceNewListing());
     if (loading === true) setLoading(false);
     if (isFirstLoading === false) setIsFirstLoading(true);
     setUpbitCoinInfo(tickers1);

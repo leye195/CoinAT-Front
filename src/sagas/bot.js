@@ -4,6 +4,9 @@ import {
   SEND_MESSAGE_REQUEST,
   SEND_MESSAGE_FAILURE,
   SEND_MESSAGE_SUCCESS,
+  CANCEL_MESSAGE_SUCCESS,
+  CANCEL_MESSAGE_FAILURE,
+  CANCEL_MESSAGE_REQUEST,
 } from "../reducers/bot";
 import dotenv from "dotenv";
 dotenv.config();
@@ -28,6 +31,27 @@ function* sendMessage(action) {
 function* watchSendMessage() {
   yield takeLatest(SEND_MESSAGE_REQUEST, sendMessage);
 }
+
+function cancelMessageAPI(data) {
+  return axios.post(`${API_URL}bot/cancel`, data);
+}
+function* cancelMessage(action) {
+  try {
+    yield call(cancelMessageAPI, action.payload);
+    yield put({
+      type: CANCEL_MESSAGE_SUCCESS,
+    });
+  } catch (e) {
+    yield put({
+      type: CANCEL_MESSAGE_FAILURE,
+      error: e,
+    });
+  }
+}
+function* watchCancelMessage() {
+  yield takeLatest(CANCEL_MESSAGE_REQUEST, cancelMessage);
+}
+
 export default function* botSaga() {
-  yield all([fork(watchSendMessage)]);
+  yield all([fork(watchSendMessage), fork(watchCancelMessage)]);
 }
