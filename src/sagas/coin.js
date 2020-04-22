@@ -24,6 +24,18 @@ import {
   COIN_LIST_FAILURE,
   COIN_LIST_SUCCESS,
   COIN_LIST_REQUEST,
+  UPBIT_BID_REQUEST,
+  BINANCE_ASK_REQUEST,
+  UPBIT_ASK_REQUEST,
+  BINANCE_BID_REQUEST,
+  UPBIT_BID_FAILURE,
+  UPBIT_BID_SUCCESS,
+  BINANCE_BID_FAILURE,
+  BINANCE_BID_SUCCESS,
+  UPBIT_ASK_SUCCESS,
+  UPBIT_ASK_FAILURE,
+  BINANCE_ASK_SUCCESS,
+  BINANCE_ASK_FAILURE,
 } from "../reducers/coin";
 import axios from "axios";
 import dotenv from "dotenv";
@@ -201,6 +213,80 @@ function* watchCoinList() {
   yield takeLatest(COIN_LIST_REQUEST, coinList);
 }
 
+function upbitBidAPI(data) {
+  return axios.post(`${API_URL}trade/bid`, data);
+}
+function* upbitBid(action) {
+  try {
+    //console.log(action.payload);
+    const result = yield call(upbitBidAPI, action.payload);
+    yield put({
+      type: UPBIT_BID_SUCCESS,
+    });
+  } catch (e) {
+    yield put({
+      type: UPBIT_BID_FAILURE,
+      error: e,
+    });
+  }
+}
+function* watchUpbitBid() {
+  yield takeLatest(UPBIT_BID_REQUEST, upbitBid);
+}
+
+function binanceBidAPI() {}
+function* binanceBid() {
+  try {
+    yield put({
+      type: BINANCE_BID_SUCCESS,
+    });
+  } catch (e) {
+    yield put({
+      type: BINANCE_BID_FAILURE,
+      error: e,
+    });
+  }
+}
+function* watchBinanceBid() {
+  yield takeLatest(BINANCE_BID_REQUEST, binanceBid);
+}
+
+function upbitAskAPI(data) {
+  return axios.post(`${API_URL}trade/ask`, data);
+}
+function* upbitAsk(action) {
+  try {
+    const result = yield call(upbitAskAPI, action.payload);
+    yield put({
+      type: UPBIT_ASK_SUCCESS,
+    });
+  } catch (e) {
+    yield put({
+      type: UPBIT_ASK_FAILURE,
+      error: e,
+    });
+  }
+}
+function* watchUpbitAsk() {
+  yield takeLatest(UPBIT_ASK_REQUEST, upbitAsk);
+}
+function binanceAskAPI() {}
+function* binanceAsk() {
+  try {
+    yield put({
+      type: BINANCE_ASK_SUCCESS,
+    });
+  } catch (e) {
+    yield put({
+      type: BINANCE_ASK_FAILURE,
+      error: e,
+    });
+  }
+}
+function* watchBinanceAsk() {
+  yield takeLatest(BINANCE_ASK_REQUEST, binanceAsk);
+}
+
 export default function* coinSaga() {
   yield all([
     fork(watchBitKrw),
@@ -211,5 +297,9 @@ export default function* coinSaga() {
     fork(watchUpbitNewCoin),
     fork(watchBinanceNewCoin),
     fork(watchCoinList),
+    fork(watchUpbitBid),
+    fork(watchBinanceBid),
+    fork(watchUpbitAsk),
+    fork(watchBinanceAsk),
   ]);
 }

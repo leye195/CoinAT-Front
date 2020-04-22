@@ -1,7 +1,14 @@
 import React, { useCallback, useState, useRef, useEffect } from "react";
 import styled from "styled-components";
 import { useDispatch, useSelector } from "react-redux";
-import { setUpbit, setBinance } from "../reducers/coin";
+import {
+  setUpbit,
+  setBinance,
+  binanceAsk,
+  upbitBid,
+  binanceBid,
+  upbitAsk,
+} from "../reducers/coin";
 const ApiContainer = styled.div`
   display: flex;
   align-items: center;
@@ -52,6 +59,7 @@ function SettingTrade({ coinInfo }) {
   const binanceSec = useRef();
   const coinSymbol = useRef("");
   const percent = useRef("");
+  const check = useRef(null);
   const { upbitBitKrw } = useSelector((state) => state.coin);
 
   useEffect(() => {
@@ -157,15 +165,28 @@ function SettingTrade({ coinInfo }) {
       (((coin[0].last - converted) / converted) * 100).toFixed(2),
       10
     );
-    console.log(per, p);
+    //console.log(per, p);
     if (Math.abs(per) >= p) {
-      if (per > 0) {
-        console.log("업비트 매도, 바이낸스 매수");
-      } else {
-        console.log("업비트 매수, 바이낸스 매도");
+      if (check.current === null || check.current !== per) {
+        if (per > 0) {
+          console.log("업비트 매도, 바이낸스 매수"); //ask  bid
+          dispatch(
+            upbitAsk({
+              symbol: coin[0].symbol,
+            })
+          );
+        } else {
+          console.log("업비트 매수, 바이낸스 매도"); //bid ask
+          dispatch(
+            upbitBid({
+              symbol: coin[0].symbol,
+            })
+          );
+        }
+        check.current = per;
       }
     }
-  }, [coinInfo, upbitBitKrw]);
+  }, [coinInfo, upbitBitKrw, dispatch]);
   return (
     <>
       <ApiContainer>
