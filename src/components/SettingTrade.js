@@ -173,6 +173,8 @@ function SettingTrade({ coinInfo }) {
           dispatch(
             upbitAsk({
               symbol: coin[0].symbol,
+              upbitPrice: coin[0].last,
+              binancePrice: coin[0].blast,
             })
           );
         } else {
@@ -180,6 +182,8 @@ function SettingTrade({ coinInfo }) {
           dispatch(
             upbitBid({
               symbol: coin[0].symbol,
+              upbitPrice: coin[0].last,
+              binancePrice: coin[0].blast,
             })
           );
         }
