@@ -22,7 +22,7 @@ function App() {
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(loadCoinList());
-  }, []);
+  }, [dispatch]);
   return (
     <>
       <Header>

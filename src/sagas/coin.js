@@ -63,7 +63,14 @@ function* watchBitKrw() {
 }
 
 function loadCurrencyAPI() {
-  return axios.get("https://api.manana.kr/exchange/rate/KRW/USD.json");
+  return axios.get(
+    "https://cors-anywhere.herokuapp.com/https://www.binance.com/exchange-api/v1/public/asset-service/product/currency",
+    {
+      headers: {
+        "Access-Control-Allow-Origin": "*",
+      },
+    }
+  );
 }
 function* loadCurrency() {
   try {
@@ -85,7 +92,7 @@ function* watchCurrency() {
 
 function loadBitUsdtAPI() {
   return axios.get(
-    "https://www.binance.us/api/v1/aggTrades?limit=1&symbol=BTCUSD"
+    "https://www.binance.com/api/v1/aggTrades?limit=1&symbol=BTCUSDT"
   );
 }
 function* loadBitUsdt() {

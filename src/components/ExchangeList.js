@@ -10,7 +10,6 @@ import {
   loadBinanceBitUsdt,
   loadUpbitNewListing,
   loadBianceNewListing,
-  loadCoinInfo,
 } from "../reducers/coin";
 import { useDispatch, useSelector } from "react-redux";
 import { v4 } from "uuid";
@@ -140,8 +139,8 @@ function ExchangeList() {
   const { coinList, upbitBitKrw } = useSelector((state) => state.coin);
   const info = useRef([]);
   const timer = useRef(null);
-  //const wsUpbit = useRef(null);
-  //const wsBinance = useRef(null);
+  const wsUpbit = useRef(null);
+  const wsBinance = useRef(null);
   //const sortType = useRef(-1);
   const getExchangeTickers = useCallback(async () => {
     if (timer.current) {
@@ -195,9 +194,8 @@ function ExchangeList() {
     if (isFirstLoading === false) setIsFirstLoading(true);
     setUpbitCoinInfo(tickers1);
   }, [loading, isFirstLoading, dispatch, coinList, upbitBitKrw, sortType]);
-  useEffect(() => {
-    timer.current = setTimeout(getExchangeTickers, 2500);
-    /*if (wsUpbit.current === null) {
+  const upbitWS = useCallback(() => {
+    if (wsUpbit.current === null) {
       wsUpbit.current = new WebSocket("wss://api.upbit.com/websocket/v1");
       wsUpbit.current.binaryType = "arraybuffer";
       wsUpbit.current.onopen = () => {
@@ -254,6 +252,8 @@ function ExchangeList() {
         wsUpbit.current.close();
       };
     }
+  }, [coinList]);
+  const binanceWS = useCallback(() => {
     if (wsBinance.current === null) {
       let streams = "";
       for (let i = 0; i < coinList.length; i++) {
@@ -281,33 +281,34 @@ function ExchangeList() {
             break;
           }
         }
-        //console.log(sortType.current);
         info.current.sort((x, y) => {
           const convertedX = x.blast * upbitBitKrw,
             convertedY = y.blast * upbitBitKrw;
-          if (sortType.current === -1) return x.symbol > y.symbol ? 1 : -1;
-          else if (sortType.current === 1) return x.symbol < y.symbol ? 1 : -1;
-          else if (sortType.current === -2) return x.last > y.last ? 1 : -1;
-          else if (sortType.current === 2) return x.last < y.last ? 1 : -1;
-          else if (sortType.current === -3) return x.blast > y.blast ? 1 : -1;
-          else if (sortType.current === 3) return x.blast < y.blast ? 1 : -1;
-          else if (sortType.current === -4)
+          if (sortType === -1) return x.symbol > y.symbol ? 1 : -1;
+          else if (sortType === 1) return x.symbol < y.symbol ? 1 : -1;
+          else if (sortType === -2) return x.last > y.last ? 1 : -1;
+          else if (sortType === 2) return x.last < y.last ? 1 : -1;
+          else if (sortType === -3) return x.blast > y.blast ? 1 : -1;
+          else if (sortType === 3) return x.blast < y.blast ? 1 : -1;
+          else if (sortType === -4)
             return ((x.last - convertedX) / convertedX) * 100 >
               ((y.last - convertedY) / convertedY) * 100
               ? 1
               : -1;
-          else if (sortType.current === 4)
+          else if (sortType === 4)
             return ((x.last - convertedX) / convertedX) * 100 <
               ((y.last - convertedY) / convertedY) * 100
               ? 1
               : -1;
         });
-        //console.log(info.current);
       };
       wsBinance.current.onclose = () => {
         wsBinance.current.close();
       };
-    }*/
+    }
+  }, [coinList, sortType, upbitBitKrw]);
+  useEffect(() => {
+    timer.current = setTimeout(getExchangeTickers, 2500);
     return () => {
       clearTimeout(timer.current);
     };
