@@ -144,21 +144,19 @@ function NewListing() {
         {selected === 0 ? (
           <UpbitInfoUl>
             {upbitNewListing &&
-              upbitNewListing.map((v) => {
+              upbitNewListing.map((notice) => {
                 return (
-                  <UpbitInfoli key={v4()} new={v.new === true}>
-                    {v.notice.title}
-                  </UpbitInfoli>
+                  <UpbitInfoli key={v4()}>{notice.notice.title}</UpbitInfoli>
                 );
               })}
           </UpbitInfoUl>
         ) : (
           <BinanceInfoUl>
             {binanceNewListing &&
-              binanceNewListing.map((v) => {
+              binanceNewListing.map((notice) => {
                 return (
-                  <BinanceInfoli key={v4()} new={v.new === true}>
-                    {v.notice.title}
+                  <BinanceInfoli key={v4()}>
+                    {notice.notice.title}
                   </BinanceInfoli>
                 );
               })}

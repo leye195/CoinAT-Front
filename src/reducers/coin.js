@@ -48,14 +48,6 @@ export const UPBIT_ASK_REQUEST = "UPBIT_ASK_REQUEST";
 export const UPBIT_ASK_SUCCESS = "UPBIT_ASK_SUCCESS";
 export const UPBIT_ASK_FAILURE = "UPBIT_ASK_FAILURE";
 
-export const BINANCE_BID_REQUEST = "BINANCE_BID_REQUEST";
-export const BINANCE_BID_SUCCESS = "BINANCE_BID_SUCCESS";
-export const BINANCE_BID_FAILURE = "BINANCE_BID_FAILURE";
-
-export const BINANCE_ASK_REQUEST = "BINANCE_ASK_REQUEST";
-export const BINANCE_ASK_SUCCESS = "BINANCE_ASK_SUCCESS";
-export const BINANCE_ASK_FAILURE = "BINANCE_ASK_FAILURE";
-
 export const loadCoinInfo = createAction(COIN_INFO_REQUEST);
 export const loadCoinList = createAction(COIN_LIST_REQUEST);
 export const loadUpbitBitKrw = createAction(UPBIT_BITCOIN_KRW_REQUEST);
@@ -70,9 +62,7 @@ export const setBinance = createAction(BINANCE_SETTING);
 export const setBtc = createAction(SETTING_BTC);
 
 export const upbitBid = createAction(UPBIT_BID_REQUEST);
-export const binanceBid = createAction(BINANCE_BID_REQUEST);
 export const upbitAsk = createAction(UPBIT_ASK_REQUEST);
-export const binanceAsk = createAction(BINANCE_ASK_REQUEST);
 
 const initialState = {
   isbitkrwLoading: false,
@@ -229,12 +219,8 @@ export default handleActions(
       }),
     [UPBIT_BTC_NEWLISTING_SUCCESS]: (state, action) =>
       produce(state, (draft) => {
-        const {
-          payload: {
-            data: { list },
-          },
-        } = action;
-        const filteredList = list
+        const { payload } = action;
+        const filteredList = payload
           .filter((v) => v.title.includes("BTC"))
           .map((v) => {
             if (
@@ -289,15 +275,9 @@ export default handleActions(
     [UPBIT_BID_REQUEST]: (state, action) => produce(state, (draft) => {}),
     [UPBIT_BID_SUCCESS]: (state, action) => produce(state, (draft) => {}),
     [UPBIT_BID_FAILURE]: (state, action) => produce(state, (draft) => {}),
-    [BINANCE_BID_REQUEST]: (state, action) => produce(state, (draft) => {}),
-    [BINANCE_BID_SUCCESS]: (state, action) => produce(state, (draft) => {}),
-    [BINANCE_BID_FAILURE]: (state, action) => produce(state, (draft) => {}),
     [UPBIT_ASK_REQUEST]: (state, action) => produce(state, (draft) => {}),
     [UPBIT_ASK_SUCCESS]: (state, action) => produce(state, (draft) => {}),
     [UPBIT_ASK_FAILURE]: (state, action) => produce(state, (draft) => {}),
-    [BINANCE_ASK_REQUEST]: (state, action) => produce(state, (draft) => {}),
-    [BINANCE_ASK_SUCCESS]: (state, action) => produce(state, (draft) => {}),
-    [BINANCE_ASK_FAILURE]: (state, action) => produce(state, (draft) => {}),
   },
   initialState
 );

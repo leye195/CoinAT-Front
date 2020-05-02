@@ -1,14 +1,7 @@
-import React, { useCallback, useState, useRef, useEffect } from "react";
+import React, { useCallback, useRef, useEffect } from "react";
 import styled from "styled-components";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  setUpbit,
-  setBinance,
-  binanceAsk,
-  upbitBid,
-  binanceBid,
-  upbitAsk,
-} from "../reducers/coin";
+import { setUpbit, setBinance, upbitBid, upbitAsk } from "../reducers/coin";
 const ApiContainer = styled.div`
   display: flex;
   align-items: center;
@@ -59,6 +52,7 @@ function SettingTrade({ coinInfo }) {
   const binanceSec = useRef();
   const coinSymbol = useRef("");
   const percent = useRef("");
+  const amount = useRef(0);
   const check = useRef(null);
   const { upbitBitKrw } = useSelector((state) => state.coin);
 
@@ -134,28 +128,35 @@ function SettingTrade({ coinInfo }) {
     [dispatch]
   );
   const onClickTrade = useCallback((e) => {
-    if (
-      binanceApi.current.value === "" ||
-      binanceSec.current.value === "" ||
-      upbitApi.current.value === "" ||
-      upbitSec.current.value === ""
-    ) {
-      alert("API 와 Secret이 필요합니다");
-    } else if (coinSymbol.current === "" || percent.current === "") {
-      alert("코인 & 차이(%) 설정이 필요합니다");
+    if (timer.current) {
+      timer.current = false;
     } else {
-      if (timer.current === false) timer.current = true;
-      else timer.current = false;
+      if (
+        binanceApi.current.value === "" ||
+        binanceSec.current.value === "" ||
+        upbitApi.current.value === "" ||
+        upbitSec.current.value === ""
+      ) {
+        alert("API 와 Secret이 필요합니다");
+      } else if (coinSymbol.current === "" || percent.current === "") {
+        alert("코인 & 차이(%) 설정이 필요합니다");
+      } else {
+        timer.current = true;
+      }
     }
   }, []);
   const onChangeCoin = useCallback((e) => {
     const { target } = e;
     coinSymbol.current = target.value;
-    console.log(coinSymbol.current);
+    //console.log(coinSymbol.current);
   }, []);
   const onChangePercent = useCallback((e) => {
     const { target } = e;
     percent.current = target.value;
+  }, []);
+  const onChangeAmount = useCallback((e) => {
+    const { target } = e;
+    amount.current = target.value;
   }, []);
   const startTrade = useCallback(() => {
     const coin = coinInfo.filter((coin) => coin.symbol === coinSymbol.current);
@@ -165,30 +166,25 @@ function SettingTrade({ coinInfo }) {
       (((coin[0].last - converted) / converted) * 100).toFixed(2),
       10
     );
-    //console.log(per, p);
     if (Math.abs(per) >= p) {
-      if (check.current === null || check.current !== per) {
-        if (per > 0) {
-          console.log("업비트 매도, 바이낸스 매수"); //ask  bid
-          dispatch(
-            upbitAsk({
-              symbol: coin[0].symbol,
-              upbitPrice: coin[0].last,
-              binancePrice: coin[0].blast,
-            })
-          );
-        } else {
-          console.log("업비트 매수, 바이낸스 매도"); //bid ask
-          dispatch(
-            upbitBid({
-              symbol: coin[0].symbol,
-              upbitPrice: coin[0].last,
-              binancePrice: coin[0].blast,
-            })
-          );
-        }
-        check.current = per;
+      if (per > 0) {
+        //console.log("업비트 매도, 바이낸스 매수"); //ask  bid
+        dispatch(
+          upbitAsk({
+            symbol: coin[0].symbol,
+            q: amount.current,
+          })
+        );
+      } else {
+        //console.log("업비트 매수, 바이낸스 매도"); //bid ask
+        dispatch(
+          upbitBid({
+            symbol: coin[0].symbol,
+            q: amount.current,
+          })
+        );
       }
+      check.current = per;
     }
   }, [coinInfo, upbitBitKrw, dispatch]);
   return (
@@ -221,7 +217,16 @@ function SettingTrade({ coinInfo }) {
           step={0.1}
           onChange={onChangePercent}
         />
-        <TradeBtn onClick={onClickTrade}>자전 설정</TradeBtn>
+        <Input
+          type="number"
+          placeholder="코인 양"
+          min={0}
+          step={0.1}
+          onChange={onChangeAmount}
+        />
+        <TradeBtn onClick={onClickTrade}>
+          {timer.current ? "설정 취소" : "자전 설정"}
+        </TradeBtn>
       </TradeSettingDiv>
     </>
   );

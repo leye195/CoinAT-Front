@@ -1,4 +1,4 @@
-import { all, takeLatest, fork, put, call } from "redux-saga/effects";
+import { all, takeLatest, fork, put, call, throttle } from "redux-saga/effects";
 import {
   UPBIT_BITCOIN_KRW_SUCCESS,
   UPBIT_BITCOIN_KRW_FAILURE,
@@ -114,9 +114,7 @@ function* watchBitUsdt() {
 }
 
 function loadUpbitNewListingAPI() {
-  return axios.get(
-    "https://api-manager.upbit.com/api/v1/notices/search?search=%5B%EA%B1%B0%EB%9E%98%5D&page=1&per_page=20&before=&target=non_ios&thread_name=general"
-  );
+  return axios.get(`${API_URL}coin/notice/upbit`);
 }
 function* loadUpbitNewListing() {
   try {
@@ -137,7 +135,7 @@ function* watchUpbitNewListing() {
 }
 
 function loadBinanceNewListingAPI() {
-  return axios.get(`${API_URL}coin/notice`);
+  return axios.get(`${API_URL}coin/notice/binance`);
 }
 function* loadBinanceNewListing() {
   try {
@@ -238,24 +236,7 @@ function* upbitBid(action) {
   }
 }
 function* watchUpbitBid() {
-  yield takeLatest(UPBIT_BID_REQUEST, upbitBid);
-}
-
-function binanceBidAPI() {}
-function* binanceBid() {
-  try {
-    yield put({
-      type: BINANCE_BID_SUCCESS,
-    });
-  } catch (e) {
-    yield put({
-      type: BINANCE_BID_FAILURE,
-      error: e,
-    });
-  }
-}
-function* watchBinanceBid() {
-  yield takeLatest(BINANCE_BID_REQUEST, binanceBid);
+  yield throttle(1000, UPBIT_BID_REQUEST, upbitBid);
 }
 
 function upbitAskAPI(data) {
@@ -275,23 +256,7 @@ function* upbitAsk(action) {
   }
 }
 function* watchUpbitAsk() {
-  yield takeLatest(UPBIT_ASK_REQUEST, upbitAsk);
-}
-function binanceAskAPI() {}
-function* binanceAsk() {
-  try {
-    yield put({
-      type: BINANCE_ASK_SUCCESS,
-    });
-  } catch (e) {
-    yield put({
-      type: BINANCE_ASK_FAILURE,
-      error: e,
-    });
-  }
-}
-function* watchBinanceAsk() {
-  yield takeLatest(BINANCE_ASK_REQUEST, binanceAsk);
+  yield throttle(1000, UPBIT_ASK_REQUEST, upbitAsk);
 }
 
 export default function* coinSaga() {
@@ -305,8 +270,8 @@ export default function* coinSaga() {
     fork(watchBinanceNewCoin),
     fork(watchCoinList),
     fork(watchUpbitBid),
-    fork(watchBinanceBid),
+    //fork(watchBinanceBid),
     fork(watchUpbitAsk),
-    fork(watchBinanceAsk),
+    //fork(watchBinanceAsk),
   ]);
 }
