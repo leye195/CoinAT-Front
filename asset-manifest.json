@@ -1,14 +1,14 @@
 {
   "files": {
     "main.css": "/CoinAT-Front/static/css/main.5ecd60fb.chunk.css",
-    "main.js": "/CoinAT-Front/static/js/main.9de7cc84.chunk.js",
-    "main.js.map": "/CoinAT-Front/static/js/main.9de7cc84.chunk.js.map",
+    "main.js": "/CoinAT-Front/static/js/main.ca5ff8a6.chunk.js",
+    "main.js.map": "/CoinAT-Front/static/js/main.ca5ff8a6.chunk.js.map",
     "runtime-main.js": "/CoinAT-Front/static/js/runtime-main.9ffde30a.js",
     "runtime-main.js.map": "/CoinAT-Front/static/js/runtime-main.9ffde30a.js.map",
     "static/js/2.494273e5.chunk.js": "/CoinAT-Front/static/js/2.494273e5.chunk.js",
     "static/js/2.494273e5.chunk.js.map": "/CoinAT-Front/static/js/2.494273e5.chunk.js.map",
     "index.html": "/CoinAT-Front/index.html",
-    "precache-manifest.8df32325c6f5fa9ed55ede9869a43a8a.js": "/CoinAT-Front/precache-manifest.8df32325c6f5fa9ed55ede9869a43a8a.js",
+    "precache-manifest.598ab0ef3ab5a75503a5779789a60e48.js": "/CoinAT-Front/precache-manifest.598ab0ef3ab5a75503a5779789a60e48.js",
     "service-worker.js": "/CoinAT-Front/service-worker.js",
     "static/css/main.5ecd60fb.chunk.css.map": "/CoinAT-Front/static/css/main.5ecd60fb.chunk.css.map",
     "static/js/2.494273e5.chunk.js.LICENSE.txt": "/CoinAT-Front/static/js/2.494273e5.chunk.js.LICENSE.txt"
@@ -17,6 +17,6 @@
     "static/js/runtime-main.9ffde30a.js",
     "static/js/2.494273e5.chunk.js",
     "static/css/main.5ecd60fb.chunk.css",
-    "static/js/main.9de7cc84.chunk.js"
+    "static/js/main.ca5ff8a6.chunk.js"
   ]
 }
