@@ -103,15 +103,7 @@ function NewListing() {
   }, []);
 
   const checkTodaysNotice = useCallback(() => {
-    const upbitNewNotices = upbitNewListing.filter((v) => v.new === true);
     const binanceNewNotices = binanceNewListing.filter((v) => v.new === true);
-    if (upbitNewNotices.length > 0) {
-      dispatch(
-        checkUpbitCoin({
-          notices: upbitNewNotices, //upbitNewNotices,
-        })
-      );
-    }
     if (binanceNewNotices.length > 0) {
       dispatch(
         checkBinanceCoin({
@@ -119,7 +111,7 @@ function NewListing() {
         })
       );
     }
-  }, [upbitNewListing, binanceNewListing, dispatch]);
+  }, [binanceNewListing, dispatch]);
   useEffect(() => {
     checkTodaysNotice();
   }, [checkTodaysNotice]);

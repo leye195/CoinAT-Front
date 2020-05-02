@@ -432,7 +432,7 @@ function ExchangeList() {
                 <Coin>{v.low}₩ </Coin>
                 <Coin>{v.high}₩</Coin>
                 <Coin up={percent > 0}>
-                  {v.blast && v.blast.toFixed(6)}
+                  {v.blast && v.blast.toFixed(8)}
                   <p>{convertedBinance}₩</p>
                 </Coin>
                 <Coin up={percent > 0}>
