@@ -15,3 +15,15 @@
 ### 스크린샷
 
 <img width="1100" alt="스크린샷 2020-04-20 오후 1 15 19" src="https://user-images.githubusercontent.com/30601503/79713569-2102d700-8309-11ea-8c7c-bd9f1ff4bfe0.png">
+
+### 설치
+
+```
+npm install
+```
+
+### 실행
+
+```
+node start
+```
