@@ -63,14 +63,7 @@ function* watchBitKrw() {
 }
 
 function loadCurrencyAPI() {
-  return axios.get(
-    "https://cors-anywhere.herokuapp.com/https://www.binance.com/exchange-api/v1/public/asset-service/product/currency",
-    {
-      headers: {
-        "Access-Control-Allow-Origin": "*",
-      },
-    }
-  );
+  return axios.get("https://api.exchangeratesapi.io/latest?base=USD");
 }
 function* loadCurrency() {
   try {
@@ -87,7 +80,7 @@ function* loadCurrency() {
   }
 }
 function* watchCurrency() {
-  yield takeLatest(CURRENCY_REQUEST, loadCurrency);
+  yield throttle(1000, CURRENCY_REQUEST, loadCurrency);
 }
 
 function loadBitUsdtAPI() {

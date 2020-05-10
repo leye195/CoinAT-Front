@@ -187,12 +187,9 @@ export default handleActions(
       }),
     [CURRENCY_SUCCESS]: (state, action) =>
       produce(state, (draft) => {
-        const target = action.payload.data.filter(
-          (item) => item.pair === "KRW_USD"
-        )[0];
-        //console.log(target);
+        const target = action.payload.rates["KRW"];
         draft.isUsdToKrwLoading = false;
-        draft.usdToKrw = target.rate; //action.payload[0].rate;
+        draft.usdToKrw = target.toFixed(1);
       }),
     [CURRENCY_FAILURE]: (state, action) =>
       produce(state, (draft) => {

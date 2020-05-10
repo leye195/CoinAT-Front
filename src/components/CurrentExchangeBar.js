@@ -2,7 +2,6 @@ import React, { useEffect, useCallback } from "react";
 import styled from "styled-components";
 import { useSelector, useDispatch } from "react-redux";
 import { setBtc } from "../reducers/coin";
-
 const ExchangeContainer = styled.section`
   display: flex;
   align-items: center;
@@ -59,7 +58,6 @@ function CurrentExchangeBar() {
       })
     );
   }, [convertUsdToKrw, dispatch, upbitBitKrw]);
-
   return (
     <>
       <ExchangeContainer>
