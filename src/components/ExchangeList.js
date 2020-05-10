@@ -141,7 +141,6 @@ function ExchangeList() {
   const timer = useRef(null);
   const wsUpbit = useRef(null);
   const wsBinance = useRef(null);
-  //const sortType = useRef(-1);
   const getExchangeTickers = useCallback(async () => {
     if (timer.current) {
       timer.current = setTimeout(getExchangeTickers, 2500);

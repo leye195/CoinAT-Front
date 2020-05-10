@@ -25,5 +25,5 @@ npm install
 ### 실행
 
 ```
-node start
+npm run start
 ```
