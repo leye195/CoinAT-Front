@@ -143,7 +143,7 @@ function ExchangeList() {
   const wsBinance = useRef(null);
   const getExchangeTickers = useCallback(async () => {
     if (timer.current) {
-      timer.current = setTimeout(getExchangeTickers, 2500);
+      timer.current = setTimeout(getExchangeTickers, 2000);
     }
     if (isFirstLoading === false && loading === false) setLoading(true);
     const upbit = new ccxt.upbit();
@@ -198,12 +198,11 @@ function ExchangeList() {
       wsUpbit.current = new WebSocket("wss://api.upbit.com/websocket/v1");
       wsUpbit.current.binaryType = "arraybuffer";
       wsUpbit.current.onopen = () => {
-        //console.log("connected");
+        console.log("connected");
         const data = [
           { ticket: "test" },
           { type: "ticker", codes: coinList.map((coin) => `KRW-${coin}`) },
         ];
-        //console.log(JSON.stringify(data));
         wsUpbit.current.send(JSON.stringify(data));
       };
       wsUpbit.current.onmessage = (e) => {
@@ -234,6 +233,7 @@ function ExchangeList() {
               ask_bid,
             },
           ]);
+          //console.log(info.current);
         } else {
           info.current = cleanedList.concat([
             {
@@ -276,7 +276,11 @@ function ExchangeList() {
             const percent =
               (info.current[i].last - info.current[i].blast * upbitBitKrw) /
               info.current[i].last;
-            info.current[i] = { ...info.current[i], blast: c, percent };
+            info.current[i] = {
+              ...info.current[i],
+              blast: parseFloat(c, 10),
+              percent,
+            };
             break;
           }
         }
@@ -307,11 +311,19 @@ function ExchangeList() {
     }
   }, [coinList, sortType, upbitBitKrw]);
   useEffect(() => {
-    timer.current = setTimeout(getExchangeTickers, 2500);
+    timer.current = setTimeout(getExchangeTickers, 2000);
     return () => {
       clearTimeout(timer.current);
     };
-  }, [getExchangeTickers, sortType, upbitBitKrw, coinList, info]);
+  }, [
+    getExchangeTickers,
+    sortType,
+    upbitBitKrw,
+    coinList,
+    info,
+    upbitWS,
+    binanceWS,
+  ]);
   const onSort = useCallback(
     (coinInfo) => (e) => {
       const {
@@ -419,11 +431,15 @@ function ExchangeList() {
             </CoinContainer>
           }
           {upbitCoinInfo.map((v, idx) => {
-            const convertedBinance = (v.blast * upbitBitKrw).toFixed(2);
+            const convertedBinance = parseFloat(
+              (v.blast * upbitBitKrw).toFixed(2),
+              10
+            );
             const percent = (
               ((v.last - convertedBinance) / convertedBinance) *
               100
             ).toFixed(2);
+            //console.log(percent);
             return (
               <CoinContainer key={v4()}>
                 <Coin>{v.symbol}</Coin>

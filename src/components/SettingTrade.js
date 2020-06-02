@@ -1,7 +1,13 @@
 import React, { useCallback, useRef, useEffect } from "react";
 import styled from "styled-components";
 import { useDispatch, useSelector } from "react-redux";
-import { setUpbit, setBinance, upbitBid, upbitAsk } from "../reducers/coin";
+import {
+  setUpbit,
+  setBinance,
+  upbitBid,
+  upbitAsk,
+  setTradeError,
+} from "../reducers/coin";
 const ApiContainer = styled.div`
   display: flex;
   align-items: center;
@@ -54,11 +60,21 @@ function SettingTrade({ coinInfo }) {
   const percent = useRef("");
   const amount = useRef(0);
   const check = useRef(null);
-  const { upbitBitKrw } = useSelector((state) => state.coin);
+  const {
+    upbitBitKrw,
+    tradeError,
+    upbitApi: api1,
+    upbitSec: sec1,
+    binanceApi: api2,
+    binanceSec: sec2,
+  } = useSelector((state) => state.coin);
 
   useEffect(() => {
     if (timer.current) {
       startTrade();
+      if (tradeError === 1) {
+        timer.current = false;
+      }
     }
   });
   /**
@@ -128,6 +144,7 @@ function SettingTrade({ coinInfo }) {
     [dispatch]
   );
   const onClickTrade = useCallback((e) => {
+    setTradeError();
     if (timer.current) {
       timer.current = false;
     } else {
@@ -173,6 +190,10 @@ function SettingTrade({ coinInfo }) {
           upbitAsk({
             symbol: coin[0].symbol,
             q: amount.current,
+            api1,
+            api2,
+            sec1,
+            sec2,
           })
         );
       } else {
@@ -181,12 +202,16 @@ function SettingTrade({ coinInfo }) {
           upbitBid({
             symbol: coin[0].symbol,
             q: amount.current,
+            api1,
+            api2,
+            sec1,
+            sec2,
           })
         );
       }
       check.current = per;
     }
-  }, [coinInfo, upbitBitKrw, dispatch]);
+  }, [coinInfo, upbitBitKrw, dispatch, api1, api2, sec1, sec2]);
   return (
     <>
       <ApiContainer>

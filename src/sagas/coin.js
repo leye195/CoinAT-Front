@@ -36,6 +36,12 @@ import {
   UPBIT_ASK_FAILURE,
   BINANCE_ASK_SUCCESS,
   BINANCE_ASK_FAILURE,
+  BINANCE_SETTING,
+  BINANCE_SETTING_SUCCESS,
+  BINANCE_SETTING_FAILURE,
+  UPBIT_SETTING,
+  UPBIT_SETTING_SUCCESS,
+  UPBIT_SETTING_FAILURE,
 } from "../reducers/coin";
 import axios from "axios";
 import dotenv from "dotenv";
@@ -63,7 +69,10 @@ function* watchBitKrw() {
 }
 
 function loadCurrencyAPI() {
-  return axios.get("https://api.exchangeratesapi.io/latest?base=USD");
+  return axios.get(
+    "https://cors-anywhere.herokuapp.com/https://www.freeforexapi.com/api/live?pairs=USDKRW"
+  );
+  //return axios.get("https://api.exchangeratesapi.io/latest?base=USD");
 }
 function* loadCurrency() {
   try {
@@ -220,6 +229,7 @@ function* upbitBid(action) {
     const result = yield call(upbitBidAPI, action.payload);
     yield put({
       type: UPBIT_BID_SUCCESS,
+      payload: result.data,
     });
   } catch (e) {
     yield put({
@@ -240,6 +250,7 @@ function* upbitAsk(action) {
     const result = yield call(upbitAskAPI, action.payload);
     yield put({
       type: UPBIT_ASK_SUCCESS,
+      payload: result.data,
     });
   } catch (e) {
     yield put({
@@ -250,6 +261,52 @@ function* upbitAsk(action) {
 }
 function* watchUpbitAsk() {
   yield throttle(1000, UPBIT_ASK_REQUEST, upbitAsk);
+}
+
+function setBinanceKeyAPI(data) {
+  return axios.post(`${API_URL}trade/binance_key`, {
+    api: data.binanceApi,
+    sec: data.binanceSec,
+  });
+}
+function* setBinanceKey(action) {
+  try {
+    yield call(setBinanceKeyAPI, action.payload);
+    yield put({
+      type: BINANCE_SETTING_SUCCESS,
+    });
+  } catch (e) {
+    yield put({
+      type: BINANCE_SETTING_FAILURE,
+      error: e,
+    });
+  }
+}
+function* watchSetBinanceKey() {
+  yield takeLatest(BINANCE_SETTING, setBinanceKey);
+}
+
+function setUpbitKeyAPI(data) {
+  return axios.post(`${API_URL}trade/upbit_key`, {
+    api: data.upbitApi,
+    sec: data.upbitSec,
+  });
+}
+function* setUpbitKey(action) {
+  try {
+    yield call(setUpbitKeyAPI, action.payload);
+    yield put({
+      type: UPBIT_SETTING_SUCCESS,
+    });
+  } catch (e) {
+    yield put({
+      type: UPBIT_SETTING_FAILURE,
+      error: e,
+    });
+  }
+}
+function* watchSetUpbitKey() {
+  yield takeLatest(UPBIT_SETTING, setUpbitKey);
 }
 
 export default function* coinSaga() {
@@ -263,8 +320,8 @@ export default function* coinSaga() {
     fork(watchBinanceNewCoin),
     fork(watchCoinList),
     fork(watchUpbitBid),
-    //fork(watchBinanceBid),
     fork(watchUpbitAsk),
-    //fork(watchBinanceAsk),
+    fork(watchSetBinanceKey),
+    fork(watchSetUpbitKey),
   ]);
 }

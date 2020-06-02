@@ -38,7 +38,12 @@ export const BINANCE_CHECK_COIN_SUCCESS = "BINANCE_CHECK_COIN_SUCCESS";
 export const BINANCE_CHECK_COIN_FAILURE = "BINANCE_CHECK_COIN_FAILURE";
 
 export const UPBIT_SETTING = "UPBIT_SETTING";
+export const UPBIT_SETTING_SUCCESS = "UPBIT_SETTING_SUCCESS";
+export const UPBIT_SETTING_FAILURE = "UPBIT_SETTING_FAILURE";
+
 export const BINANCE_SETTING = "BINANCE_SETTING";
+export const BINANCE_SETTING_SUCCESS = "BINANCE_SETTING_SUCCESS";
+export const BINANCE_SETTING_FAILURE = "BINANCE_SETTING_FAILURE";
 
 export const UPBIT_BID_REQUEST = "UPBIT_BID_REQUEST";
 export const UPBIT_BID_SUCCESS = "UPBIT_BID_SUCCESS";
@@ -47,6 +52,8 @@ export const UPBIT_BID_FAILURE = "UPBIT_BID_FAILURE";
 export const UPBIT_ASK_REQUEST = "UPBIT_ASK_REQUEST";
 export const UPBIT_ASK_SUCCESS = "UPBIT_ASK_SUCCESS";
 export const UPBIT_ASK_FAILURE = "UPBIT_ASK_FAILURE";
+
+export const TRADE_ERROR_REQUEST = "TRADE_ERROR_REQUEST";
 
 export const loadCoinInfo = createAction(COIN_INFO_REQUEST);
 export const loadCoinList = createAction(COIN_LIST_REQUEST);
@@ -63,6 +70,8 @@ export const setBtc = createAction(SETTING_BTC);
 
 export const upbitBid = createAction(UPBIT_BID_REQUEST);
 export const upbitAsk = createAction(UPBIT_ASK_REQUEST);
+
+export const setTradeError = createAction(TRADE_ERROR_REQUEST);
 
 const initialState = {
   isbitkrwLoading: false,
@@ -147,6 +156,7 @@ const initialState = {
     "ZIL",
     "ZRX",
   ],
+  tradeError: 0,
 };
 export default handleActions(
   {
@@ -187,9 +197,9 @@ export default handleActions(
       }),
     [CURRENCY_SUCCESS]: (state, action) =>
       produce(state, (draft) => {
-        const target = action.payload.rates["KRW"];
+        const target = action.payload.rates["USDKRW"].rate;
         draft.isUsdToKrwLoading = false;
-        draft.usdToKrw = target.toFixed(1);
+        draft.usdToKrw = target.toFixed(3);
       }),
     [CURRENCY_FAILURE]: (state, action) =>
       produce(state, (draft) => {
@@ -252,11 +262,15 @@ export default handleActions(
         draft.upbitApi = action.payload.upbitApi;
         draft.upbitSec = action.payload.upbitSec;
       }),
+    [UPBIT_SETTING_SUCCESS]: (state, action) => {},
+    [UPBIT_SETTING_FAILURE]: (state, action) => {},
     [BINANCE_SETTING]: (state, action) =>
       produce(state, (draft) => {
         draft.binanceApi = action.payload.binanceApi;
         draft.binanceSec = action.payload.binanceSec;
       }),
+    [BINANCE_SETTING_SUCCESS]: (state, action) => {},
+    [BINANCE_SETTING_FAILURE]: (state, action) => {},
     [UPBIT_CHECK_COIN_REQUEST]: (state, action) =>
       produce(state, (dratf) => {}),
     [UPBIT_CHECK_COIN_SUCCESS]: (state, action) =>
@@ -270,11 +284,33 @@ export default handleActions(
     [BINANCE_CHECK_COIN_FAILURE]: (state, action) =>
       produce(state, (draft) => {}),
     [UPBIT_BID_REQUEST]: (state, action) => produce(state, (draft) => {}),
-    [UPBIT_BID_SUCCESS]: (state, action) => produce(state, (draft) => {}),
-    [UPBIT_BID_FAILURE]: (state, action) => produce(state, (draft) => {}),
+    [UPBIT_BID_SUCCESS]: (state, action) =>
+      produce(state, (draft) => {
+        const {
+          payload: { error },
+        } = action;
+        draft.tradeError = error;
+      }),
+    [UPBIT_BID_FAILURE]: (state, action) =>
+      produce(state, (draft) => {
+        draft.tradeError = 1;
+      }),
     [UPBIT_ASK_REQUEST]: (state, action) => produce(state, (draft) => {}),
-    [UPBIT_ASK_SUCCESS]: (state, action) => produce(state, (draft) => {}),
-    [UPBIT_ASK_FAILURE]: (state, action) => produce(state, (draft) => {}),
+    [UPBIT_ASK_SUCCESS]: (state, action) =>
+      produce(state, (draft) => {
+        const {
+          payload: { error },
+        } = action;
+        draft.tradeError = error;
+      }),
+    [UPBIT_ASK_FAILURE]: (state, action) =>
+      produce(state, (draft) => {
+        draft.tradeError = 1;
+      }),
+    [TRADE_ERROR_REQUEST]: (state, action) =>
+      produce(state, (draft) => {
+        draft.tradeError = 0;
+      }),
   },
   initialState
 );
