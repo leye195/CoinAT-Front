@@ -79,15 +79,20 @@ function SettingBar({ coinInfo, upbitBitKrw }) {
             if (coin.symbol !== "BTC") {
               const converted = (coin.blast * krw).toFixed(2);
               const p = parseFloat(coinPer[coin.symbol], 10);
-              const per = parseFloat(
-                (((coin.last - converted) / converted) * 100).toFixed(2),
-                10
-              );
-              if (Math.abs(per) > p) {
+              const per1 = parseFloat(
+                  (((coin.last - converted) / converted) * 100).toFixed(2),
+                  10
+                ),
+                per2 = parseFloat(
+                  (((coin.thumb - converted) / converted) * 100).toFixed(2),
+                  10
+                );
+              //console.log(per2);
+              if (Math.abs(per1) > p || Math.abs(per2) > p) {
                 if (Object.keys(checkPer.current).indexOf(coin.symbol) === -1) {
                   checkPer.current = {
                     ...checkPer.current,
-                    [coin.symbol]: per,
+                    [coin.symbol]: { per1, per2 },
                   };
                   dispatch(
                     sendMessage({
@@ -95,15 +100,20 @@ function SettingBar({ coinInfo, upbitBitKrw }) {
                         symbol: coin.symbol,
                         upbit: coin.last,
                         binance: converted,
-                        percent: per,
+                        percentUp: per1,
+                        bithumb: coin.thumb,
+                        percentBit: per2,
                       },
                     })
                   );
                 } else {
-                  if (checkPer.current[coin.symbol] !== per) {
+                  if (
+                    checkPer.current[coin.symbol].per1 !== per1 ||
+                    checkPer.current[coin.symbol].per2 !== per2
+                  ) {
                     checkPer.current = {
                       ...checkPer.current,
-                      [coin.symbol]: per,
+                      [coin.symbol]: { per1, per2 },
                     };
                     dispatch(
                       sendMessage({
@@ -111,7 +121,9 @@ function SettingBar({ coinInfo, upbitBitKrw }) {
                           symbol: coin.symbol,
                           upbit: coin.last,
                           binance: converted,
-                          percent: per,
+                          percentUp: per1,
+                          bithumb: coin.thumb,
+                          percentBit: per2,
                         },
                       })
                     );
@@ -132,7 +144,9 @@ function SettingBar({ coinInfo, upbitBitKrw }) {
                         symbol: coin.symbol,
                         upbit: btc.last,
                         binance: btc.converted,
-                        percent: btc.percent,
+                        percentUp: btc.percent,
+                        bithumb: undefined,
+                        percentBit: undefined,
                       },
                     })
                   );
@@ -149,6 +163,8 @@ function SettingBar({ coinInfo, upbitBitKrw }) {
                           upbit: btc.last,
                           binance: btc.converted,
                           percent: btc.percent,
+                          bithumb: undefined,
+                          percentBit: undefined,
                         },
                       })
                     );
@@ -163,6 +179,7 @@ function SettingBar({ coinInfo, upbitBitKrw }) {
     [coinPer, dispatch, btc]
   );
   useEffect(() => {
+    //console.log(coinInfo);
     if (timer.current) {
       startBot(coinInfo, upbitBitKrw);
     }

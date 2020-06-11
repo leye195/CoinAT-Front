@@ -7,6 +7,7 @@ import {
   upbitBid,
   upbitAsk,
   setTradeError,
+  setKey,
 } from "../reducers/coin";
 const ApiContainer = styled.div`
   display: flex;
@@ -71,23 +72,58 @@ function SettingTrade({ coinInfo }) {
 
   useEffect(() => {
     if (timer.current) {
-      startTrade();
-      if (tradeError === 1) {
+      if (tradeError === 0) {
+        startTrade();
+      } else {
         timer.current = false;
       }
     }
   });
-  /**
-   * coinPer: 현재 프리미엄 %
-   * percent: 설정된 %
-   * currentPer: 변화 값 저장, 비교용으로 사용
-   */
+  const onClickKey = useCallback((e) => {
+    const { target } = e;
+    if (target.innerHTML === "확인") {
+      if (
+        upbitApi.current.value === "" ||
+        upbitSec.current.value === "" ||
+        binanceApi.current.value === "" ||
+        binanceSec.current.value === ""
+      ) {
+        alert("API와 Secret키를 입력해주세요");
+        return;
+      }
+      dispatch(
+        setKey({
+          upbitApi: upbitApi.current.value,
+          upbitSec: upbitSec.current.value,
+          binanceApi: binanceApi.current.value,
+          binanceSec: binanceSec.current.value,
+          type: "set",
+        })
+      );
+      target.innerHTML = "취소";
+    } else {
+      upbitApi.current.value = "";
+      upbitSec.current.value = "";
+      binanceApi.current.value = "";
+      binanceSec.current.value = "";
+      dispatch(
+        setKey({
+          upbitApi: "",
+          upbitSec: "",
+          binanceApi: "",
+          binanceSec: "",
+          type: "cancel",
+        })
+      );
+      target.innerHTML = "확인";
+    }
+  }, []);
   const onClickUpbit = useCallback(
     (e) => {
       const { target } = e;
       if (target.innerHTML === "확인") {
         if (upbitApi.current.value === "" || upbitSec.current.value === "") {
-          alert("API 혹은 Secret키를 입력해주세요");
+          alert("API와 Secret키를 입력해주세요");
           return;
         }
         dispatch(
@@ -119,7 +155,7 @@ function SettingTrade({ coinInfo }) {
           binanceApi.current.value === "" ||
           binanceSec.current.value === ""
         ) {
-          alert("API 혹은 Secret키를 입력해주세요");
+          alert("API와 Secret키를 입력해주세요");
           return;
         }
         dispatch(
@@ -143,6 +179,11 @@ function SettingTrade({ coinInfo }) {
     },
     [dispatch]
   );
+  /**
+   * coinPer: 현재 프리미엄 %
+   * percent: 설정된 %
+   * currentPer: 변화 값 저장, 비교용으로 사용
+   */
   const onClickTrade = useCallback((e) => {
     setTradeError();
     if (timer.current) {
@@ -190,10 +231,6 @@ function SettingTrade({ coinInfo }) {
           upbitAsk({
             symbol: coin[0].symbol,
             q: amount.current,
-            api1,
-            api2,
-            sec1,
-            sec2,
           })
         );
       } else {
@@ -202,16 +239,12 @@ function SettingTrade({ coinInfo }) {
           upbitBid({
             symbol: coin[0].symbol,
             q: amount.current,
-            api1,
-            api2,
-            sec1,
-            sec2,
           })
         );
       }
       check.current = per;
     }
-  }, [coinInfo, upbitBitKrw, dispatch, api1, api2, sec1, sec2]);
+  }, [coinInfo, upbitBitKrw, dispatch]);
   return (
     <>
       <ApiContainer>
@@ -221,7 +254,6 @@ function SettingTrade({ coinInfo }) {
           type="password"
           placeholder="업비트 secret"
         />
-        <SettingBtn onClick={onClickUpbit}>확인</SettingBtn>
       </ApiContainer>
       <ApiContainer>
         <Input ref={binanceApi} type="text" placeholder="바이낸스 api" />
@@ -230,8 +262,8 @@ function SettingTrade({ coinInfo }) {
           type="password"
           placeholder="바이낸스 secret"
         />
-        <SettingBtn onClick={onClickBinance}>확인</SettingBtn>
       </ApiContainer>
+      <SettingBtn onClick={onClickKey}>확인</SettingBtn>
       <TradeSettingDiv>
         <Input type="text" placeholder="코인" onChange={onChangeCoin} />
         <Input

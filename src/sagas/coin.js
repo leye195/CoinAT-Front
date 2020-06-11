@@ -1,3 +1,4 @@
+import { v4 } from "uuid";
 import { all, takeLatest, fork, put, call, throttle } from "redux-saga/effects";
 import {
   UPBIT_BITCOIN_KRW_SUCCESS,
@@ -42,6 +43,9 @@ import {
   UPBIT_SETTING,
   UPBIT_SETTING_SUCCESS,
   UPBIT_SETTING_FAILURE,
+  KEY_SETTING_REQUEST,
+  KEY_SETTING_SUCCESS,
+  KEY_SETTING_FAILURE,
 } from "../reducers/coin";
 import axios from "axios";
 import dotenv from "dotenv";
@@ -69,9 +73,12 @@ function* watchBitKrw() {
 }
 
 function loadCurrencyAPI() {
-  return axios.get(
-    "https://cors-anywhere.herokuapp.com/https://www.freeforexapi.com/api/live?pairs=USDKRW"
-  );
+  return axios.get(`${API_URL}coin/currency`, {
+    headers: {
+      "Access-Control-Allow-Origin": "*",
+    },
+  });
+  //https://www.freeforexapi.com/api/live?pairs=USDKRW
   //return axios.get("https://api.exchangeratesapi.io/latest?base=USD");
 }
 function* loadCurrency() {
@@ -239,7 +246,7 @@ function* upbitBid(action) {
   }
 }
 function* watchUpbitBid() {
-  yield throttle(1000, UPBIT_BID_REQUEST, upbitBid);
+  yield throttle(1200, UPBIT_BID_REQUEST, upbitBid);
 }
 
 function upbitAskAPI(data) {
@@ -260,7 +267,7 @@ function* upbitAsk(action) {
   }
 }
 function* watchUpbitAsk() {
-  yield throttle(1000, UPBIT_ASK_REQUEST, upbitAsk);
+  yield throttle(1200, UPBIT_ASK_REQUEST, upbitAsk);
 }
 
 function setBinanceKeyAPI(data) {
@@ -309,6 +316,41 @@ function* watchSetUpbitKey() {
   yield takeLatest(UPBIT_SETTING, setUpbitKey);
 }
 
+function setKeyAPI(data) {
+  let uid = undefined;
+  if (data.type !== "cancel") {
+    uid = v4();
+    localStorage.setItem("uid", uid);
+  } else {
+    uid = localStorage.getItem("uid");
+    localStorage.removeItem("uid");
+  }
+  return axios.post(`${API_URL}trade/key`, {
+    api1: data.upbitApi,
+    sec1: data.upbitSec,
+    api2: data.binanceApi,
+    sec2: data.binanceSec,
+    type: data.type,
+    uid,
+  });
+}
+function* setKey(action) {
+  try {
+    yield call(setKeyAPI, action.payload);
+    yield put({
+      type: KEY_SETTING_SUCCESS,
+    });
+  } catch (e) {
+    yield put({
+      type: KEY_SETTING_FAILURE,
+      error: e,
+    });
+  }
+}
+function* watchSetKey() {
+  yield takeLatest(KEY_SETTING_REQUEST, setKey);
+}
+
 export default function* coinSaga() {
   yield all([
     fork(watchBitKrw),
@@ -323,5 +365,6 @@ export default function* coinSaga() {
     fork(watchUpbitAsk),
     fork(watchSetBinanceKey),
     fork(watchSetUpbitKey),
+    fork(watchSetKey),
   ]);
 }

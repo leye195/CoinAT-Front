@@ -84,15 +84,12 @@ const Coin = styled.div`
   @media (max-width: 768px) {
     font-size: 0.7rem;
   }
-  &:first-child {
-  }
-  &:nth-child(2) {
+  &:nth-child(2),
+  &:nth-child(5) {
     color: ${(props) => (props.head === true ? "black" : "#27ae60")};
     font-weight: ${(props) => (props.head === true ? "800" : "600")};
   }
-  &:nth-child(4) {
-  }
-  &:nth-child(5) {
+  &:nth-child(3) {
     color: ${(props) =>
       props.head === true
         ? "black"
@@ -113,6 +110,7 @@ const Coin = styled.div`
       }
     }
   }
+  &:nth-child(4),
   &:nth-child(6) {
     color: ${(props) =>
       props.head === true
@@ -148,15 +146,15 @@ function ExchangeList() {
     if (isFirstLoading === false && loading === false) setLoading(true);
     const upbit = new ccxt.upbit();
     const binance = new ccxt.binance();
+    const bithumb = new ccxt.bithumb();
     let tickers1 = await upbit.fetchTickers(coinList.map((v) => `${v}/KRW`)),
-      tickers2 = await binance.fetchTickers(coinList.map((v) => `${v}/BTC`));
+      tickers2 = await binance.fetchTickers(coinList.map((v) => `${v}/BTC`)),
+      tickers3 = await bithumb.fetchTickers([]);
     tickers1 = Object.keys(tickers1)
       .map((v) => {
         return {
           symbol: tickers1[v].symbol.slice(0, tickers1[v].symbol.indexOf("/")),
           last: tickers1[v].last,
-          low: tickers1[v].low,
-          high: tickers1[v].high,
           blast:
             tickers2[
               `${tickers1[v].symbol.slice(
@@ -164,6 +162,7 @@ function ExchangeList() {
                 tickers1[v].symbol.indexOf("/")
               )}/BTC`
             ].last,
+          thumb: tickers3[`${v}`] === undefined ? 0 : tickers3[`${v}`].last,
         };
       })
       .sort((x, y) => {
@@ -407,6 +406,7 @@ function ExchangeList() {
       <ExchangesContainer>
         <ExchangeItem>Upbit</ExchangeItem>
         <ExchangeItem>Binance</ExchangeItem>
+        <ExchangeItem>Bithumb</ExchangeItem>
       </ExchangesContainer>
       <SettingBar coinInfo={upbitCoinInfo} upbitBitKrw={upbitBitKrw} />
       <CurrentExchangeBar />
@@ -418,14 +418,18 @@ function ExchangeList() {
                 코인
               </Coin>
               <Coin head={true} onClick={onSort(upbitCoinInfo)} data-id={2}>
-                현재 가(₩)
+                업비트(₩)
               </Coin>
-              <Coin head={true}>최저 가 </Coin>
-              <Coin head={true}>최고 가</Coin>
               <Coin head={true} onClick={onSort(upbitCoinInfo)} data-id={3}>
                 바이낸스(BTC)
               </Coin>
               <Coin head={true} onClick={onSort(upbitCoinInfo)} data-id={4}>
+                차이(%)
+              </Coin>
+              <Coin head={true} onClick={onSort(upbitCoinInfo)} data-id={5}>
+                빗썸(₩)
+              </Coin>
+              <Coin head={true} onClick={onSort(upbitCoinInfo)} data-id={6}>
                 차이(%)
               </Coin>
             </CoinContainer>
@@ -435,8 +439,12 @@ function ExchangeList() {
               (v.blast * upbitBitKrw).toFixed(2),
               10
             );
-            const percent = (
+            const percentUP = (
               ((v.last - convertedBinance) / convertedBinance) *
+              100
+            ).toFixed(2);
+            const percentBit = (
+              ((v.thumb - convertedBinance) / convertedBinance) *
               100
             ).toFixed(2);
             //console.log(percent);
@@ -444,14 +452,29 @@ function ExchangeList() {
               <CoinContainer key={v4()}>
                 <Coin>{v.symbol}</Coin>
                 <Coin>{v.last}₩</Coin>
-                <Coin>{v.low}₩ </Coin>
-                <Coin>{v.high}₩</Coin>
-                <Coin up={percent > 0}>
+                <Coin up={percentUP > 0}>
                   {v.blast && v.blast.toFixed(8)}
                   <p>{convertedBinance}₩</p>
                 </Coin>
-                <Coin up={percent > 0}>
-                  {percent !== "Infinity" ? `${percent}%` : "로딩중"}
+                <Coin up={percentUP > 0}>
+                  {percentUP !== "Infinity" ? `${percentUP}%` : "로딩중"}
+                </Coin>
+                <Coin
+                  head={percentBit === "-100.00"}
+                  data-type={percentBit === "-100.00" ? "unlist" : "list"}
+                >
+                  {v.thumb}₩
+                </Coin>
+                <Coin
+                  head={percentBit === "-100.00"}
+                  up={percentBit > 0}
+                  data-type={percentBit === "-100.00" ? "unlist" : "list"}
+                >
+                  {percentUP !== "Infinity"
+                    ? percentBit === "-100.00"
+                      ? "미 상장"
+                      : `${percentBit}%`
+                    : "로딩중"}
                 </Coin>
               </CoinContainer>
             );

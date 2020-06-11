@@ -45,6 +45,10 @@ export const BINANCE_SETTING = "BINANCE_SETTING";
 export const BINANCE_SETTING_SUCCESS = "BINANCE_SETTING_SUCCESS";
 export const BINANCE_SETTING_FAILURE = "BINANCE_SETTING_FAILURE";
 
+export const KEY_SETTING_REQUEST = "KEY_SETTING_REQUEST";
+export const KEY_SETTING_SUCCESS = "KEY_SETTING_SUCCESS";
+export const KEY_SETTING_FAILURE = "KEY_SETTING_FAILURE";
+
 export const UPBIT_BID_REQUEST = "UPBIT_BID_REQUEST";
 export const UPBIT_BID_SUCCESS = "UPBIT_BID_SUCCESS";
 export const UPBIT_BID_FAILURE = "UPBIT_BID_FAILURE";
@@ -66,6 +70,8 @@ export const checkUpbitCoin = createAction(UPBIT_CHECK_COIN_REQUEST);
 export const checkBinanceCoin = createAction(BINANCE_CHECK_COIN_REQUEST);
 export const setUpbit = createAction(UPBIT_SETTING);
 export const setBinance = createAction(BINANCE_SETTING);
+export const setKey = createAction(KEY_SETTING_REQUEST);
+
 export const setBtc = createAction(SETTING_BTC);
 
 export const upbitBid = createAction(UPBIT_BID_REQUEST);
@@ -142,7 +148,6 @@ const initialState = {
     "SNT",
     "STEEM",
     "STORJ",
-    "STORM",
     "STPT",
     "STRAT",
     "TFUEL",
@@ -271,6 +276,15 @@ export default handleActions(
       }),
     [BINANCE_SETTING_SUCCESS]: (state, action) => {},
     [BINANCE_SETTING_FAILURE]: (state, action) => {},
+    [KEY_SETTING_REQUEST]: (state, action) =>
+      produce(state, (draft) => {
+        draft.upbitApi = action.payload.upbitApi;
+        draft.upbitSec = action.payload.upbitSec;
+        draft.binanceApi = action.payload.binanceApi;
+        draft.binanceSec = action.payload.binanceSec;
+      }),
+    [KEY_SETTING_SUCCESS]: (state, action) => {},
+    [KEY_SETTING_FAILURE]: (state, action) => {},
     [UPBIT_CHECK_COIN_REQUEST]: (state, action) =>
       produce(state, (dratf) => {}),
     [UPBIT_CHECK_COIN_SUCCESS]: (state, action) =>
