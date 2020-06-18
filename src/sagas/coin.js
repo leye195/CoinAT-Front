@@ -26,17 +26,11 @@ import {
   COIN_LIST_SUCCESS,
   COIN_LIST_REQUEST,
   UPBIT_BID_REQUEST,
-  BINANCE_ASK_REQUEST,
   UPBIT_ASK_REQUEST,
-  BINANCE_BID_REQUEST,
   UPBIT_BID_FAILURE,
   UPBIT_BID_SUCCESS,
-  BINANCE_BID_FAILURE,
-  BINANCE_BID_SUCCESS,
   UPBIT_ASK_SUCCESS,
   UPBIT_ASK_FAILURE,
-  BINANCE_ASK_SUCCESS,
-  BINANCE_ASK_FAILURE,
   BINANCE_SETTING,
   BINANCE_SETTING_SUCCESS,
   BINANCE_SETTING_FAILURE,
@@ -46,6 +40,9 @@ import {
   KEY_SETTING_REQUEST,
   KEY_SETTING_SUCCESS,
   KEY_SETTING_FAILURE,
+  TICKERS_REQUEST,
+  TICKERS_SUCCESS,
+  TICKERS_FAILUER,
 } from "../reducers/coin";
 import axios from "axios";
 import dotenv from "dotenv";
@@ -351,6 +348,27 @@ function* watchSetKey() {
   yield takeLatest(KEY_SETTING_REQUEST, setKey);
 }
 
+function loadTickersAPI() {
+  return axios.get(`${API_URL}coin/tickers`);
+}
+function* loadTickers() {
+  try {
+    const result = yield call(loadTickersAPI);
+    yield put({
+      type: TICKERS_SUCCESS,
+      payload: result.data,
+    });
+  } catch (e) {
+    yield put({
+      type: TICKERS_FAILUER,
+      error: e,
+    });
+  }
+}
+function* watchLoadTickers() {
+  yield throttle(1000, TICKERS_REQUEST, loadTickers);
+}
+
 export default function* coinSaga() {
   yield all([
     fork(watchBitKrw),
@@ -366,5 +384,6 @@ export default function* coinSaga() {
     fork(watchSetBinanceKey),
     fork(watchSetUpbitKey),
     fork(watchSetKey),
+    fork(watchLoadTickers),
   ]);
 }

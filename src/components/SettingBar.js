@@ -88,7 +88,10 @@ function SettingBar({ coinInfo, upbitBitKrw }) {
                   10
                 );
               //console.log(per2);
-              if (Math.abs(per1) > p || Math.abs(per2) > p) {
+              if (
+                (per1 !== -100 && Math.abs(per1) > p) ||
+                (per2 !== -100 && Math.abs(per2) > p)
+              ) {
                 if (Object.keys(checkPer.current).indexOf(coin.symbol) === -1) {
                   checkPer.current = {
                     ...checkPer.current,
@@ -132,11 +135,11 @@ function SettingBar({ coinInfo, upbitBitKrw }) {
               }
             } else {
               const p = parseFloat(coinPer[coin.symbol], 10);
-              if (Math.abs(btc.percent) > p) {
+              if (Math.abs(btc.percent1) > p || Math.abs(btc.percent2) > p) {
                 if (Object.keys(checkPer.current).indexOf(coin.symbol) === -1) {
                   checkPer.current = {
                     ...checkPer.current,
-                    [coin.symbol]: btc.percent,
+                    [coin.symbol]: { per1: btc.percent1, per2: btc.percent2 },
                   };
                   dispatch(
                     sendMessage({
@@ -144,17 +147,20 @@ function SettingBar({ coinInfo, upbitBitKrw }) {
                         symbol: coin.symbol,
                         upbit: btc.last,
                         binance: btc.converted,
-                        percentUp: btc.percent,
-                        bithumb: undefined,
-                        percentBit: undefined,
+                        percentUp: btc.percent1,
+                        bithumb: btc.thumb,
+                        percentBit: btc.percent2,
                       },
                     })
                   );
                 } else {
-                  if (checkPer.current[coin.symbol] !== btc.percent) {
+                  if (
+                    checkPer.current[coin.symbol].per1 !== btc.percent1 ||
+                    checkPer.current[coin.symbol].per2 !== btc.percent2
+                  ) {
                     checkPer.current = {
                       ...checkPer.current,
-                      [coin.symbol]: btc.percent,
+                      [coin.symbol]: { per1: btc.percent1, per2: btc.percent2 },
                     };
                     dispatch(
                       sendMessage({
@@ -162,9 +168,9 @@ function SettingBar({ coinInfo, upbitBitKrw }) {
                           symbol: coin.symbol,
                           upbit: btc.last,
                           binance: btc.converted,
-                          percent: btc.percent,
-                          bithumb: undefined,
-                          percentBit: undefined,
+                          percentUp: btc.percent1,
+                          bithumb: btc.thumb,
+                          percentBit: btc.percent2,
                         },
                       })
                     );

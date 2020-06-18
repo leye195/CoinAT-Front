@@ -5,6 +5,10 @@ import moment from "moment";
 export const SETTING_BTC = "SETTING_BTC";
 export const COIN_INFO_REQUEST = "COIN_INFO_REQUEST";
 
+export const TICKERS_REQUEST = "TICKERS_REQUEST";
+export const TICKERS_SUCCESS = "TICKERS_SUCCESS";
+export const TICKERS_FAILUER = "TICKERS_FAILURE";
+
 export const COIN_LIST_REQUEST = "COIN_LIST_REQUEST";
 export const COIN_LIST_SUCCESS = "COIN_LIST_SUCCESS";
 export const COIN_LIST_FAILURE = "COIN_LIST_FAILURE";
@@ -12,6 +16,8 @@ export const COIN_LIST_FAILURE = "COIN_LIST_FAILURE";
 export const UPBIT_BITCOIN_KRW_REQUEST = "UPBIT_BITCOIN_KRW_REQUEST";
 export const UPBIT_BITCOIN_KRW_SUCCESS = "UPBIT_BITCOIN_KRW_SUCCESS";
 export const UPBIT_BITCOIN_KRW_FAILURE = "UPBIT_BITCOIN_KRW_FAILURE";
+
+export const BITHUMB_BITCOIN_KRW = "BITHUMB_BITCOIN_KRW";
 
 export const CURRENCY_REQUEST = "CURRENCY_REQUEST";
 export const CURRENCY_SUCCESS = "CURRENCY_SUCCESS";
@@ -61,13 +67,17 @@ export const TRADE_ERROR_REQUEST = "TRADE_ERROR_REQUEST";
 
 export const loadCoinInfo = createAction(COIN_INFO_REQUEST);
 export const loadCoinList = createAction(COIN_LIST_REQUEST);
+export const loadBithumbBitkrw = createAction(BITHUMB_BITCOIN_KRW);
 export const loadUpbitBitKrw = createAction(UPBIT_BITCOIN_KRW_REQUEST);
 export const loadUsdToKrw = createAction(CURRENCY_REQUEST);
 export const loadBinanceBitUsdt = createAction(BINANCE_BITCOIN_USDT_REQUEST);
 export const loadUpbitNewListing = createAction(UPBIT_BTC_NEWLISTING_REQUEST);
 export const loadBianceNewListing = createAction(BINANCE_NEWLISTING_REQUEST);
+export const loadTickers = createAction(TICKERS_REQUEST);
+
 export const checkUpbitCoin = createAction(UPBIT_CHECK_COIN_REQUEST);
 export const checkBinanceCoin = createAction(BINANCE_CHECK_COIN_REQUEST);
+
 export const setUpbit = createAction(UPBIT_SETTING);
 export const setBinance = createAction(BINANCE_SETTING);
 export const setKey = createAction(KEY_SETTING_REQUEST);
@@ -80,7 +90,9 @@ export const upbitAsk = createAction(UPBIT_ASK_REQUEST);
 export const setTradeError = createAction(TRADE_ERROR_REQUEST);
 
 const initialState = {
+  tickers: [],
   isbitkrwLoading: false,
+  bithumbBitKrw: 0.0,
   upbitBitKrw: 0.0,
   upbitBitKrwError: "",
   isUsdToKrwLoading: false,
@@ -174,6 +186,12 @@ export default handleActions(
         if (draft.coinInfo.length < action.payload.coinInfo.length)
           draft.coinInfo = action.payload.coinInfo;
       }),
+    [TICKERS_REQUEST]: (state, action) => produce(state, (draft) => {}),
+    [TICKERS_SUCCESS]: (state, action) =>
+      produce(state, (draft) => {
+        draft.tickers = action.payload;
+      }),
+    [TICKERS_FAILUER]: (state, action) => produce(state, (draft) => {}),
     [COIN_LIST_REQUEST]: (state, action) => produce(state, (draft) => {}),
     [COIN_LIST_SUCCESS]: (state, action) =>
       produce(state, (draft) => {
@@ -183,6 +201,13 @@ export default handleActions(
         draft.coinList = coinList;
       }),
     [COIN_LIST_FAILURE]: (state, action) => produce(state, (draft) => {}),
+    [BITHUMB_BITCOIN_KRW]: (state, action) =>
+      produce(state, (draft) => {
+        const {
+          BTC: { last },
+        } = action.payload;
+        draft.bithumbBitKrw = last;
+      }),
     [UPBIT_BITCOIN_KRW_REQUEST]: (state, action) =>
       produce(state, (draft) => {
         draft.isbitkrwLoading = true;

@@ -35,7 +35,7 @@ const Info = styled.p`
 `;
 function CurrentExchangeBar() {
   const dispatch = useDispatch();
-  const { upbitBitKrw, usdToKrw, binanceBitUsdt } = useSelector(
+  const { upbitBitKrw, usdToKrw, binanceBitUsdt, bithumbBitKrw } = useSelector(
     (state) => state.coin
   );
   const convertUsdToKrw = useCallback(() => {
@@ -44,8 +44,13 @@ function CurrentExchangeBar() {
   }, [binanceBitUsdt, usdToKrw]);
   useEffect(() => {
     const converted = convertUsdToKrw(),
-      percent = (
+      percent1 = (
         ((parseFloat(upbitBitKrw, 10) - convertUsdToKrw()) /
+          convertUsdToKrw()) *
+        100
+      ).toFixed(2),
+      percent2 = (
+        ((parseFloat(bithumbBitKrw, 10) - convertUsdToKrw()) /
           convertUsdToKrw()) *
         100
       ).toFixed(2);
@@ -54,10 +59,12 @@ function CurrentExchangeBar() {
         symbol: "BTC",
         last: upbitBitKrw,
         converted: parseFloat(converted, 10),
-        percent: parseFloat(percent, 10),
+        percent1: parseFloat(percent1, 10),
+        thumb: bithumbBitKrw,
+        percent2: parseFloat(percent2, 10),
       })
     );
-  }, [convertUsdToKrw, dispatch, upbitBitKrw]);
+  }, [convertUsdToKrw, dispatch, upbitBitKrw, bithumbBitKrw]);
   return (
     <>
       <ExchangeContainer>
