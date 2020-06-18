@@ -1,10 +1,9 @@
-import React, { useState, useEffect, useCallback, useRef } from "react";
-import { useSelector, useDispatch } from "react-redux";
+import React, { useState, useCallback, useRef } from "react";
+import { useSelector } from "react-redux";
 import styled from "styled-components";
 import { v4 } from "uuid";
 import { faMinus, faPlus } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { checkUpbitCoin, checkBinanceCoin } from "../reducers/coin";
 const NewListingDiv = styled.div`
   display: flex;
   flex-direction: column;
@@ -77,7 +76,6 @@ const BinanceInfoli = styled(UpbitInfoli.withComponent("li"))`
   font-weight: ${(props) => (props.new ? "600" : "300")};
 `;
 function NewListing() {
-  const dispatch = useDispatch();
   const { upbitNewListing, binanceNewListing } = useSelector(
     (state) => state.coin
   );
@@ -101,20 +99,7 @@ function NewListing() {
       setHide(false);
     }
   }, []);
-
-  const checkTodaysNotice = useCallback(() => {
-    const binanceNewNotices = binanceNewListing.filter((v) => v.new === true);
-    if (binanceNewNotices.length > 0) {
-      dispatch(
-        checkBinanceCoin({
-          notices: binanceNewNotices,
-        })
-      );
-    }
-  }, [binanceNewListing, dispatch]);
-  useEffect(() => {
-    checkTodaysNotice();
-  }, [checkTodaysNotice]);
+  //console.log(binanceNewListing);
   return (
     <NewListingDiv hide={isHide === true}>
       <FontDiv>
@@ -154,11 +139,7 @@ function NewListing() {
           <BinanceInfoUl>
             {binanceNewListing &&
               binanceNewListing.map((notice) => {
-                return (
-                  <BinanceInfoli key={v4()}>
-                    {notice.notice.title}
-                  </BinanceInfoli>
-                );
+                return <BinanceInfoli key={v4()}>{notice.title}</BinanceInfoli>;
               })}
           </BinanceInfoUl>
         )}

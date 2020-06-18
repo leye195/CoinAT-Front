@@ -45,14 +45,14 @@ const SelectBtn = styled.button`
   box-shadow: 1px 0px 3px 0px #949494;
   width: 100%;
 `;
-const Input = styled.input`
+/*const Input = styled.input`
   height: 20px;
   border: none;
   margin: 3px;
   flex: 1;
   border-radius: 5px;
   padding: 2px;
-`;
+`;*/
 
 function SettingBar({ coinInfo, upbitBitKrw }) {
   const dispatch = useDispatch();
@@ -87,7 +87,6 @@ function SettingBar({ coinInfo, upbitBitKrw }) {
                   (((coin.thumb - converted) / converted) * 100).toFixed(2),
                   10
                 );
-              //console.log(per2);
               if (
                 (per1 !== -100 && Math.abs(per1) > p) ||
                 (per2 !== -100 && Math.abs(per2) > p)
@@ -185,7 +184,6 @@ function SettingBar({ coinInfo, upbitBitKrw }) {
     [coinPer, dispatch, btc]
   );
   useEffect(() => {
-    //console.log(coinInfo);
     if (timer.current) {
       startBot(coinInfo, upbitBitKrw);
     }

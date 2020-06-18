@@ -17,7 +17,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { v4 } from "uuid";
 import NewListing from "./NewListing";
 import { getPercent } from "../utills";
-//const exchangeList = ["Upbit", "Binance"];
 const ExchangesWrapper = styled.section`
   display: flex;
   flex-direction: row;
@@ -176,6 +175,7 @@ function ExchangeList() {
     dispatch(loadUsdToKrw());
     dispatch(loadBinanceBitUsdt());
     dispatch(loadUpbitNewListing());
+    dispatch(loadBianceNewListing());
     if (loading === true) setLoading(false);
     if (isFirstLoading === false) setIsFirstLoading(true);
     setUpbitCoinInfo(info);

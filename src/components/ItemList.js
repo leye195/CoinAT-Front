@@ -1,6 +1,5 @@
-import React, { useRef, useEffect, useCallback } from "react";
+import React from "react";
 import styled from "styled-components";
-import { v4 } from "uuid";
 
 const ItemListDiv = styled.div`
   display: flex;

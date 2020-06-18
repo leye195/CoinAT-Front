@@ -1,14 +1,7 @@
 import React, { useCallback, useRef, useEffect } from "react";
 import styled from "styled-components";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  setUpbit,
-  setBinance,
-  upbitBid,
-  upbitAsk,
-  setTradeError,
-  setKey,
-} from "../reducers/coin";
+import { upbitBid, upbitAsk, setTradeError, setKey } from "../reducers/coin";
 const ApiContainer = styled.div`
   display: flex;
   align-items: center;
@@ -79,79 +72,13 @@ function SettingTrade({ coinInfo }) {
       }
     }
   });
-  const onClickKey = useCallback((e) => {
-    const { target } = e;
-    if (target.innerHTML === "확인") {
-      if (
-        upbitApi.current.value === "" ||
-        upbitSec.current.value === "" ||
-        binanceApi.current.value === "" ||
-        binanceSec.current.value === ""
-      ) {
-        alert("API와 Secret키를 입력해주세요");
-        return;
-      }
-      dispatch(
-        setKey({
-          upbitApi: upbitApi.current.value,
-          upbitSec: upbitSec.current.value,
-          binanceApi: binanceApi.current.value,
-          binanceSec: binanceSec.current.value,
-          type: "set",
-        })
-      );
-      target.innerHTML = "취소";
-    } else {
-      upbitApi.current.value = "";
-      upbitSec.current.value = "";
-      binanceApi.current.value = "";
-      binanceSec.current.value = "";
-      dispatch(
-        setKey({
-          upbitApi: "",
-          upbitSec: "",
-          binanceApi: "",
-          binanceSec: "",
-          type: "cancel",
-        })
-      );
-      target.innerHTML = "확인";
-    }
-  }, []);
-  const onClickUpbit = useCallback(
-    (e) => {
-      const { target } = e;
-      if (target.innerHTML === "확인") {
-        if (upbitApi.current.value === "" || upbitSec.current.value === "") {
-          alert("API와 Secret키를 입력해주세요");
-          return;
-        }
-        dispatch(
-          setUpbit({
-            upbitApi: upbitApi.current.value,
-            upbitSec: upbitSec.current.value,
-          })
-        );
-        target.innerHTML = "취소";
-      } else {
-        upbitApi.current.value = "";
-        upbitSec.current.value = "";
-        dispatch(
-          setUpbit({
-            upbitApi: "",
-            upbitSec: "",
-          })
-        );
-        target.innerHTML = "확인";
-      }
-    },
-    [dispatch]
-  );
-  const onClickBinance = useCallback(
+  const onClickKey = useCallback(
     (e) => {
       const { target } = e;
       if (target.innerHTML === "확인") {
         if (
+          upbitApi.current.value === "" ||
+          upbitSec.current.value === "" ||
           binanceApi.current.value === "" ||
           binanceSec.current.value === ""
         ) {
@@ -159,19 +86,27 @@ function SettingTrade({ coinInfo }) {
           return;
         }
         dispatch(
-          setBinance({
+          setKey({
+            upbitApi: upbitApi.current.value,
+            upbitSec: upbitSec.current.value,
             binanceApi: binanceApi.current.value,
             binanceSec: binanceSec.current.value,
+            type: "set",
           })
         );
         target.innerHTML = "취소";
       } else {
+        upbitApi.current.value = "";
+        upbitSec.current.value = "";
         binanceApi.current.value = "";
         binanceSec.current.value = "";
         dispatch(
-          setBinance({
+          setKey({
+            upbitApi: "",
+            upbitSec: "",
             binanceApi: "",
             binanceSec: "",
+            type: "cancel",
           })
         );
         target.innerHTML = "확인";
