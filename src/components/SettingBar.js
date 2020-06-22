@@ -45,152 +45,22 @@ const SelectBtn = styled.button`
   box-shadow: 1px 0px 3px 0px #949494;
   width: 100%;
 `;
-/*const Input = styled.input`
-  height: 20px;
-  border: none;
-  margin: 3px;
-  flex: 1;
-  border-radius: 5px;
-  padding: 2px;
-`;*/
 
 function SettingBar({ coinInfo, upbitBitKrw }) {
   const dispatch = useDispatch();
-  const timer = useRef();
   const wrapper = useRef();
   const [coins, setCoins] = useState([]);
   const [coinPer, setCoinPer] = useState({});
-  const checkPer = useRef({});
-  const { btc } = useSelector((state) => state.coin);
   /**
    * coinPer: 현재 프리미엄 %
    * percent: 설정된 %
    * currentPer: 변화 값 저장, 비교용으로 사용
    */
-  const startBot = useCallback(
-    (coinlist, krw) => {
-      const coinPerLength = Object.keys(coinPer).length;
-      if (coinPerLength > 0) {
-        [{ symbol: "BTC" }, ...coinlist].forEach((coin) => {
-          if (
-            Object.keys(coinPer).indexOf(coin.symbol) !== -1 &&
-            coinPer[coin.symbol] !== ""
-          ) {
-            if (coin.symbol !== "BTC") {
-              const converted = (coin.blast * krw).toFixed(2);
-              const p = parseFloat(coinPer[coin.symbol], 10);
-              const per1 = parseFloat(
-                  (((coin.last - converted) / converted) * 100).toFixed(2),
-                  10
-                ),
-                per2 = parseFloat(
-                  (((coin.thumb - converted) / converted) * 100).toFixed(2),
-                  10
-                );
-              if (
-                (per1 !== -100 && Math.abs(per1) > p) ||
-                (per2 !== -100 && Math.abs(per2) > p)
-              ) {
-                if (Object.keys(checkPer.current).indexOf(coin.symbol) === -1) {
-                  checkPer.current = {
-                    ...checkPer.current,
-                    [coin.symbol]: { per1, per2 },
-                  };
-                  dispatch(
-                    sendMessage({
-                      coinInfo: {
-                        symbol: coin.symbol,
-                        upbit: coin.last,
-                        binance: converted,
-                        percentUp: per1,
-                        bithumb: coin.thumb,
-                        percentBit: per2,
-                      },
-                    })
-                  );
-                } else {
-                  if (
-                    checkPer.current[coin.symbol].per1 !== per1 ||
-                    checkPer.current[coin.symbol].per2 !== per2
-                  ) {
-                    checkPer.current = {
-                      ...checkPer.current,
-                      [coin.symbol]: { per1, per2 },
-                    };
-                    dispatch(
-                      sendMessage({
-                        coinInfo: {
-                          symbol: coin.symbol,
-                          upbit: coin.last,
-                          binance: converted,
-                          percentUp: per1,
-                          bithumb: coin.thumb,
-                          percentBit: per2,
-                        },
-                      })
-                    );
-                  }
-                }
-              }
-            } else {
-              const p = parseFloat(coinPer[coin.symbol], 10);
-              if (Math.abs(btc.percent1) > p || Math.abs(btc.percent2) > p) {
-                if (Object.keys(checkPer.current).indexOf(coin.symbol) === -1) {
-                  checkPer.current = {
-                    ...checkPer.current,
-                    [coin.symbol]: { per1: btc.percent1, per2: btc.percent2 },
-                  };
-                  dispatch(
-                    sendMessage({
-                      coinInfo: {
-                        symbol: coin.symbol,
-                        upbit: btc.last,
-                        binance: btc.converted,
-                        percentUp: btc.percent1,
-                        bithumb: btc.thumb,
-                        percentBit: btc.percent2,
-                      },
-                    })
-                  );
-                } else {
-                  if (
-                    checkPer.current[coin.symbol].per1 !== btc.percent1 ||
-                    checkPer.current[coin.symbol].per2 !== btc.percent2
-                  ) {
-                    checkPer.current = {
-                      ...checkPer.current,
-                      [coin.symbol]: { per1: btc.percent1, per2: btc.percent2 },
-                    };
-                    dispatch(
-                      sendMessage({
-                        coinInfo: {
-                          symbol: coin.symbol,
-                          upbit: btc.last,
-                          binance: btc.converted,
-                          percentUp: btc.percent1,
-                          bithumb: btc.thumb,
-                          percentBit: btc.percent2,
-                        },
-                      })
-                    );
-                  }
-                }
-              }
-            }
-          }
-        });
-      }
-    },
-    [coinPer, dispatch, btc]
-  );
   useEffect(() => {
-    if (timer.current) {
-      startBot(coinInfo, upbitBitKrw);
-    }
     if (coins.length === 0) {
       setCoins(coinInfo);
     }
-  }, [coinInfo, upbitBitKrw, startBot, coins]);
+  }, [coinInfo, upbitBitKrw, coins]);
   const onChangePercent = useCallback(
     (e) => {
       const {
@@ -211,10 +81,9 @@ function SettingBar({ coinInfo, upbitBitKrw }) {
       if (percentsLength > 0) {
         if (target.innerHTML === "설정") {
           target.innerHTML = "취소";
-          timer.current = true;
+          dispatch(sendMessage({ coinPer }));
         } else {
           target.innerHTML = "설정";
-          timer.current = false;
           dispatch(cancelMessage());
         }
       } else {
