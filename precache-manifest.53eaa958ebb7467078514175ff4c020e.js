@@ -1,10 +1,10 @@
 self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
-    "revision": "cf271c5345cc1f0f3556059d2cad291b",
+    "revision": "84b5d3ea31b3f2e3892d00b939b84c91",
     "url": "/CoinAT-Front/index.html"
   },
   {
-    "revision": "e09ed4b5ae5be0309a0d",
+    "revision": "aecf478d6a331b25e76a",
     "url": "/CoinAT-Front/static/css/main.5ecd60fb.chunk.css"
   },
   {
@@ -16,8 +16,8 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/CoinAT-Front/static/js/2.61b54af1.chunk.js.LICENSE.txt"
   },
   {
-    "revision": "e09ed4b5ae5be0309a0d",
-    "url": "/CoinAT-Front/static/js/main.c861e2b4.chunk.js"
+    "revision": "aecf478d6a331b25e76a",
+    "url": "/CoinAT-Front/static/js/main.dc9f90a6.chunk.js"
   },
   {
     "revision": "10fccc6c76ef923d47f0",
