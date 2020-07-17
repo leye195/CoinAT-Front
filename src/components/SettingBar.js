@@ -1,6 +1,6 @@
 import React, { useCallback, useState, useRef, useEffect } from "react";
 import styled from "styled-components";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { sendMessage, cancelMessage } from "../reducers/bot";
 import { faCog } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -17,6 +17,7 @@ const SettingBarDiv = styled.div`
   display: flex;
   flex-direction: column;
   box-shadow: -1px 1px 3px 0px #696969;
+  z-index: 10;
 `;
 const InputWrapper = styled.div`
   display: flex;

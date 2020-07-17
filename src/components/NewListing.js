@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useRef } from "react";
+import React, { useState, useCallback, useRef, useEffect } from "react";
 import { useSelector } from "react-redux";
 import styled from "styled-components";
 import { v4 } from "uuid";
@@ -7,7 +7,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 const NewListingDiv = styled.div`
   display: flex;
   flex-direction: column;
-  height: ${(props) => (props.hide ? "auto" : "35vh")};
+  height: ${(props) => (props.hide ? "auto" : "45vh")};
   background: #c4cfd8;
   margin-top: 5px;
   position: fixed;
@@ -19,6 +19,7 @@ const NewListingDiv = styled.div`
   overflow: scroll;
   @media (min-width: 1025px) {
     width: ${(props) => (props.hide ? "auto" : "270px")};
+    height: ${(props) => (props.hide ? "auto" : "65vh")};
   }
   @media (max-width: 1024px) {
     width: ${(props) => (props.hide ? "auto" : "250px")};
@@ -30,7 +31,7 @@ const NewListingDiv = styled.div`
 `;
 const FontDiv = styled.div`
   display: flex;
-  align-self: flex-end;
+  align-self: flex-start;
   margin: 5px;
   svg {
     cursor: pointer;
@@ -57,6 +58,7 @@ const NewListingli = styled.li`
   word-break: keep-all;
 `;
 const InfoContainer = styled.div`
+  display: ${(props) => (props.hide ? "none" : "flex")};
   border-top: 1px solid #0404043b;
 `;
 const UpbitInfoUl = styled.ul`
@@ -75,6 +77,7 @@ const BinanceInfoUl = UpbitInfoUl.withComponent("ul");
 const BinanceInfoli = styled(UpbitInfoli.withComponent("li"))`
   font-weight: ${(props) => (props.new ? "600" : "300")};
 `;
+
 function NewListing() {
   const { upbitNewListing, binanceNewListing } = useSelector(
     (state) => state.coin
@@ -91,15 +94,21 @@ function NewListing() {
     setSelected(parseInt(id, 10));
   }, []);
   const onToggle = useCallback(() => {
-    if (container.current.style.display === "flex") {
-      container.current.style.display = "none";
-      setHide(true);
-    } else {
-      container.current.style.display = "flex";
-      setHide(false);
-    }
+    setHide((cur) => !cur);
   }, []);
-  //console.log(binanceNewListing);
+  const checkSize = () => {
+    const innerWidth = window.innerWidth;
+    if (innerWidth <= 768) {
+      setHide(true);
+    }
+  };
+  useEffect(() => {
+    checkSize();
+    window.addEventListener("resize", checkSize);
+    return () => {
+      window.removeEventListener("resize", checkSize);
+    };
+  }, []);
   return (
     <NewListingDiv hide={isHide === true}>
       <FontDiv>
@@ -125,7 +134,7 @@ function NewListing() {
           바이낸스 상장
         </NewListingli>
       </NewListingUl>
-      <InfoContainer style={{ display: "flex" }} ref={container}>
+      <InfoContainer ref={container} hide={isHide === true}>
         {selected === 0 ? (
           <UpbitInfoUl>
             {upbitNewListing &&

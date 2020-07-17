@@ -1,6 +1,5 @@
-import React, { useState, useEffect, useCallback, useRef } from "react";
+import React, { useState, useLayoutEffect, useCallback, useRef } from "react";
 import styled from "styled-components";
-import ccxt from "ccxt";
 import Loading from "./Loading";
 import CurrentExchangeBar from "./CurrentExchangeBar";
 import SettingBar from "./SettingBar";
@@ -11,12 +10,12 @@ import {
   loadUpbitNewListing,
   loadBianceNewListing,
   loadBithumbBitkrw,
-  loadTickers,
 } from "../reducers/coin";
 import { useDispatch, useSelector } from "react-redux";
 import { v4 } from "uuid";
 import NewListing from "./NewListing";
 import { getPercent } from "../utills";
+import { coinTickers } from "../socket";
 const ExchangesWrapper = styled.section`
   display: flex;
   flex-direction: row;
@@ -50,8 +49,7 @@ const ExchangeCoinsContainer = styled.div`
   flex-direction: column;
   padding: 5px;
   @media (min-width: 1025px) {
-    width: 60%;
-    margin: 0 auto;
+    width: 65%;
   }
   @media (max-width: 1024px) {
     width: 60%;
@@ -60,7 +58,7 @@ const ExchangeCoinsContainer = styled.div`
     width: 100%;
   }
 `;
-const CoinContainer = styled.div`
+const CoinContainer = styled.section`
   display: flex;
   flex-direction: row;
   padding: 2px;
@@ -72,7 +70,7 @@ const CoinContainer = styled.div`
     border-bottom: none;
   }
 `;
-const Coin = styled.div`
+const Coin = styled.p`
   cursor: ${(props) => (props.head ? "pointer" : "normal")};
   width: 30%;
   word-break: break-all;
@@ -83,6 +81,8 @@ const Coin = styled.div`
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  margin: 0;
+  white-space: pre;
   @media (max-width: 768px) {
     font-size: 0.7rem;
   }
@@ -130,61 +130,69 @@ const Coin = styled.div`
     border-radius: 10px;
   }
 `;
+
 function ExchangeList() {
   const [upbitCoinInfo, setUpbitCoinInfo] = useState([]);
   const [isFirstLoading, setIsFirstLoading] = useState(false);
   const [loading, setLoading] = useState(true);
   const [sortType, setSortType] = useState(-1);
   const dispatch = useDispatch();
-  const { coinList, upbitBitKrw, tickers } = useSelector((state) => state.coin);
+  const { coinList, upbitBitKrw } = useSelector((state) => state.coin);
   const info = useRef([]);
   const timer = useRef(null);
-  const getExchangeTickers = useCallback(async () => {
+  const getExchangeTickers = useCallback(() => {
     if (timer.current) {
-      timer.current = setTimeout(getExchangeTickers, 2000);
+      clearTimeout(timer.current);
     }
     if (isFirstLoading === false && loading === false) setLoading(true);
-    const bithumb = new ccxt.bithumb();
-    const tickers3 = await bithumb.fetchTickers();
-    let info = [...tickers];
-    info = info.sort((x, y) => {
-      const convertedX = x.blast * upbitBitKrw,
-        convertedY = y.blast * upbitBitKrw;
-      if (sortType === -1) return x.symbol > y.symbol ? 1 : -1;
-      else if (sortType === 1) return x.symbol < y.symbol ? 1 : -1;
-      else if (sortType === -2) return x.last > y.last ? 1 : -1;
-      else if (sortType === 2) return x.last < y.last ? 1 : -1;
-      else if (sortType === -3) return x.blast > y.blast ? 1 : -1;
-      else if (sortType === 3) return x.blast < y.blast ? 1 : -1;
-      else if (sortType === -4)
-        return (x.last - convertedX) / x.last > (y.last - convertedY) / y.last
-          ? 1
-          : -1;
-      else if (sortType === 4)
-        return (x.last - convertedX) / x.last < (y.last - convertedY) / y.last
-          ? 1
-          : -1;
-    });
-    dispatch(loadTickers());
-    dispatch(loadUpbitBitKrw());
-    dispatch(
-      loadBithumbBitkrw({
-        BTC: tickers3["BTC/KRW"],
-      })
-    );
-    dispatch(loadUsdToKrw());
-    dispatch(loadBinanceBitUsdt());
-    dispatch(loadUpbitNewListing());
-    dispatch(loadBianceNewListing());
-    if (loading === true) setLoading(false);
-    if (isFirstLoading === false) setIsFirstLoading(true);
-    setUpbitCoinInfo(info);
-  }, [loading, isFirstLoading, dispatch, sortType, upbitBitKrw, tickers]);
-
-  useEffect(() => {
-    timer.current = setTimeout(getExchangeTickers, 1000);
+    if (coinTickers && coinTickers.tickers) {
+      let info = [...coinTickers.tickers]?.sort((x, y) => {
+        const convertedX = x.blast * upbitBitKrw,
+          convertedY = y.blast * upbitBitKrw;
+        if (sortType === -1) return x.symbol > y.symbol ? 1 : -1;
+        else if (sortType === 1) return x.symbol < y.symbol ? 1 : -1;
+        else if (sortType === -2) return x.last > y.last ? 1 : -1;
+        else if (sortType === 2) return x.last < y.last ? 1 : -1;
+        else if (sortType === -3) return x.blast > y.blast ? 1 : -1;
+        else if (sortType === 3) return x.blast < y.blast ? 1 : -1;
+        else if (sortType === -4)
+          return (x.last - convertedX) / x.last > (y.last - convertedY) / y.last
+            ? 1
+            : -1;
+        else if (sortType === 4)
+          return (x.last - convertedX) / x.last < (y.last - convertedY) / y.last
+            ? 1
+            : -1;
+      });
+      dispatch(
+        loadUpbitBitKrw({
+          BTC: info.filter((ticker) => ticker.symbol === "BTC")[0]?.last || 0,
+        })
+      );
+      dispatch(
+        loadBithumbBitkrw({
+          BTC: info.filter((ticker) => ticker.symbol === "BTC")[0]?.thumb || 0,
+        })
+      );
+      dispatch(
+        loadBinanceBitUsdt({
+          BTC: info.filter((ticker) => ticker.symbol === "BTC")[0]?.blast || 0,
+        })
+      );
+      dispatch(loadUsdToKrw());
+      dispatch(loadUpbitNewListing());
+      dispatch(loadBianceNewListing());
+      if (loading === true) setLoading(false);
+      if (isFirstLoading === false) setIsFirstLoading(true);
+      setUpbitCoinInfo(info);
+      timer.current = setTimeout(getExchangeTickers, 1000);
+    }
+  }, [loading, isFirstLoading, dispatch, sortType, upbitBitKrw]);
+  useLayoutEffect(() => {
+    getExchangeTickers();
     return () => {
       clearTimeout(timer.current);
+      //cancelAnimationFrame(timer.current);
     };
   }, [getExchangeTickers, sortType, upbitBitKrw, coinList, info]);
   const onSort = useCallback(
@@ -289,53 +297,58 @@ function ExchangeList() {
               </Coin>
             </CoinContainer>
           }
-          {upbitCoinInfo.map((v, idx) => {
-            const convertedBinance = parseFloat(
-              (v.blast * upbitBitKrw).toFixed(2),
-              10
-            );
-            const percentUP = getPercent(v.last, convertedBinance).toFixed(2);
-            const percentBit = getPercent(v.thumb, convertedBinance).toFixed(2);
-            return (
-              <CoinContainer key={v4()}>
-                <Coin>{v.symbol}</Coin>
-                <Coin
-                  head={percentUP === "-100.00"}
-                  data-type={percentUP === "-100.00" ? "unlist" : "list"}
-                >
-                  {v.last}₩
-                </Coin>
-                <Coin up={percentUP > 0}>
-                  {v.blast && v.blast.toFixed(8)}
-                  <p>{convertedBinance}₩</p>
-                </Coin>
-                <Coin head={percentUP === "-100.00"} up={percentUP > 0}>
-                  {percentUP !== "Infinity"
-                    ? percentUP === "-100.00"
-                      ? "미 상장"
-                      : `${percentUP}%`
-                    : "로딩중"}
-                </Coin>
-                <Coin
-                  head={percentBit === "-100.00"}
-                  data-type={percentBit === "-100.00" ? "unlist" : "list"}
-                >
-                  {v.thumb}₩
-                </Coin>
-                <Coin
-                  head={percentBit === "-100.00"}
-                  up={percentBit > 0}
-                  data-type={percentBit === "-100.00" ? "unlist" : "list"}
-                >
-                  {percentBit !== "Infinity"
-                    ? percentBit === "-100.00"
-                      ? "미 상장"
-                      : `${percentBit}%`
-                    : "로딩중"}
-                </Coin>
-              </CoinContainer>
-            );
-          })}
+          {upbitCoinInfo
+            ?.filter((ticker) => ticker.symbol !== "BTC")
+            .map((v) => {
+              const convertedBinance = parseFloat(
+                (v.blast * upbitBitKrw).toFixed(2),
+                10
+              );
+              const percentUP = getPercent(v.last, convertedBinance).toFixed(2);
+              const percentBit = getPercent(v.thumb, convertedBinance).toFixed(
+                2
+              );
+              return (
+                <CoinContainer key={v4()}>
+                  <Coin>{v.symbol}</Coin>
+                  <Coin
+                    head={percentUP === "-100.00"}
+                    data-type={percentUP === "-100.00" ? "unlist" : "list"}
+                  >
+                    {v.last}₩
+                  </Coin>
+                  <Coin up={percentUP > 0}>
+                    {v.blast && v.blast.toFixed(8)}
+                    {"\n"}
+                    {convertedBinance}₩
+                  </Coin>
+                  <Coin head={percentUP === "-100.00"} up={percentUP > 0}>
+                    {percentUP !== "Infinity"
+                      ? percentUP === "-100.00"
+                        ? "미 상장"
+                        : `${percentUP}%`
+                      : "로딩중"}
+                  </Coin>
+                  <Coin
+                    head={percentBit === "-100.00"}
+                    data-type={percentBit === "-100.00" ? "unlist" : "list"}
+                  >
+                    {v.thumb}₩
+                  </Coin>
+                  <Coin
+                    head={percentBit === "-100.00"}
+                    up={percentBit > 0}
+                    data-type={percentBit === "-100.00" ? "unlist" : "list"}
+                  >
+                    {percentBit !== "Infinity"
+                      ? percentBit === "-100.00"
+                        ? "미 상장"
+                        : `${percentBit}%`
+                      : "로딩중"}
+                  </Coin>
+                </CoinContainer>
+              );
+            })}
         </ExchangeCoinsContainer>
         <NewListing />
       </ExchangesWrapper>

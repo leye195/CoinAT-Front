@@ -1,15 +1,9 @@
 import { v4 } from "uuid";
 import { all, takeLatest, fork, put, call, throttle } from "redux-saga/effects";
 import {
-  UPBIT_BITCOIN_KRW_SUCCESS,
-  UPBIT_BITCOIN_KRW_FAILURE,
-  UPBIT_BITCOIN_KRW_REQUEST,
   CURRENCY_REQUEST,
   CURRENCY_FAILURE,
   CURRENCY_SUCCESS,
-  BINANCE_BITCOIN_USDT_REQUEST,
-  BINANCE_BITCOIN_USDT_FAILURE,
-  BINANCE_BITCOIN_USDT_SUCCESS,
   UPBIT_BTC_NEWLISTING_REQUEST,
   UPBIT_BTC_NEWLISTING_SUCCESS,
   UPBIT_BTC_NEWLISTING_FAILURE,
@@ -48,26 +42,6 @@ import axios from "axios";
 import dotenv from "dotenv";
 dotenv.config();
 const API_URL = process.env.REACT_APP_API;
-function loadBitKrwAPI() {
-  return axios.get("https://api.upbit.com/v1/ticker?markets=KRW-BTC");
-}
-function* loadBitKrw(action) {
-  try {
-    const result = yield call(loadBitKrwAPI, action.payload);
-    yield put({
-      type: UPBIT_BITCOIN_KRW_SUCCESS,
-      payload: result.data,
-    });
-  } catch (e) {
-    yield put({
-      type: UPBIT_BITCOIN_KRW_FAILURE,
-      error: e,
-    });
-  }
-}
-function* watchBitKrw() {
-  yield takeLatest(UPBIT_BITCOIN_KRW_REQUEST, loadBitKrw);
-}
 
 function loadCurrencyAPI() {
   return axios.get(`${API_URL}coin/currency`, {
@@ -96,7 +70,7 @@ function* watchCurrency() {
   yield throttle(1000, CURRENCY_REQUEST, loadCurrency);
 }
 
-function loadBitUsdtAPI() {
+/*function loadBitUsdtAPI() {
   return axios.get(
     "https://www.binance.com/api/v1/aggTrades?limit=1&symbol=BTCUSDT"
   );
@@ -117,7 +91,7 @@ function* loadBitUsdt() {
 }
 function* watchBitUsdt() {
   yield takeLatest(BINANCE_BITCOIN_USDT_REQUEST, loadBitUsdt);
-}
+}*/
 
 function loadUpbitNewListingAPI() {
   return axios.get(`${API_URL}coin/notice/upbit`);
@@ -371,9 +345,7 @@ function* watchLoadTickers() {
 
 export default function* coinSaga() {
   yield all([
-    fork(watchBitKrw),
     fork(watchCurrency),
-    fork(watchBitUsdt),
     fork(watchUpbitNewListing),
     fork(watchBinanceNewListing),
     fork(watchUpbitNewCoin),

@@ -13,19 +13,17 @@ export const COIN_LIST_REQUEST = "COIN_LIST_REQUEST";
 export const COIN_LIST_SUCCESS = "COIN_LIST_SUCCESS";
 export const COIN_LIST_FAILURE = "COIN_LIST_FAILURE";
 
-export const UPBIT_BITCOIN_KRW_REQUEST = "UPBIT_BITCOIN_KRW_REQUEST";
-export const UPBIT_BITCOIN_KRW_SUCCESS = "UPBIT_BITCOIN_KRW_SUCCESS";
-export const UPBIT_BITCOIN_KRW_FAILURE = "UPBIT_BITCOIN_KRW_FAILURE";
-
+export const UPBIT_BITCOIN_KRW = "UPBIT_BITCOIN_KRW";
 export const BITHUMB_BITCOIN_KRW = "BITHUMB_BITCOIN_KRW";
+export const BINANCE_BITCOIN_USDT = "BINANCE_BITCOIN_USDT";
 
 export const CURRENCY_REQUEST = "CURRENCY_REQUEST";
 export const CURRENCY_SUCCESS = "CURRENCY_SUCCESS";
 export const CURRENCY_FAILURE = "CURRENCY_FAILURE";
 
-export const BINANCE_BITCOIN_USDT_REQUEST = "BINANCE_BITCOIN_USDT_REQUEST";
+/*export const BINANCE_BITCOIN_USDT_REQUEST = "BINANCE_BITCOIN_USDT_REQUEST";
 export const BINANCE_BITCOIN_USDT_SUCCESS = "BINANCE_BITCOIN_USDT_SUCCESS";
-export const BINANCE_BITCOIN_USDT_FAILURE = "BINANCE_BITCOIN_USDT_FAILURE";
+export const BINANCE_BITCOIN_USDT_FAILURE = "BINANCE_BITCOIN_USDT_FAILURE";*/
 
 export const UPBIT_BTC_NEWLISTING_REQUEST = "UPBIT_BTC_NEWLISTING_REQUEST";
 export const UPBIT_BTC_NEWLISTING_SUCCESS = "UPBIT_BTC_NEWLISTING_SUCCESS";
@@ -68,9 +66,9 @@ export const TRADE_ERROR_REQUEST = "TRADE_ERROR_REQUEST";
 export const loadCoinInfo = createAction(COIN_INFO_REQUEST);
 export const loadCoinList = createAction(COIN_LIST_REQUEST);
 export const loadBithumbBitkrw = createAction(BITHUMB_BITCOIN_KRW);
-export const loadUpbitBitKrw = createAction(UPBIT_BITCOIN_KRW_REQUEST);
+export const loadUpbitBitKrw = createAction(UPBIT_BITCOIN_KRW);
 export const loadUsdToKrw = createAction(CURRENCY_REQUEST);
-export const loadBinanceBitUsdt = createAction(BINANCE_BITCOIN_USDT_REQUEST);
+export const loadBinanceBitUsdt = createAction(BINANCE_BITCOIN_USDT);
 export const loadUpbitNewListing = createAction(UPBIT_BTC_NEWLISTING_REQUEST);
 export const loadBianceNewListing = createAction(BINANCE_NEWLISTING_REQUEST);
 export const loadTickers = createAction(TICKERS_REQUEST);
@@ -95,10 +93,10 @@ const initialState = {
   bithumbBitKrw: 0.0,
   upbitBitKrw: 0.0,
   upbitBitKrwError: "",
-  isUsdToKrwLoading: false,
+  isUsdToKrwLoading: true,
   usdToKrw: 0.0,
   usdToKrwError: "",
-  isbitusdtLoading: false,
+  isbitusdtLoading: true,
   binanceBitUsdt: 0.0,
   binanceBitUsdtError: "",
   isUpbitNewListingLoading: false,
@@ -203,31 +201,26 @@ export default handleActions(
     [COIN_LIST_FAILURE]: (state, action) => produce(state, (draft) => {}),
     [BITHUMB_BITCOIN_KRW]: (state, action) =>
       produce(state, (draft) => {
-        const {
-          BTC: { last },
-        } = action.payload;
-        draft.bithumbBitKrw = last;
+        const { BTC } = action.payload;
+        draft.bithumbBitKrw = BTC;
       }),
-    [UPBIT_BITCOIN_KRW_REQUEST]: (state, action) =>
+    [UPBIT_BITCOIN_KRW]: (state, action) =>
       produce(state, (draft) => {
+        const { BTC } = action.payload;
+        draft.upbitBitKrw = BTC;
         draft.isbitkrwLoading = true;
       }),
-    [UPBIT_BITCOIN_KRW_SUCCESS]: (state, action) =>
-      produce(state, (draft) => {
-        draft.isbitkrwLoading = false;
-        draft.upbitBitKrw = action.payload[0].trade_price;
-      }),
-    [UPBIT_BITCOIN_KRW_FAILURE]: (state, action) =>
-      produce(state, (draft) => {
-        draft.upbitBitKrwError = action.payload.error;
-      }),
+
     [CURRENCY_REQUEST]: (state, action) =>
       produce(state, (draft) => {
         draft.isUsdToKrwLoading = true;
       }),
     [CURRENCY_SUCCESS]: (state, action) =>
       produce(state, (draft) => {
-        const target = action.payload.rates["USDKRW"].rate;
+        const target = action.payload.data.filter(
+          (currency) => currency.pair === "KRW_USD"
+        )[0].rate;
+        //console.log(target);
         draft.isUsdToKrwLoading = false;
         draft.usdToKrw = target.toFixed(3);
       }),
@@ -236,7 +229,13 @@ export default handleActions(
         draft.isUsdToKrwLoading = false;
         draft.usdToKrwError = action.error;
       }),
-    [BINANCE_BITCOIN_USDT_REQUEST]: (state, action) =>
+    [BINANCE_BITCOIN_USDT]: (state, action) =>
+      produce(state, (draft) => {
+        const { BTC } = action.payload;
+        draft.binanceBitUsdt = BTC;
+        draft.isbitusdtLoading = false;
+      }),
+    /*[BINANCE_BITCOIN_USDT_REQUEST]: (state, action) =>
       produce(state, (draft) => {
         draft.isbitusdtLoading = true;
       }),
@@ -249,7 +248,7 @@ export default handleActions(
       produce(state, (draft) => {
         draft.isbitusdtLoading = false;
         draft.binanceBitUsdtError = action.error;
-      }),
+      }),*/
     [UPBIT_BTC_NEWLISTING_REQUEST]: (state, action) =>
       produce(state, (draft) => {
         draft.isUpbitNewListingLoading = true;
@@ -257,16 +256,15 @@ export default handleActions(
     [UPBIT_BTC_NEWLISTING_SUCCESS]: (state, action) =>
       produce(state, (draft) => {
         const { payload } = action;
-        const filteredList = payload
-          .filter((v) => v.title.includes("BTC"))
-          .map((v) => {
-            if (
-              moment(v.created_at).format("YYYY-MM-DD") ===
-              moment().format("YYYY-MM-DD")
-            )
-              return { new: true, notice: v };
-            else return { new: false, notice: v };
-          });
+        //console.log(payload);
+        const filteredList = payload.map((v) => {
+          if (
+            moment(v.created_at).format("YYYY-MM-DD") ===
+            moment().format("YYYY-MM-DD")
+          )
+            return { new: true, notice: v };
+          else return { new: false, notice: v };
+        });
         draft.upbitNewListing = filteredList;
         draft.isUpbitNewListingLoading = false;
       }),
