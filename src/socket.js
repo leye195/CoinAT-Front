@@ -3,9 +3,9 @@ import { v4 } from "uuid";
 export let coinTickers = { tickers: [], id: -1 };
 export let socket = null;
 export const initSocket = () => {
-  socket = socketIO.connect(process.env.REACT_APP_API);
-  socket.emit("connect");
-  getCoinData();
+    socket = socketIO.connect(process.env.REACT_APP_API);
+    socket.emit("connect");
+    getCoinData();
 };
 export const getCoinData = () => {
   socket.on("welcome", () => {
@@ -19,6 +19,7 @@ export const getCoinData = () => {
     });
     socket.on("disconnected", () => {
       console.log("disconnected");
+      socket.disconnect();
     });
   });
 };

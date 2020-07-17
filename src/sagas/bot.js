@@ -12,7 +12,9 @@ import dotenv from "dotenv";
 dotenv.config();
 const API_URL = process.env.REACT_APP_API;
 function sendMessageAPI(data) {
-  return axios.post(`${API_URL}bot`, data);
+  return axios.post(`${API_URL}bot`, data, {
+    withCredentials: true,
+  });
 }
 function* sendMessage(action) {
   try {
@@ -33,7 +35,9 @@ function* watchSendMessage() {
 }
 
 function cancelMessageAPI(data) {
-  return axios.post(`${API_URL}bot/cancel`, data);
+  return axios.post(`${API_URL}bot/cancel`, data, {
+    withCredentials: true,
+  });
 }
 function* cancelMessage(action) {
   try {

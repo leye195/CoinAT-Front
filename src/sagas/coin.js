@@ -45,9 +45,7 @@ const API_URL = process.env.REACT_APP_API;
 
 function loadCurrencyAPI() {
   return axios.get(`${API_URL}coin/currency`, {
-    headers: {
-      "Access-Control-Allow-Origin": "*",
-    },
+    withCredentials: true,
   });
   //https://www.freeforexapi.com/api/live?pairs=USDKRW
   //return axios.get("https://api.exchangeratesapi.io/latest?base=USD");
@@ -94,7 +92,12 @@ function* watchBitUsdt() {
 }*/
 
 function loadUpbitNewListingAPI() {
-  return axios.get(`${API_URL}coin/notice/upbit`);
+  return axios.get(`${API_URL}coin/notice/upbit`, {
+    headers: {
+      "Access-Control-Allow-Origin": "*",
+    },
+    withCredentials: true,
+  });
 }
 function* loadUpbitNewListing() {
   try {
@@ -115,7 +118,9 @@ function* watchUpbitNewListing() {
 }
 
 function loadBinanceNewListingAPI() {
-  return axios.get(`${API_URL}coin/notice/binance`);
+  return axios.get(`${API_URL}coin/notice/binance`, {
+    withCredentials: true,
+  });
 }
 function* loadBinanceNewListing() {
   try {
@@ -136,7 +141,9 @@ function* watchBinanceNewListing() {
 }
 
 function upbitNewCoinAPI(data) {
-  return axios.post(`${API_URL}coin/notice/upbit`, data);
+  return axios.post(`${API_URL}coin/notice/upbit`, data, {
+    withCredentials: true,
+  });
 }
 function* upbitNewCoin(action) {
   try {
@@ -157,7 +164,9 @@ function* watchUpbitNewCoin() {
 }
 
 function binanceNewCoinAPI(data) {
-  return axios.post(`${API_URL}coin/notice/binance`, data);
+  return axios.post(`${API_URL}coin/notice/binance`, data, {
+    withCredentials: true,
+  });
 }
 function* binanceNewCoin(action) {
   try {
@@ -178,7 +187,9 @@ function* watchBinanceNewCoin() {
 }
 
 function coinListAPI() {
-  return axios.get(`${API_URL}coin`);
+  return axios.get(`${API_URL}coin`, {
+    withCredentials: true,
+  });
 }
 function* coinList() {
   try {
@@ -199,7 +210,9 @@ function* watchCoinList() {
 }
 
 function upbitBidAPI(data) {
-  return axios.post(`${API_URL}trade/bid`, data);
+  return axios.post(`${API_URL}trade/bid`, data, {
+    withCredentials: true,
+  });
 }
 function* upbitBid(action) {
   try {
@@ -221,7 +234,9 @@ function* watchUpbitBid() {
 }
 
 function upbitAskAPI(data) {
-  return axios.post(`${API_URL}trade/ask`, data);
+  return axios.post(`${API_URL}trade/ask`, data, {
+    withCredentials: true,
+  });
 }
 function* upbitAsk(action) {
   try {
@@ -242,10 +257,16 @@ function* watchUpbitAsk() {
 }
 
 function setBinanceKeyAPI(data) {
-  return axios.post(`${API_URL}trade/binance_key`, {
-    api: data.binanceApi,
-    sec: data.binanceSec,
-  });
+  return axios.post(
+    `${API_URL}trade/binance_key`,
+    {
+      api: data.binanceApi,
+      sec: data.binanceSec,
+    },
+    {
+      withCredentials: true,
+    }
+  );
 }
 function* setBinanceKey(action) {
   try {
@@ -265,10 +286,16 @@ function* watchSetBinanceKey() {
 }
 
 function setUpbitKeyAPI(data) {
-  return axios.post(`${API_URL}trade/upbit_key`, {
-    api: data.upbitApi,
-    sec: data.upbitSec,
-  });
+  return axios.post(
+    `${API_URL}trade/upbit_key`,
+    {
+      api: data.upbitApi,
+      sec: data.upbitSec,
+    },
+    {
+      withCredentials: true,
+    }
+  );
 }
 function* setUpbitKey(action) {
   try {
@@ -296,14 +323,20 @@ function setKeyAPI(data) {
     uid = localStorage.getItem("uid");
     localStorage.removeItem("uid");
   }
-  return axios.post(`${API_URL}trade/key`, {
-    api1: data.upbitApi,
-    sec1: data.upbitSec,
-    api2: data.binanceApi,
-    sec2: data.binanceSec,
-    type: data.type,
-    uid,
-  });
+  return axios.post(
+    `${API_URL}trade/key`,
+    {
+      api1: data.upbitApi,
+      sec1: data.upbitSec,
+      api2: data.binanceApi,
+      sec2: data.binanceSec,
+      type: data.type,
+      uid,
+    },
+    {
+      withCredentials: true,
+    }
+  );
 }
 function* setKey(action) {
   try {
@@ -323,7 +356,9 @@ function* watchSetKey() {
 }
 
 function loadTickersAPI() {
-  return axios.get(`${API_URL}coin/tickers`);
+  return axios.get(`${API_URL}coin/tickers`, {
+    withCredentials: true,
+  });
 }
 function* loadTickers() {
   try {
