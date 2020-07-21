@@ -7,8 +7,6 @@ import {
   loadUsdToKrw,
   loadUpbitBitKrw,
   loadBinanceBitUsdt,
-  loadUpbitNewListing,
-  loadBianceNewListing,
   loadBithumbBitkrw,
 } from "../reducers/coin";
 import { useDispatch, useSelector } from "react-redux";
@@ -18,7 +16,7 @@ import { getPercent } from "../utills";
 import { coinTickers } from "../socket";
 const ExchangesWrapper = styled.section`
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   justify-content: space-between;
 `;
 const ExchangesContainer = styled.ul`
@@ -58,7 +56,7 @@ const ExchangeCoinsContainer = styled.div`
     width: 100%;
   }
 `;
-const CoinContainer = styled.section`
+const CoinHeadContainer = styled.section`
   display: flex;
   flex-direction: row;
   padding: 2px;
@@ -69,6 +67,21 @@ const CoinContainer = styled.section`
   &:last-child {
     border-bottom: none;
   }
+  @media (min-width: 1025px) {
+    width: 65%;
+  }
+  @media (max-width: 1024px) {
+    width: 60%;
+  }
+  @media (max-width: 768px) {
+    width: 100%;
+  }
+`;
+const CoinContainer = styled.section`
+  display: flex;
+  flex-direction: row;
+  padding: 2px;
+  border-bottom: 1px solid #e3e3e3;
 `;
 const Coin = styled.p`
   cursor: ${(props) => (props.head ? "pointer" : "normal")};
@@ -135,66 +148,82 @@ function ExchangeList() {
   const [upbitCoinInfo, setUpbitCoinInfo] = useState([]);
   const [isFirstLoading, setIsFirstLoading] = useState(false);
   const [loading, setLoading] = useState(true);
-  const [sortType, setSortType] = useState(-1);
+  //const [sortType, setSortType] = useState(-1);
   const dispatch = useDispatch();
   const { coinList, upbitBitKrw } = useSelector((state) => state.coin);
   const info = useRef([]);
+  const sortType = useRef(-1);
   const timer = useRef(null);
   const getExchangeTickers = useCallback(() => {
-    if (timer.current) {
-      clearTimeout(timer.current);
+    if (!timer.current) {
+      if (isFirstLoading === false && loading === false) setLoading(true);
+      if (coinTickers && coinTickers.tickers) {
+        let info = [...coinTickers.tickers]?.sort((x, y) => {
+          if (sortType.current === -1) return x.symbol > y.symbol ? 1 : -1;
+          else if (sortType.current === 1) return x.symbol < y.symbol ? 1 : -1;
+          else if (sortType.current === -2) return x.last > y.last ? 1 : -1;
+          else if (sortType.current === 2) return x.last < y.last ? 1 : -1;
+          else if (sortType.current === -3) return x.blast > y.blast ? 1 : -1;
+          else if (sortType.current === 3) return x.blast < y.blast ? 1 : -1;
+          else if (sortType.current === -4) {
+            if (x.per1 !== undefined && y.per1 !== undefined) {
+              return x.per1 > y.per1 ? 1 : -1;
+            } else {
+              if (x.per1 === undefined) {
+                return -1;
+              } else if (y.per1 === undefined) {
+                return 1;
+              }
+            }
+          } else if (sortType.current === 4) {
+            if (x.per1 !== undefined && y.per1 !== undefined) {
+              return x.per1 < y.per1 ? 1 : -1;
+            } else {
+              if (x.per1 === undefined) {
+                return 1;
+              } else if (y.per1 === undefined) {
+                return -1;
+              }
+            }
+          }
+        });
+        dispatch(
+          loadUpbitBitKrw({
+            BTC: info.filter((ticker) => ticker.symbol === "BTC")[0]?.last || 0,
+          })
+        );
+        dispatch(
+          loadBithumbBitkrw({
+            BTC:
+              info.filter((ticker) => ticker.symbol === "BTC")[0]?.thumb || 0,
+          })
+        );
+        dispatch(
+          loadBinanceBitUsdt({
+            BTC:
+              info.filter((ticker) => ticker.symbol === "BTC")[0]?.blast || 0,
+          })
+        );
+        dispatch(loadUsdToKrw());
+        if (loading === true) setLoading(false);
+        if (isFirstLoading === false) setIsFirstLoading(true);
+        setUpbitCoinInfo(info);
+        timer.current = setTimeout(() => {
+          timer.current = null;
+          getExchangeTickers();
+        }, 1500);
+      }
     }
-    if (isFirstLoading === false && loading === false) setLoading(true);
-    if (coinTickers && coinTickers.tickers) {
-      let info = [...coinTickers.tickers]?.sort((x, y) => {
-        const convertedX = x.blast * upbitBitKrw,
-          convertedY = y.blast * upbitBitKrw;
-        if (sortType === -1) return x.symbol > y.symbol ? 1 : -1;
-        else if (sortType === 1) return x.symbol < y.symbol ? 1 : -1;
-        else if (sortType === -2) return x.last > y.last ? 1 : -1;
-        else if (sortType === 2) return x.last < y.last ? 1 : -1;
-        else if (sortType === -3) return x.blast > y.blast ? 1 : -1;
-        else if (sortType === 3) return x.blast < y.blast ? 1 : -1;
-        else if (sortType === -4)
-          return (x.last - convertedX) / x.last > (y.last - convertedY) / y.last
-            ? 1
-            : -1;
-        else if (sortType === 4)
-          return (x.last - convertedX) / x.last < (y.last - convertedY) / y.last
-            ? 1
-            : -1;
-      });
-      dispatch(
-        loadUpbitBitKrw({
-          BTC: info.filter((ticker) => ticker.symbol === "BTC")[0]?.last || 0,
-        })
-      );
-      dispatch(
-        loadBithumbBitkrw({
-          BTC: info.filter((ticker) => ticker.symbol === "BTC")[0]?.thumb || 0,
-        })
-      );
-      dispatch(
-        loadBinanceBitUsdt({
-          BTC: info.filter((ticker) => ticker.symbol === "BTC")[0]?.blast || 0,
-        })
-      );
-      dispatch(loadUsdToKrw());
-      dispatch(loadUpbitNewListing());
-      dispatch(loadBianceNewListing());
-      if (loading === true) setLoading(false);
-      if (isFirstLoading === false) setIsFirstLoading(true);
-      setUpbitCoinInfo(info);
-      timer.current = setTimeout(getExchangeTickers, 1000);
-    }
-  }, [loading, isFirstLoading, dispatch, sortType, upbitBitKrw]);
+  }, [loading, isFirstLoading, dispatch, sortType]);
+
   useLayoutEffect(() => {
-    getExchangeTickers();
+    //console.log(timer.current);
+    if (timer.current === null) getExchangeTickers();
     return () => {
-      clearTimeout(timer.current);
+      //clearTimeout(timer.current);
       //cancelAnimationFrame(timer.current);
     };
-  }, [getExchangeTickers, sortType, upbitBitKrw, coinList, info]);
+  }, [getExchangeTickers, upbitBitKrw, coinList, info]);
   const onSort = useCallback(
     (coinInfo) => (e) => {
       const {
@@ -203,66 +232,83 @@ function ExchangeList() {
         },
       } = e;
       if (parseInt(id, 10) === 1) {
-        if (sortType === 1) {
+        if (sortType.current === 1) {
           coinInfo.sort((x, y) => {
             return x.symbol > y.symbol ? 1 : -1;
           });
-          setSortType(-1);
+          sortType.current = -1;
+          //setSortType(-1);
         } else {
           coinInfo.sort((x, y) => {
             return x.symbol < y.symbol ? 1 : -1;
           });
-          setSortType(1);
+          sortType.current = 1;
+          //setSortType(1);
         }
       } else if (parseInt(id, 10) === 2) {
-        if (sortType === 2) {
+        if (sortType.current === 2) {
           coinInfo.sort((x, y) => {
             return x.last > y.last ? 1 : -1;
           });
-          setSortType(-2);
+          sortType.current = -2;
+          //setSortType(-2);
         } else {
           coinInfo.sort((x, y) => {
             return x.last < y.last ? 1 : -1;
           });
-          setSortType(2);
+          sortType.current = 2;
+          //setSortType(2);
         }
       } else if (parseInt(id, 10) === 3) {
-        if (sortType === 3) {
+        if (sortType.current === 3) {
           coinInfo.sort((x, y) => {
             return x.blast > y.blast ? 1 : -1;
           });
-          setSortType(-3);
+          sortType.current = -3;
+          //setSortType(-3);
         } else {
           coinInfo.sort((x, y) => {
             return x.blast < y.blast ? 1 : -1;
           });
-          setSortType(3);
+          sortType.current = 3;
+          //setSortType(3);
         }
       } else if (parseInt(id, 10) === 4) {
-        if (sortType === 4) {
+        if (sortType.current === 4) {
           coinInfo.sort((x, y) => {
-            const convertedX = x.blast * upbitBitKrw,
-              convertedY = y.blast * upbitBitKrw;
-            return getPercent(x.last, convertedX) >
-              getPercent(y.last, convertedY)
-              ? 1
-              : -1;
+            if (x.per1 !== undefined && y.per1 !== undefined) {
+              return x.per1 > y.per1 ? 1 : -1;
+            } else {
+              if (x.per1 === undefined) {
+                return -1;
+              } else if (y.per1 === undefined) {
+                return 1;
+              } else {
+                return -1;
+              }
+            }
           });
-          setSortType(-4);
+          sortType.current = -4;
         } else {
           coinInfo.sort((x, y) => {
-            const convertedX = x.blast * upbitBitKrw,
-              convertedY = y.blast * upbitBitKrw;
-            return getPercent(x.last, convertedX) <
-              getPercent(y.last, convertedY)
-              ? 1
-              : -1;
+            if (x.per1 !== undefined && y.per1 !== undefined) {
+              return x.per1 < y.per1 ? 1 : -1;
+            } else {
+              if (x.per1 === undefined) {
+                return 1;
+              } else if (y.per1 === undefined) {
+                return -1;
+              } else {
+                return -1;
+              }
+            }
           });
-          setSortType(4);
+          sortType.current = 4;
+          //setSortType(4);
         }
       }
     },
-    [sortType, upbitBitKrw]
+    [sortType]
   );
   return (
     <main>
@@ -274,29 +320,27 @@ function ExchangeList() {
       <SettingBar coinInfo={upbitCoinInfo} upbitBitKrw={upbitBitKrw} />
       <CurrentExchangeBar />
       <ExchangesWrapper>
+        <CoinHeadContainer>
+          <Coin head={true} onClick={onSort(upbitCoinInfo)} data-id={1}>
+            코인
+          </Coin>
+          <Coin head={true} onClick={onSort(upbitCoinInfo)} data-id={2}>
+            업비트(₩)
+          </Coin>
+          <Coin head={true} onClick={onSort(upbitCoinInfo)} data-id={3}>
+            바이낸스(BTC)
+          </Coin>
+          <Coin head={true} onClick={onSort(upbitCoinInfo)} data-id={4}>
+            차이(%)
+          </Coin>
+          <Coin head={true} onClick={onSort(upbitCoinInfo)} data-id={5}>
+            빗썸(₩)
+          </Coin>
+          <Coin head={true} onClick={onSort(upbitCoinInfo)} data-id={6}>
+            차이(%)
+          </Coin>
+        </CoinHeadContainer>
         <ExchangeCoinsContainer>
-          {
-            <CoinContainer>
-              <Coin head={true} onClick={onSort(upbitCoinInfo)} data-id={1}>
-                코인
-              </Coin>
-              <Coin head={true} onClick={onSort(upbitCoinInfo)} data-id={2}>
-                업비트(₩)
-              </Coin>
-              <Coin head={true} onClick={onSort(upbitCoinInfo)} data-id={3}>
-                바이낸스(BTC)
-              </Coin>
-              <Coin head={true} onClick={onSort(upbitCoinInfo)} data-id={4}>
-                차이(%)
-              </Coin>
-              <Coin head={true} onClick={onSort(upbitCoinInfo)} data-id={5}>
-                빗썸(₩)
-              </Coin>
-              <Coin head={true} onClick={onSort(upbitCoinInfo)} data-id={6}>
-                차이(%)
-              </Coin>
-            </CoinContainer>
-          }
           {upbitCoinInfo
             ?.filter((ticker) => ticker.symbol !== "BTC")
             .map((v) => {

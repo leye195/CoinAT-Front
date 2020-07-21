@@ -1,9 +1,10 @@
 import React, { useState, useCallback, useRef, useEffect } from "react";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import styled from "styled-components";
 import { v4 } from "uuid";
 import { faMinus, faPlus } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { loadUpbitNewListing, loadBianceNewListing } from "../reducers/coin";
 const NewListingDiv = styled.div`
   display: flex;
   flex-direction: column;
@@ -85,6 +86,8 @@ function NewListing() {
   const [selected, setSelected] = useState(0);
   const [isHide, setHide] = useState(false);
   const container = useRef();
+  const timer = useRef();
+  const dispatch = useDispatch();
   const onChangeSelect = useCallback((e) => {
     const {
       target: {
@@ -102,13 +105,24 @@ function NewListing() {
       setHide(true);
     }
   };
+  const getNewListing = useCallback(() => {
+    if (!timer.current) {
+      dispatch(loadUpbitNewListing());
+      dispatch(loadBianceNewListing());
+      setTimeout(() => {
+        timer.current = null;
+        getNewListing();
+      }, 10000);
+    }
+  }, [dispatch]);
   useEffect(() => {
     checkSize();
+    getNewListing();
     window.addEventListener("resize", checkSize);
     return () => {
       window.removeEventListener("resize", checkSize);
     };
-  }, []);
+  }, [getNewListing]);
   return (
     <NewListingDiv hide={isHide === true}>
       <FontDiv>
