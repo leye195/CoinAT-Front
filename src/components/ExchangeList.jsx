@@ -4,7 +4,6 @@ import Loading from "./Loading";
 import CurrentExchangeBar from "./CurrentExchangeBar";
 import SettingBar from "./SettingBar";
 import {
-  loadUsdToKrw,
   loadUpbitBitKrw,
   loadBinanceBitUsdt,
   loadBithumbBitkrw,
@@ -155,73 +154,68 @@ function ExchangeList() {
   const sortType = useRef(-1);
   const timer = useRef(null);
   const getExchangeTickers = useCallback(() => {
-    if (!timer.current) {
-      if (isFirstLoading === false && loading === false) setLoading(true);
-      if (coinTickers && coinTickers.tickers) {
-        let info = [...coinTickers.tickers]?.sort((x, y) => {
-          if (sortType.current === -1) return x.symbol > y.symbol ? 1 : -1;
-          else if (sortType.current === 1) return x.symbol < y.symbol ? 1 : -1;
-          else if (sortType.current === -2) return x.last > y.last ? 1 : -1;
-          else if (sortType.current === 2) return x.last < y.last ? 1 : -1;
-          else if (sortType.current === -3) return x.blast > y.blast ? 1 : -1;
-          else if (sortType.current === 3) return x.blast < y.blast ? 1 : -1;
-          else if (sortType.current === -4) {
-            if (x.per1 !== undefined && y.per1 !== undefined) {
-              return x.per1 > y.per1 ? 1 : -1;
-            } else {
-              if (x.per1 === undefined) {
-                return -1;
-              } else if (y.per1 === undefined) {
-                return 1;
-              }
-            }
-          } else if (sortType.current === 4) {
-            if (x.per1 !== undefined && y.per1 !== undefined) {
-              return x.per1 < y.per1 ? 1 : -1;
-            } else {
-              if (x.per1 === undefined) {
-                return 1;
-              } else if (y.per1 === undefined) {
-                return -1;
-              }
+    if (isFirstLoading === false && loading === false) setLoading(true);
+    if (coinTickers && coinTickers.tickers) {
+      let info = [...coinTickers.tickers]?.sort((x, y) => {
+        if (sortType.current === -1) return x.symbol > y.symbol ? 1 : -1;
+        else if (sortType.current === 1) return x.symbol < y.symbol ? 1 : -1;
+        else if (sortType.current === -2) return x.last > y.last ? 1 : -1;
+        else if (sortType.current === 2) return x.last < y.last ? 1 : -1;
+        else if (sortType.current === -3) return x.blast > y.blast ? 1 : -1;
+        else if (sortType.current === 3) return x.blast < y.blast ? 1 : -1;
+        else if (sortType.current === -4) {
+          if (x.per1 !== undefined && y.per1 !== undefined) {
+            return x.per1 > y.per1 ? 1 : -1;
+          } else {
+            if (x.per1 === undefined) {
+              return -1;
+            } else if (y.per1 === undefined) {
+              return 1;
             }
           }
-        });
-        dispatch(
-          loadUpbitBitKrw({
-            BTC: info.filter((ticker) => ticker.symbol === "BTC")[0]?.last || 0,
-          })
-        );
-        dispatch(
-          loadBithumbBitkrw({
-            BTC:
-              info.filter((ticker) => ticker.symbol === "BTC")[0]?.thumb || 0,
-          })
-        );
-        dispatch(
-          loadBinanceBitUsdt({
-            BTC:
-              info.filter((ticker) => ticker.symbol === "BTC")[0]?.blast || 0,
-          })
-        );
-        dispatch(loadUsdToKrw());
-        if (loading === true) setLoading(false);
-        if (isFirstLoading === false) setIsFirstLoading(true);
-        setUpbitCoinInfo(info);
+        } else if (sortType.current === 4) {
+          if (x.per1 !== undefined && y.per1 !== undefined) {
+            return x.per1 < y.per1 ? 1 : -1;
+          } else {
+            if (x.per1 === undefined) {
+              return 1;
+            } else if (y.per1 === undefined) {
+              return -1;
+            }
+          }
+        }
+      });
+      dispatch(
+        loadUpbitBitKrw({
+          BTC: info.filter((ticker) => ticker.symbol === "BTC")[0]?.last || 0,
+        })
+      );
+      dispatch(
+        loadBithumbBitkrw({
+          BTC: info.filter((ticker) => ticker.symbol === "BTC")[0]?.thumb || 0,
+        })
+      );
+      dispatch(
+        loadBinanceBitUsdt({
+          BTC: info.filter((ticker) => ticker.symbol === "BTC")[0]?.blast || 0,
+        })
+      );
+      if (loading === true) setLoading(false);
+      if (isFirstLoading === false) setIsFirstLoading(true);
+      setUpbitCoinInfo(info);
+      if (!timer.current) {
         timer.current = setTimeout(() => {
           timer.current = null;
           getExchangeTickers();
-        }, 1500);
+        }, 2000);
       }
     }
   }, [loading, isFirstLoading, dispatch, sortType]);
 
   useLayoutEffect(() => {
-    //console.log(timer.current);
     if (timer.current === null) getExchangeTickers();
     return () => {
       //clearTimeout(timer.current);
-      //cancelAnimationFrame(timer.current);
     };
   }, [getExchangeTickers, upbitBitKrw, coinList, info]);
   const onSort = useCallback(

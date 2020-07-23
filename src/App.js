@@ -1,8 +1,8 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useRef, useCallback } from "react";
 import styled from "styled-components";
 import ExchangeList from "./components/ExchangeList";
 import { useDispatch } from "react-redux";
-import { loadCoinList } from "./reducers/coin";
+import { loadCoinList, loadUsdToKrw } from "./reducers/coin";
 const Header = styled.header`
   display: flex;
   align-items: center;
@@ -18,11 +18,22 @@ const Header = styled.header`
 const Title = styled.p`
   font-family: 800;
 `;
-function App() {
+const App = () => {
   const dispatch = useDispatch();
+  let timer = useRef(null);
+  const getCurrency = useCallback(() => {
+    dispatch(loadUsdToKrw());
+    if (!timer.current) {
+      timer.current = setTimeout(() => {
+        timer.current = null;
+        getCurrency();
+      }, 8000);
+    }
+  }, [dispatch]);
   useEffect(() => {
     dispatch(loadCoinList());
-  }, [dispatch]);
+    getCurrency();
+  }, []);
   return (
     <>
       <Header>
@@ -31,6 +42,6 @@ function App() {
       <ExchangeList />
     </>
   );
-}
+};
 
 export default App;

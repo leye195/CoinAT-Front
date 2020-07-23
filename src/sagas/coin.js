@@ -45,6 +45,9 @@ const API_URL = process.env.REACT_APP_API;
 
 function loadCurrencyAPI() {
   return axios.get(`${API_URL}coin/currency`, {
+    headers: {
+      "Access-Control-Allow-Origin": "*",
+    },
     withCredentials: true,
   });
   //https://www.freeforexapi.com/api/live?pairs=USDKRW
@@ -119,6 +122,9 @@ function* watchUpbitNewListing() {
 
 function loadBinanceNewListingAPI() {
   return axios.get(`${API_URL}coin/notice/binance`, {
+    headers: {
+      "Access-Control-Allow-Origin": "*",
+    },
     withCredentials: true,
   });
 }
@@ -142,6 +148,9 @@ function* watchBinanceNewListing() {
 
 function upbitNewCoinAPI(data) {
   return axios.post(`${API_URL}coin/notice/upbit`, data, {
+    headers: {
+      "Access-Control-Allow-Origin": "*",
+    },
     withCredentials: true,
   });
 }
@@ -165,6 +174,9 @@ function* watchUpbitNewCoin() {
 
 function binanceNewCoinAPI(data) {
   return axios.post(`${API_URL}coin/notice/binance`, data, {
+    headers: {
+      "Access-Control-Allow-Origin": "*",
+    },
     withCredentials: true,
   });
 }
@@ -188,6 +200,9 @@ function* watchBinanceNewCoin() {
 
 function coinListAPI() {
   return axios.get(`${API_URL}coin`, {
+    headers: {
+      "Access-Control-Allow-Origin": "*",
+    },
     withCredentials: true,
   });
 }
@@ -211,6 +226,9 @@ function* watchCoinList() {
 
 function upbitBidAPI(data) {
   return axios.post(`${API_URL}trade/bid`, data, {
+    headers: {
+      "Access-Control-Allow-Origin": "*",
+    },
     withCredentials: true,
   });
 }
@@ -235,6 +253,9 @@ function* watchUpbitBid() {
 
 function upbitAskAPI(data) {
   return axios.post(`${API_URL}trade/ask`, data, {
+    headers: {
+      "Access-Control-Allow-Origin": "*",
+    },
     withCredentials: true,
   });
 }
@@ -357,6 +378,9 @@ function* watchSetKey() {
 
 function loadTickersAPI() {
   return axios.get(`${API_URL}coin/tickers`, {
+    headers: {
+      "Access-Control-Allow-Origin": "*",
+    },
     withCredentials: true,
   });
 }

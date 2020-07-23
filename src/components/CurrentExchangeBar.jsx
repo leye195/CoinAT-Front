@@ -1,4 +1,4 @@
-import React, { useEffect, useCallback } from "react";
+import React, { useEffect, useMemo } from "react";
 import styled from "styled-components";
 import { useSelector, useDispatch } from "react-redux";
 import { setBtc } from "../reducers/coin";
@@ -38,20 +38,18 @@ function CurrentExchangeBar() {
   const { upbitBitKrw, usdToKrw, binanceBitUsdt, bithumbBitKrw } = useSelector(
     (state) => state.coin
   );
-  const convertUsdToKrw = useCallback(() => {
+  const convertUsdToKrw = useMemo(() => {
     const converted = parseFloat(binanceBitUsdt, 10) * usdToKrw;
     return converted.toFixed(2);
   }, [binanceBitUsdt, usdToKrw]);
   useEffect(() => {
-    const converted = convertUsdToKrw(),
+    const converted = convertUsdToKrw,
       percent1 = (
-        ((parseFloat(upbitBitKrw, 10) - convertUsdToKrw()) /
-          convertUsdToKrw()) *
+        ((parseFloat(upbitBitKrw, 10) - convertUsdToKrw) / convertUsdToKrw) *
         100
       ).toFixed(2),
       percent2 = (
-        ((parseFloat(bithumbBitKrw, 10) - convertUsdToKrw()) /
-          convertUsdToKrw()) *
+        ((parseFloat(bithumbBitKrw, 10) - convertUsdToKrw) / convertUsdToKrw) *
         100
       ).toFixed(2);
     dispatch(
@@ -70,11 +68,10 @@ function CurrentExchangeBar() {
       <ExchangeContainer>
         <Info>{`1$: ${usdToKrw}₩`}</Info>
         <Info>{`업비트: ${upbitBitKrw} BTC/KRW`}</Info>
-        <Info>{`바이낸스: ${convertUsdToKrw()} BTC/KRW`}</Info>
+        <Info>{`바이낸스: ${convertUsdToKrw} BTC/KRW`}</Info>
         <Info>{`차이: ${(
-          ((parseFloat(upbitBitKrw, 10) - convertUsdToKrw()) /
-            convertUsdToKrw()) *
-          100
+          parseFloat(upbitBitKrw, 10) -
+          (convertUsdToKrw / convertUsdToKrw) * 100
         ).toFixed(2)}%`}</Info>
       </ExchangeContainer>
     </>
