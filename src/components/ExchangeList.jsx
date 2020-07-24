@@ -44,21 +44,24 @@ const ExchangeItem = styled.li`
 const ExchangeCoinsContainer = styled.div`
   display: flex;
   flex-direction: column;
-  padding: 5px;
   @media (min-width: 1025px) {
     width: 65%;
+    padding: 4px;
   }
   @media (max-width: 1024px) {
     width: 60%;
+    padding: 2px;
   }
   @media (max-width: 768px) {
     width: 100%;
+    padding: 0px;
   }
 `;
 const CoinHeadContainer = styled.section`
   display: flex;
   flex-direction: row;
-  padding: 2px;
+  padding-top: 3px;
+  padding-bottom: 3px;
   border-bottom: 1px solid #e3e3e3;
   &:first-child {
     font-weight: 800;
@@ -68,6 +71,7 @@ const CoinHeadContainer = styled.section`
   }
   @media (min-width: 1025px) {
     width: 65%;
+    padding-right: 4px;
   }
   @media (max-width: 1024px) {
     width: 60%;

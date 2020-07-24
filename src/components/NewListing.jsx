@@ -108,7 +108,7 @@ function NewListing() {
   const getNewListing = useCallback(() => {
     if (!timer.current) {
       dispatch(loadUpbitNewListing());
-      dispatch(loadBianceNewListing());
+      //dispatch(loadBianceNewListing());
       setTimeout(() => {
         timer.current = null;
         getNewListing();
@@ -139,13 +139,6 @@ function NewListing() {
           selected={selected === 0}
         >
           업비트 상장
-        </NewListingli>
-        <NewListingli
-          data-id={1}
-          onClick={onChangeSelect}
-          selected={selected === 1}
-        >
-          바이낸스 상장
         </NewListingli>
       </NewListingUl>
       <InfoContainer ref={container} hide={isHide === true}>
