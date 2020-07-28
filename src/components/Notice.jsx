@@ -1,0 +1,98 @@
+import React, { useState, useEffect, useRef } from "react";
+import styled, { keyframes } from "styled-components";
+import { useDispatch, useSelector } from "react-redux";
+import { v4 } from "uuid";
+
+const listAnimation = (count, innerWidth) => keyframes`
+    0% {
+      transform: translate3d(${innerWidth - 10}px, 0px, 0px);
+    }
+    100% {
+      transform: translate3d(-${count * innerWidth + 80}px, 0px, 0px);
+    }
+`;
+const Container = styled.section`
+  display: inline-flex;
+  align-items: center;
+  min-height: 40px;
+  width: 100vw;
+  border-top: 1px solid #e3e3e3;
+  margin: 0 auto;
+  overflow: hidden;
+  background-color: #e3e3e3;
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+  &::-webkit-scrollbar {
+    display: none;
+  }
+`;
+const ListContainer = styled.div`
+  width: 100%;
+  display: inline-flex;
+  transform: ${(props) => `translate3d(${props.innerWidth - 10}px, 0px, 0px);`};
+  animation: ${(props) => listAnimation(props.count, props.innerWidth)}
+    ${(props) => `${props.count * 16}s`} ease-in-out infinite;
+  cursor: pointer;
+  @media screen and (max-width: 425px) {
+    font-size: 0.6rem;
+  }
+`;
+
+const ListItem = styled.div`
+  display: flex;
+  justify-content: center;
+  padding: 5px;
+  white-space: pre;
+  font-weight: bolder;
+  background-color: white;
+  border-radius: 10px;
+  margin-right: 10px;
+  @media screen and (max-width: 425px) {
+    font-size: 0.5rem;
+  }
+`;
+const Title = styled.p`
+  display: inline-block;
+  margin: 0;
+  width: ${(props) => `${props.innerWidth}px`};
+  text-align: center;
+  overflow: hidden;
+`;
+
+const Listing = () => {
+  const dispatch = useDispatch();
+  const listRef = useRef(null);
+  const { upbitNewListing } = useSelector((state) => state.coin);
+  const [innerWidth, setInnerWidth] = useState(window.innerWidth);
+  const handleResize = () => {
+    const innerWidth = window.innerWidth;
+    setInnerWidth(innerWidth);
+  };
+  useEffect(() => {
+    window.addEventListener("resize", handleResize);
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, [dispatch]);
+
+  return (
+    <Container>
+      <ListContainer
+        ref={listRef}
+        count={upbitNewListing.length}
+        innerWidth={innerWidth}
+      >
+        {upbitNewListing.map((item) => (
+          <ListItem key={v4()}>
+            <Title innerWidth={innerWidth}>{`${
+              item.notice.title.length >= 30
+                ? `${item.notice.title}...`
+                : `${item.notice.title}`
+            }`}</Title>
+          </ListItem>
+        ))}
+      </ListContainer>
+    </Container>
+  );
+};
+export default Listing;

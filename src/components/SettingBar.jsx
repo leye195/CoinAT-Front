@@ -1,6 +1,6 @@
 import React, { useCallback, useState, useRef, useEffect } from "react";
 import styled from "styled-components";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { sendMessage, cancelMessage } from "../reducers/bot";
 import { faCog } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -18,6 +18,10 @@ const SettingBarDiv = styled.div`
   flex-direction: column;
   box-shadow: -1px 1px 3px 0px #696969;
   z-index: 10;
+  @media (max-width: 425px) {
+    font-size: 0.8rem;
+    right: 0px;
+  }
 `;
 const InputWrapper = styled.div`
   display: flex;
@@ -49,6 +53,7 @@ const SelectBtn = styled.button`
 
 function SettingBar({ coinInfo, upbitBitKrw }) {
   const dispatch = useDispatch();
+  const { coinList } = useSelector((state) => state.coin);
   const wrapper = useRef();
   const [coins, setCoins] = useState([]);
   const [coinPer, setCoinPer] = useState({});
@@ -58,10 +63,10 @@ function SettingBar({ coinInfo, upbitBitKrw }) {
    * currentPer: 변화 값 저장, 비교용으로 사용
    */
   useEffect(() => {
-    if (coins.length === 0) {
-      setCoins(coinInfo);
+    if (coinList.length > 0 && coins.length === 0) {
+      setCoins(coinList);
     }
-  }, [coinInfo, upbitBitKrw, coins]);
+  }, [coins, coinList]);
   const onChangePercent = useCallback(
     (e) => {
       const {

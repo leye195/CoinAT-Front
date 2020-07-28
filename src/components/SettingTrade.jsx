@@ -17,6 +17,9 @@ const Input = styled.input`
   flex: 1;
   border-radius: 5px;
   padding: 2px;
+  @media (max-width: 425px) {
+    width: 95%;
+  }
 `;
 
 const SecretInput = styled.input`
@@ -38,10 +41,18 @@ const SettingBtn = styled.button`
   padding: 5px;
   width: 100%;
 `;
-const TradeSettingDiv = ApiContainer.withComponent("div");
+const TradeSettingDiv = styled(ApiContainer.withComponent("div"))`
+  @media (max-width: 425px) {
+    display: flex;
+    flex-direction: column;
+  }
+`;
 const TradeBtn = styled(SettingBtn.withComponent("button"))`
   border-radius: 10px;
   width: 50%;
+  @media (max-width: 425px) {
+    width: 95%;
+  }
 `;
 function SettingTrade({ coinInfo }) {
   const dispatch = useDispatch();

@@ -7,50 +7,28 @@ import {
   loadUpbitBitKrw,
   loadBinanceBitUsdt,
   loadBithumbBitkrw,
+  loadUsdToKrw,
+  loadUpbitNewListing,
 } from "../reducers/coin";
 import { useDispatch, useSelector } from "react-redux";
+import { getPercent, combineTickers } from "../utills/utills";
 import { v4 } from "uuid";
-import NewListing from "./NewListing";
-import { getPercent } from "../utills";
-import { coinTickers } from "../socket";
 const ExchangesWrapper = styled.section`
   display: flex;
   flex-direction: column;
   justify-content: space-between;
 `;
-const ExchangesContainer = styled.ul`
-  display: flex;
-  flex-direction: row;
-  list-style: none;
-  padding: 5px;
-  border: 1px solid;
-  border-left: 0;
-  border-right: 0;
-  border-bottom: 0;
-  margin-top: 5px;
-  margin-bottom: 0;
-  font-size: 0.4rem;
-  @media (max-width: 768px) {
-    margin-top: 0px;
-    padding: 0px;
-  }
-`;
-const ExchangeItem = styled.li`
-  padding-left: 10px;
-  padding-right: 10px;
-  cursor: pointer;
-  color: ${(props) => (props.selected ? "black" : "black")};
-`;
 const ExchangeCoinsContainer = styled.div`
   display: flex;
   flex-direction: column;
   @media (min-width: 1025px) {
-    width: 65%;
-    padding: 4px;
+    width: 80%;
+    margin: 0 auto;
   }
   @media (max-width: 1024px) {
-    width: 60%;
+    width: 90%;
     padding: 2px;
+    margin: 0 auto;
   }
   @media (max-width: 768px) {
     width: 100%;
@@ -70,11 +48,12 @@ const CoinHeadContainer = styled.section`
     border-bottom: none;
   }
   @media (min-width: 1025px) {
-    width: 65%;
-    padding-right: 4px;
+    width: 80%;
+    margin: 0 auto;
   }
   @media (max-width: 1024px) {
-    width: 60%;
+    width: 90%;
+    margin: 0 auto;
   }
   @media (max-width: 768px) {
     width: 100%;
@@ -134,15 +113,8 @@ const Coin = styled.p`
       props.head === true
         ? "black"
         : props.up === true
-        ? "#ff2e18"
-        : "#0012ff"};
-    border-radius: 10px;
-    background-color: ${(props) =>
-      props.head === true
-        ? "white"
-        : props.up === true
-        ? "#ff747363"
-        : "#007fff47"};
+        ? "#e74c3c"
+        : "#0984e3"};
     border-radius: 10px;
   }
 `;
@@ -159,6 +131,8 @@ function ExchangeList() {
   const timer = useRef(null);
   const getExchangeTickers = useCallback(() => {
     if (isFirstLoading === false && loading === false) setLoading(true);
+    const coinTickers = combineTickers(upbitBitKrw, coinList);
+    //console.log(coinTickers);
     if (coinTickers && coinTickers.tickers) {
       let info = [...coinTickers.tickers]?.sort((x, y) => {
         if (sortType.current === -1) return x.symbol > y.symbol ? 1 : -1;
@@ -207,6 +181,8 @@ function ExchangeList() {
       if (loading === true) setLoading(false);
       if (isFirstLoading === false) setIsFirstLoading(true);
       setUpbitCoinInfo(info);
+      dispatch(loadUsdToKrw());
+      dispatch(loadUpbitNewListing());
       if (!timer.current) {
         timer.current = setTimeout(() => {
           timer.current = null;
@@ -214,7 +190,7 @@ function ExchangeList() {
         }, 2000);
       }
     }
-  }, [loading, isFirstLoading, dispatch, sortType]);
+  }, [loading, isFirstLoading, dispatch, sortType, coinList, upbitBitKrw]);
 
   useLayoutEffect(() => {
     if (timer.current === null) getExchangeTickers();
@@ -310,11 +286,6 @@ function ExchangeList() {
   );
   return (
     <main>
-      <ExchangesContainer>
-        <ExchangeItem>Upbit</ExchangeItem>
-        <ExchangeItem>Binance</ExchangeItem>
-        <ExchangeItem>Bithumb</ExchangeItem>
-      </ExchangesContainer>
       <SettingBar coinInfo={upbitCoinInfo} upbitBitKrw={upbitBitKrw} />
       <CurrentExchangeBar />
       <ExchangesWrapper>
@@ -392,7 +363,6 @@ function ExchangeList() {
               );
             })}
         </ExchangeCoinsContainer>
-        <NewListing />
       </ExchangesWrapper>
       <Loading isLoading={loading} />
     </main>

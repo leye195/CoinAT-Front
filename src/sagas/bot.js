@@ -10,11 +10,9 @@ import {
 } from "../reducers/bot";
 import dotenv from "dotenv";
 dotenv.config();
-const API_URL = process.env.REACT_APP_API;
+const API_URL = "https://secure-waters-04189.herokuapp.com/";
 function sendMessageAPI(data) {
-  return axios.post(`${API_URL}bot`, data, {
-    withCredentials: true,
-  });
+  return axios.post(`${API_URL}bot/start`, data);
 }
 function* sendMessage(action) {
   try {
@@ -35,9 +33,7 @@ function* watchSendMessage() {
 }
 
 function cancelMessageAPI(data) {
-  return axios.post(`${API_URL}bot/cancel`, data, {
-    withCredentials: true,
-  });
+  return axios.post(`${API_URL}bot/cancel`, data);
 }
 function* cancelMessage(action) {
   try {

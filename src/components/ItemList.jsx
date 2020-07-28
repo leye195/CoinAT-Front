@@ -1,6 +1,5 @@
 import React from "react";
 import styled from "styled-components";
-import { v4 } from "uuid";
 const ItemListDiv = styled.div`
   display: flex;
   align-items: center;
@@ -69,7 +68,7 @@ function ItemList({ coins, onChangePercent }) {
           coins.map((coin) => {
             return (
               <ItemListLi>
-                <ItemSpan>{coin.symbol}</ItemSpan>
+                <ItemSpan>{coin}</ItemSpan>
                 <ItemInput
                   type="number"
                   min={0}
@@ -77,7 +76,7 @@ function ItemList({ coins, onChangePercent }) {
                   step={0.1}
                   placeholder="N%"
                   onChange={onChangePercent}
-                  data-name={coin.symbol}
+                  data-name={coin}
                 />
               </ItemListLi>
             );

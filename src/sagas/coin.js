@@ -42,13 +42,12 @@ import axios from "axios";
 import dotenv from "dotenv";
 dotenv.config();
 const API_URL = process.env.REACT_APP_API;
-
+const HEROKU_URL = "https://secure-waters-04189.herokuapp.com/";
 function loadCurrencyAPI() {
-  return axios.get(`${API_URL}coin/currency`, {
+  return axios.get(`${HEROKU_URL}currency`, {
     headers: {
       "Access-Control-Allow-Origin": "*",
     },
-    withCredentials: true,
   });
   //https://www.freeforexapi.com/api/live?pairs=USDKRW
   //return axios.get("https://api.exchangeratesapi.io/latest?base=USD");
@@ -95,11 +94,10 @@ function* watchBitUsdt() {
 }*/
 
 function loadUpbitNewListingAPI() {
-  return axios.get(`${API_URL}coin/notice/upbit`, {
+  return axios.get(`${HEROKU_URL}notice/upbit`, {
     headers: {
       "Access-Control-Allow-Origin": "*",
     },
-    withCredentials: true,
   });
 }
 function* loadUpbitNewListing() {
@@ -121,7 +119,7 @@ function* watchUpbitNewListing() {
 }
 
 function loadBinanceNewListingAPI() {
-  return axios.get(`${API_URL}coin/notice/binance`, {
+  return axios.get(`${HEROKU_URL}notice/binance`, {
     headers: {
       "Access-Control-Allow-Origin": "*",
     },
@@ -199,12 +197,7 @@ function* watchBinanceNewCoin() {
 }
 
 function coinListAPI() {
-  return axios.get(`${API_URL}coin`, {
-    headers: {
-      "Access-Control-Allow-Origin": "*",
-    },
-    withCredentials: true,
-  });
+  return axios.get(`${HEROKU_URL}coins`);
 }
 function* coinList() {
   try {

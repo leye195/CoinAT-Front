@@ -3,6 +3,7 @@ import styled from "styled-components";
 import ExchangeList from "./components/ExchangeList";
 import { useDispatch } from "react-redux";
 import { loadCoinList, loadUsdToKrw } from "./reducers/coin";
+import Notice from "./components/Notice";
 const Header = styled.header`
   display: flex;
   align-items: center;
@@ -11,6 +12,8 @@ const Header = styled.header`
   margin-bottom: 0;
   margin-top: 0;
   height: 20px;
+  padding-top: 3px;
+  padding-bottom: 3px;
   @media (max-width: 768px) {
     font-size: 0.85rem;
   }
@@ -32,13 +35,14 @@ const App = () => {
   }, [dispatch]);
   useEffect(() => {
     dispatch(loadCoinList());
-    getCurrency();
-  }, []);
+    //getCurrency();
+  }, [dispatch]);
   return (
     <>
       <Header>
         <Title>CoinAT</Title>
       </Header>
+      <Notice />
       <ExchangeList />
     </>
   );

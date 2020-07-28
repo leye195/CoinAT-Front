@@ -1,6 +1,7 @@
 import { createAction, handleActions } from "redux-actions";
 import produce from "immer";
 import moment from "moment";
+import { getList } from "../utills/utills";
 
 export const SETTING_BTC = "SETTING_BTC";
 export const COIN_INFO_REQUEST = "COIN_INFO_REQUEST";
@@ -109,68 +110,7 @@ const initialState = {
   binanceSec: "",
   btc: {},
   coinInfo: [],
-  coinList: [
-    "ADA",
-    "ADX",
-    "ANKR",
-    "ARDR",
-    "ARK",
-    "ATOM",
-    "BAT",
-    "BCH",
-    "BTG",
-    "CVC",
-    "CHZ",
-    "DCR",
-    "ELF",
-    "ENJ",
-    "EOS",
-    "ETC",
-    "ETH",
-    "GAS",
-    "GNT",
-    "GRS",
-    "GTO",
-    "HBAR",
-    "ICX",
-    "IOST",
-    "IOTA",
-    "KMD",
-    "KNC",
-    "LOOM",
-    "LSK",
-    "LTC",
-    "MANA",
-    "MBL",
-    "MCO",
-    "MTL",
-    "NEO",
-    "OMG",
-    "ONG",
-    "ONT",
-    "OST",
-    "POLY",
-    "POWR",
-    "QKC",
-    "QTUM",
-    "REP",
-    "SC",
-    "SNT",
-    "STEEM",
-    "STORJ",
-    "STPT",
-    "STRAT",
-    "TFUEL",
-    "THETA",
-    "TRX",
-    "VET",
-    "WAVES",
-    "XEM",
-    "XLM",
-    "XRP",
-    "ZIL",
-    "ZRX",
-  ],
+  coinList: [],
   tradeError: 0,
 };
 export default handleActions(
@@ -196,6 +136,7 @@ export default handleActions(
         const coinList = action.payload.map((coin) => {
           return coin.name;
         });
+        getList(coinList);
         draft.coinList = coinList;
       }),
     [COIN_LIST_FAILURE]: (state, action) => produce(state, (draft) => {}),
@@ -217,12 +158,8 @@ export default handleActions(
       }),
     [CURRENCY_SUCCESS]: (state, action) =>
       produce(state, (draft) => {
-        const target = action.payload.data.filter(
-          (currency) => currency.pair === "KRW_USD"
-        )[0].rate;
-        //console.log(target);
         draft.isUsdToKrwLoading = false;
-        draft.usdToKrw = target.toFixed(3);
+        draft.usdToKrw = action.payload.rate.toFixed(3);
       }),
     [CURRENCY_FAILURE]: (state, action) =>
       produce(state, (draft) => {
