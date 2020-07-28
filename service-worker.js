@@ -14,7 +14,7 @@
 importScripts("https://storage.googleapis.com/workbox-cdn/releases/4.3.1/workbox-sw.js");
 
 importScripts(
-  "/CoinAT-Front/precache-manifest.905733408fbe89f992baa5bbf46c3053.js"
+  "/CoinAT-Front/precache-manifest.c1ff04d4fbe9baf2a7526d67c590c9dd.js"
 );
 
 self.addEventListener('message', (event) => {

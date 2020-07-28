@@ -1,23 +1,23 @@
 self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
-    "revision": "c8eda959b14a7adff3e3955f429ea65c",
+    "revision": "c2d52f85675a83cda1e5b28261a48a34",
     "url": "/CoinAT-Front/index.html"
   },
   {
-    "revision": "7497d582695625d526c8",
+    "revision": "1a94698c7f2e1673f4d4",
     "url": "/CoinAT-Front/static/css/main.5ecd60fb.chunk.css"
   },
   {
-    "revision": "9d3c09010bc2f1bc61fc",
-    "url": "/CoinAT-Front/static/js/2.d0b9e52e.chunk.js"
+    "revision": "2126e22036f4957fc4b4",
+    "url": "/CoinAT-Front/static/js/2.1572c2fb.chunk.js"
   },
   {
     "revision": "b67bc97fd0dd67004287af4028afc1b1",
-    "url": "/CoinAT-Front/static/js/2.d0b9e52e.chunk.js.LICENSE.txt"
+    "url": "/CoinAT-Front/static/js/2.1572c2fb.chunk.js.LICENSE.txt"
   },
   {
-    "revision": "7497d582695625d526c8",
-    "url": "/CoinAT-Front/static/js/main.25cdfc79.chunk.js"
+    "revision": "1a94698c7f2e1673f4d4",
+    "url": "/CoinAT-Front/static/js/main.1632dd1f.chunk.js"
   },
   {
     "revision": "10fccc6c76ef923d47f0",
