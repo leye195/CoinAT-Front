@@ -18,9 +18,9 @@ export const getPercent = (x, y) => {
 export const getList = (coinList) => {
   if (coinList.length > 0) {
     //console.log("connedted");
-    upbitWS(coinList);
-    bithumbWS(coinList);
-    binanceWS(coinList);
+    if (wsUpbit === null) upbitWS(coinList);
+    if (wsBithumb === null) bithumbWS(coinList);
+    if (wsBinance === null) binanceWS(coinList);
   }
 };
 //업비트 소켓 연결
@@ -60,6 +60,10 @@ const upbitWS = async (coinList) => {
       if (wsUpbit !== null) {
         wsUpbit.close();
         wsUpbit = null;
+        console.log("u disconnected");
+        setTimeout(() => {
+          upbitWS(coinList);
+        }, 5000);
       }
     };
     wsUpbit.onerror = (e) => {
@@ -104,6 +108,10 @@ const binanceWS = async (coinList) => {
       if (wsBinance !== null) {
         wsBinance.close();
         wsBinance = null;
+        console.log("b disconnected");
+        setTimeout(() => {
+          binanceWS(coinList);
+        }, 5000);
       }
     };
     wsBinance.onerror = (e) => {
@@ -150,6 +158,10 @@ const bithumbWS = async (coinList) => {
       if (wsBithumb !== null) {
         wsBithumb.close();
         wsBithumb = null;
+        console.log("t disconnected");
+        setTimeout(() => {
+          bithumbWS(coinList);
+        }, 5000);
       }
     };
     wsBithumb.onerror = (e) => {

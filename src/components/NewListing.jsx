@@ -5,6 +5,7 @@ import { v4 } from "uuid";
 import { faMinus, faPlus } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { loadUpbitNewListing, loadBianceNewListing } from "../reducers/coin";
+import { getList } from "../utills/utills";
 const NewListingDiv = styled.div`
   display: flex;
   flex-direction: column;
@@ -80,7 +81,7 @@ const BinanceInfoli = styled(UpbitInfoli.withComponent("li"))`
 `;
 
 function NewListing() {
-  const { upbitNewListing, binanceNewListing } = useSelector(
+  const { upbitNewListing, binanceNewListing, coinList } = useSelector(
     (state) => state.coin
   );
   const [selected, setSelected] = useState(0);

@@ -364,7 +364,9 @@ function ExchangeList() {
             })}
         </ExchangeCoinsContainer>
       </ExchangesWrapper>
-      <Loading isLoading={loading} />
+      {(loading || upbitCoinInfo.length < coinList.length) && (
+        <Loading isLoading={true} />
+      )}
     </main>
   );
 }

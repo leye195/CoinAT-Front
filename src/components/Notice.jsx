@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import styled, { keyframes } from "styled-components";
 import { useDispatch, useSelector } from "react-redux";
 import { v4 } from "uuid";
+import { useCallback } from "react";
 
 const listAnimation = (count, innerWidth) => keyframes`
     0% {
@@ -14,11 +15,11 @@ const listAnimation = (count, innerWidth) => keyframes`
 const Container = styled.section`
   display: inline-flex;
   align-items: center;
+  overflow: hidden;
   min-height: 40px;
   width: 100vw;
   border-top: 1px solid #e3e3e3;
   margin: 0 auto;
-  overflow: hidden;
   background-color: #e3e3e3;
   -ms-overflow-style: none; /* IE and Edge */
   scrollbar-width: none; /* Firefox */
@@ -28,13 +29,13 @@ const Container = styled.section`
 `;
 const ListContainer = styled.div`
   width: 100%;
+  height: 30px;
   display: inline-flex;
-  transform: ${(props) => `translate3d(${props.innerWidth - 10}px, 0px, 0px);`};
-  animation: ${(props) => listAnimation(props.count, props.innerWidth)}
-    ${(props) => `${props.count * 16}s`} ease-in-out infinite;
+  flex-direction: column;
+  align-items: center;
   cursor: pointer;
   @media screen and (max-width: 425px) {
-    font-size: 0.6rem;
+    font-size: 0.9rem;
   }
 `;
 
@@ -45,10 +46,8 @@ const ListItem = styled.div`
   white-space: pre;
   font-weight: bolder;
   background-color: white;
-  border-radius: 10px;
-  margin-right: 10px;
+  height: 25px;
   @media screen and (max-width: 425px) {
-    font-size: 0.5rem;
   }
 `;
 const Title = styled.p`
@@ -64,17 +63,49 @@ const Listing = () => {
   const listRef = useRef(null);
   const { upbitNewListing } = useSelector((state) => state.coin);
   const [innerWidth, setInnerWidth] = useState(window.innerWidth);
+  let cnt = useRef(0);
+  const handleNoticeAnimation = useCallback(() => {
+    setInterval(() => {
+      if (cnt.current === 20) {
+        listRef.current.animate(
+          [
+            { transform: `translateY(${cnt.current * -35}px)` },
+            { transform: `translateY(${0}px)` },
+          ],
+          {
+            fill: "forwards",
+            duration: 1500,
+            delay: 2500,
+          }
+        );
+        cnt.current = 0;
+      } else {
+        listRef.current.animate(
+          [
+            { transform: `translateY(${cnt.current * -35}px)` },
+            { transform: `translateY(${(cnt.current + 1) * -35}px)` },
+          ],
+          {
+            fill: "forwards",
+            duration: 1500,
+            delay: 2500,
+          }
+        );
+        cnt.current += 1;
+      }
+    }, 4000);
+  }, []);
   const handleResize = () => {
     const innerWidth = window.innerWidth;
     setInnerWidth(innerWidth);
   };
   useEffect(() => {
     window.addEventListener("resize", handleResize);
+    handleNoticeAnimation();
     return () => {
       window.removeEventListener("resize", handleResize);
     };
-  }, [dispatch]);
-
+  }, [dispatch, handleNoticeAnimation]);
   return (
     <Container>
       <ListContainer
@@ -86,7 +117,7 @@ const Listing = () => {
           <ListItem key={v4()}>
             <Title innerWidth={innerWidth}>{`${
               item.notice.title.length >= 30
-                ? `${item.notice.title}...`
+                ? `${item.notice.title.substr(0, 30)}...`
                 : `${item.notice.title}`
             }`}</Title>
           </ListItem>
