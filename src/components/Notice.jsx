@@ -1,17 +1,9 @@
 import React, { useState, useEffect, useRef } from "react";
-import styled, { keyframes } from "styled-components";
+import styled from "styled-components";
 import { useDispatch, useSelector } from "react-redux";
 import { v4 } from "uuid";
 import { useCallback } from "react";
 
-const listAnimation = (count, innerWidth) => keyframes`
-    0% {
-      transform: translate3d(${innerWidth - 10}px, 0px, 0px);
-    }
-    100% {
-      transform: translate3d(-${count * innerWidth + 80}px, 0px, 0px);
-    }
-`;
 const Container = styled.section`
   display: inline-flex;
   align-items: center;
@@ -75,7 +67,7 @@ const Listing = () => {
           {
             fill: "forwards",
             duration: 1500,
-            delay: 2500,
+            delay: 2000,
           }
         );
         cnt.current = 0;
@@ -88,7 +80,7 @@ const Listing = () => {
           {
             fill: "forwards",
             duration: 1500,
-            delay: 2500,
+            delay: 2000,
           }
         );
         cnt.current += 1;

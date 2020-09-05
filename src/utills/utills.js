@@ -51,7 +51,7 @@ const upbitWS = async (coinList) => {
       //if (wsUpbit !== null && wsUpbit.readyState === 1) {
       const enc = new TextDecoder("utf-8");
       const arr = new Uint8Array(e.data);
-      const { code, trade_price, timestamp } = JSON.parse(enc.decode(arr));
+      const { code, trade_price } = JSON.parse(enc.decode(arr));
       const symbol = code.slice(code.indexOf("-") + 1, code.length);
       if (symbol === "BTC") upbitBTCKrw = trade_price;
       tickers1[symbol] = trade_price;

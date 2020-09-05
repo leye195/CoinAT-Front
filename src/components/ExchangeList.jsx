@@ -65,6 +65,15 @@ const CoinContainer = styled.section`
   padding: 2px;
   border-bottom: 1px solid #e3e3e3;
 `;
+const CoinImage = styled.img`
+  height: 20px;
+  width: 20px;
+  margin-right: 5px;
+  @media (max-width: 768px) {
+    height: 12px;
+    width: 12px;
+  }
+`;
 const Coin = styled.p`
   cursor: ${(props) => (props.head ? "pointer" : "normal")};
   width: 30%;
@@ -80,6 +89,9 @@ const Coin = styled.p`
   white-space: pre;
   @media (max-width: 768px) {
     font-size: 0.7rem;
+  }
+  &:first-child {
+    flex-direction: row;
   }
   &:nth-child(2),
   &:nth-child(5) {
@@ -323,7 +335,14 @@ function ExchangeList() {
               );
               return (
                 <CoinContainer key={v4()}>
-                  <Coin>{v.symbol}</Coin>
+                  <Coin>
+                    {v.last !== 0 && (
+                      <CoinImage
+                        src={`https://static.upbit.com/logos/${v.symbol}.png`}
+                      />
+                    )}
+                    {v.symbol}
+                  </Coin>
                   <Coin
                     head={percentUP === "-100.00"}
                     data-type={percentUP === "-100.00" ? "unlist" : "list"}
