@@ -58,11 +58,22 @@ const Listing = () => {
   let cnt = useRef(0);
   const handleNoticeAnimation = useCallback(() => {
     setInterval(() => {
-      if (cnt.current === 20) {
+      if (cnt.current > 5) {
         listRef.current.animate(
           [
-            { transform: `translateY(${cnt.current * -35}px)` },
-            { transform: `translateY(${0}px)` },
+            { transform: `translateY(${(cnt.current - 1) * -35}px)` },
+            { transform: `translateY(${(cnt.current - 1) * -35}px)` },
+          ],
+          {
+            fill: "forwards",
+            duration: 1500,
+            delay: 1000,
+          }
+        );
+        listRef.current.animate(
+          [
+            { transform: `translateY(${0 * -35}px)` },
+            { transform: `translateY(${0 * -35}px)` },
           ],
           {
             fill: "forwards",
