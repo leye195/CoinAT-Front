@@ -68,10 +68,12 @@ const CoinContainer = styled.section`
 const CoinImage = styled.img`
   height: 20px;
   width: 20px;
-  margin-right: 5px;
+  margin-right: 2px;
+  border: 1px solid #e3e3e3;
+  border-radius: 50%;
   @media (max-width: 768px) {
-    height: 12px;
-    width: 12px;
+    height: 10px;
+    width: 10px;
   }
 `;
 const Coin = styled.p`
