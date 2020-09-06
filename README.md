@@ -5,9 +5,9 @@
 
 ### Stack
 
-[x] React
-[x] Redux, Redux-Saga
-[x] Styled-Components
+- [x] React
+- [x] Redux, Redux-Saga
+- [x] Styled-Components
 
 ### ToDo
 
