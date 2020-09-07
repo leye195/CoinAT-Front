@@ -9,6 +9,8 @@ const ExchangeContainer = styled.section`
           top: 0;
           position: fixed;
           opacity: 0.9;
+          box-shadow: 0px 2px 7px 1px rgb(0 0 0 / 0.12);
+          width: 100%;
         `
       : css`
           position: relative;
