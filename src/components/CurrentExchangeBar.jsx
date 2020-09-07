@@ -23,6 +23,7 @@ const ExchangeContainer = styled.section`
   color: white;
   text-shadow: 1px 1px 5px #545454;
   height: 35px;
+  transition: all 0.5;
   @media (max-width: 768px) {
     width: 100%;
     height: 6vh;

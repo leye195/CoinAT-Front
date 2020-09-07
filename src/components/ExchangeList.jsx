@@ -21,7 +21,7 @@ const ExchangesWrapper = styled.section`
   ${(props) =>
     props.isFixed &&
     css`
-      padding-top: 60px;
+      padding-top: ${props.offsetHeight + 10}px;
     `}
 `;
 const ExchangeCoinsContainer = styled.div`
@@ -326,7 +326,10 @@ function ExchangeList() {
     <main>
       <SettingBar coinInfo={upbitCoinInfo} upbitBitKrw={upbitBitKrw} />
       <CurrentExchangeBar nav={nav} isFixed={isFixed} />
-      <ExchangesWrapper isFixed={isFixed}>
+      <ExchangesWrapper
+        isFixed={isFixed}
+        offsetHeight={nav.current !== null && nav.current.offsetHeight}
+      >
         <CoinHeadContainer>
           <Coin head={true} onClick={onSort(upbitCoinInfo)} data-id={1}>
             코인
