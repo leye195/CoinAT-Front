@@ -1,8 +1,18 @@
 import React, { useEffect, useMemo } from "react";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import { useSelector, useDispatch } from "react-redux";
 import { setBtc } from "../reducers/coin";
 const ExchangeContainer = styled.section`
+  ${(props) =>
+    props.isFixed
+      ? css`
+          top: 0;
+          position: fixed;
+          opacity: 0.9;
+        `
+      : css`
+          position: relative;
+        `}
   display: flex;
   align-items: center;
   justify-content: center;
@@ -33,15 +43,20 @@ const Info = styled.p`
     font-size: 0.75rem;
   }
 `;
-function CurrentExchangeBar() {
+
+function CurrentExchangeBar({ nav, isFixed }) {
   const dispatch = useDispatch();
   const { upbitBitKrw, usdToKrw, binanceBitUsdt, bithumbBitKrw } = useSelector(
     (state) => state.coin
   );
+  //const nav = useRef(null);
+  //const [isFixed, setIsFixed] = useState(false);
+  //const [navTop, setNavTop] = useState(null);
   const convertUsdToKrw = useMemo(() => {
     const converted = parseFloat(binanceBitUsdt, 10) * usdToKrw;
     return converted.toFixed(2);
   }, [binanceBitUsdt, usdToKrw]);
+
   useEffect(() => {
     const converted = convertUsdToKrw,
       percent1 = (
@@ -65,7 +80,7 @@ function CurrentExchangeBar() {
   }, [convertUsdToKrw, dispatch, upbitBitKrw, bithumbBitKrw]);
   return (
     <>
-      <ExchangeContainer>
+      <ExchangeContainer ref={nav} isFixed={isFixed}>
         <Info>{`1$: ${usdToKrw}₩`}</Info>
         <Info>{`업비트: ${upbitBitKrw} BTC/KRW`}</Info>
         <Info>{`바이낸스: ${convertUsdToKrw} BTC/KRW`}</Info>

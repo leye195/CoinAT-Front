@@ -4,8 +4,8 @@ import styled from "styled-components";
 import { v4 } from "uuid";
 import { faMinus, faPlus } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { loadUpbitNewListing, loadBianceNewListing } from "../reducers/coin";
-import { getList } from "../utills/utills";
+import { loadUpbitNewListing } from "../reducers/coin";
+//import { getList } from "../utills/utills";
 const NewListingDiv = styled.div`
   display: flex;
   flex-direction: column;
@@ -97,15 +97,18 @@ function NewListing() {
     } = e;
     setSelected(parseInt(id, 10));
   }, []);
+
   const onToggle = useCallback(() => {
     setHide((cur) => !cur);
   }, []);
+
   const checkSize = () => {
     const innerWidth = window.innerWidth;
     if (innerWidth <= 768) {
       setHide(true);
     }
   };
+
   const getNewListing = useCallback(() => {
     if (!timer.current) {
       dispatch(loadUpbitNewListing());
@@ -116,6 +119,7 @@ function NewListing() {
       }, 10000);
     }
   }, [dispatch]);
+
   useEffect(() => {
     checkSize();
     getNewListing();
@@ -124,6 +128,7 @@ function NewListing() {
       window.removeEventListener("resize", checkSize);
     };
   }, [getNewListing]);
+
   return (
     <NewListingDiv hide={isHide === true}>
       <FontDiv>

@@ -1,5 +1,5 @@
 import React, { useState, useLayoutEffect, useCallback, useRef } from "react";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import Loading from "./Loading";
 import CurrentExchangeBar from "./CurrentExchangeBar";
 import SettingBar from "./SettingBar";
@@ -13,10 +13,16 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 import { getPercent, combineTickers } from "../utills/utills";
 import { v4 } from "uuid";
+import { useEffect } from "react";
 const ExchangesWrapper = styled.section`
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  ${(props) =>
+    props.isFixed &&
+    css`
+      padding-top: 60px;
+    `}
 `;
 const ExchangeCoinsContainer = styled.div`
   display: flex;
@@ -137,6 +143,9 @@ function ExchangeList() {
   const [upbitCoinInfo, setUpbitCoinInfo] = useState([]);
   const [isFirstLoading, setIsFirstLoading] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [isFixed, setIsFixed] = useState(false);
+  const [navTop, setNavTop] = useState(null);
+  const nav = useRef(null);
   //const [sortType, setSortType] = useState(-1);
   const dispatch = useDispatch();
   const { coinList, upbitBitKrw } = useSelector((state) => state.coin);
@@ -205,7 +214,22 @@ function ExchangeList() {
       }
     }
   }, [loading, isFirstLoading, dispatch, sortType, coinList, upbitBitKrw]);
-
+  const navFix = () => {
+    if (window.scrollY >= navTop) {
+      //console.log("fixed");
+      setIsFixed(true);
+    } else {
+      //console.log("normal");
+      setIsFixed(false);
+    }
+  };
+  useEffect(() => {
+    if (navTop === null) setNavTop(nav.current.offsetTop);
+    window.addEventListener("scroll", navFix);
+    return () => {
+      window.removeEventListener("scroll", navFix);
+    };
+  }, [navTop]);
   useLayoutEffect(() => {
     if (timer.current === null) getExchangeTickers();
     return () => {
@@ -301,8 +325,8 @@ function ExchangeList() {
   return (
     <main>
       <SettingBar coinInfo={upbitCoinInfo} upbitBitKrw={upbitBitKrw} />
-      <CurrentExchangeBar />
-      <ExchangesWrapper>
+      <CurrentExchangeBar nav={nav} isFixed={isFixed} />
+      <ExchangesWrapper isFixed={isFixed}>
         <CoinHeadContainer>
           <Coin head={true} onClick={onSort(upbitCoinInfo)} data-id={1}>
             코인
