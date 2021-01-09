@@ -1,5 +1,6 @@
 import axios from "axios";
 import { v4 } from "uuid";
+
 let binanceBTC = 0;
 let thumbBTCKrw = 0;
 let upbitBTCKrw = 0;
