@@ -50,7 +50,6 @@ function loadCurrencyAPI() {
     },
   });
   //https://www.freeforexapi.com/api/live?pairs=USDKRW
-  //return axios.get("https://api.exchangeratesapi.io/latest?base=USD");
 }
 function* loadCurrency() {
   try {
@@ -69,29 +68,6 @@ function* loadCurrency() {
 function* watchCurrency() {
   yield throttle(1000, CURRENCY_REQUEST, loadCurrency);
 }
-
-/*function loadBitUsdtAPI() {
-  return axios.get(
-    "https://www.binance.com/api/v1/aggTrades?limit=1&symbol=BTCUSDT"
-  );
-}
-function* loadBitUsdt() {
-  try {
-    const result = yield call(loadBitUsdtAPI);
-    yield put({
-      type: BINANCE_BITCOIN_USDT_SUCCESS,
-      payload: result.data,
-    });
-  } catch (e) {
-    yield put({
-      type: BINANCE_BITCOIN_USDT_FAILURE,
-      error: e,
-    });
-  }
-}
-function* watchBitUsdt() {
-  yield takeLatest(BINANCE_BITCOIN_USDT_REQUEST, loadBitUsdt);
-}*/
 
 function loadUpbitNewListingAPI() {
   return axios.get(`${HEROKU_URL}notice/upbit`, {
@@ -202,6 +178,7 @@ function coinListAPI() {
 function* coinList() {
   try {
     const result = yield call(coinListAPI);
+    console.log(result);
     yield put({
       type: COIN_LIST_SUCCESS,
       payload: result.data,
