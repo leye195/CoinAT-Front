@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import styled, { css } from "styled-components";
 import { useSelector, useDispatch } from "react-redux";
 import { setBtc } from "../reducers/coin";
@@ -52,9 +52,10 @@ function CurrentExchangeBar({ nav, isFixed }) {
   const { upbitBitKrw, usdToKrw, binanceBitUsdt, bithumbBitKrw } = useSelector(
     (state) => state.coin
   );
-  //const nav = useRef(null);
-  //const [isFixed, setIsFixed] = useState(false);
-  //const [navTop, setNavTop] = useState(null);
+  const [differene,setDifference] = useState(0);
+  const [usdtRate,setUsdtRate] = useState(0); 
+
+
   const convertUsdToKrw = useMemo(() => {
     const converted = parseFloat(binanceBitUsdt, 10) * usdToKrw;
     return converted.toFixed(2);
@@ -70,6 +71,11 @@ function CurrentExchangeBar({ nav, isFixed }) {
         ((parseFloat(bithumbBitKrw, 10) - convertUsdToKrw) / convertUsdToKrw) *
         100
       ).toFixed(2);
+    if(converted&&upbitBitKrw) {
+      const difference = ((parseFloat(upbitBitKrw, 10) - convertUsdToKrw) / convertUsdToKrw) *100;
+      setDifference(difference)
+      setUsdtRate((usdToKrw * (1+(difference/100))))
+    }
     dispatch(
       setBtc({
         symbol: "BTC",
@@ -80,17 +86,17 @@ function CurrentExchangeBar({ nav, isFixed }) {
         percent2: parseFloat(percent2, 10),
       })
     );
-  }, [convertUsdToKrw, dispatch, upbitBitKrw, bithumbBitKrw]);
+  }, [convertUsdToKrw, dispatch, upbitBitKrw, bithumbBitKrw, usdToKrw]);
   return (
     <>
       <ExchangeContainer ref={nav} isFixed={isFixed}>
         <Info>{`1$: ${usdToKrw}₩`}</Info>
         <Info>{`업비트: ${upbitBitKrw} BTC/KRW`}</Info>
         <Info>{`바이낸스: ${convertUsdToKrw} BTC/KRW`}</Info>
-        <Info>{`차이: ${(
-          ((parseFloat(upbitBitKrw, 10) - convertUsdToKrw) / convertUsdToKrw) *
-          100
-        ).toFixed(2)}%`}</Info>
+        <Info>{`차이: ${differene.toFixed(2)}%`}</Info>
+        <Info>
+          {`1USDT: ${usdtRate.toFixed(3)}₩`}
+        </Info>
       </ExchangeContainer>
     </>
   );

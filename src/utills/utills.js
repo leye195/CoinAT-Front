@@ -17,10 +17,11 @@ export const getPercent = (x, y) => {
 
 export const getList = (coinList) => {
   if (coinList.length > 0) {
+    const coinNames = coinList.map((coin) => coin.name);
     //console.log("connedted");
-    if (wsUpbit === null) upbitWS(coinList);
+    if (wsUpbit === null) upbitWS(coinNames);
+    if (wsBinance === null) binanceWS(coinNames);
     if (wsBithumb === null) bithumbWS(coinList);
-    if (wsBinance === null) binanceWS(coinList);
   }
 };
 //업비트 소켓 연결
@@ -123,17 +124,17 @@ const binanceWS = async (coinList) => {
 //빗썸 소켓 연결
 const bithumbWS = async (coinList) => {
   if (wsBithumb === null) {
-    const bithumbList = Object.keys(
-      (await axios.get("https://api.bithumb.com/public/orderbook/ALL")).data
-        .data
-    ).slice(2);
     wsBithumb = new WebSocket(`wss://pubwss.bithumb.com/pub/ws`);
-    wsBithumb.onopen = () => {
+    wsBithumb.onopen = async () => {
+      const bithumbList = coinList.filter((coin) => coin.bithumb);
       if (wsBithumb !== null && wsBithumb.readyState === 1) {
         console.log("t connected");
         const data = {
           type: "ticker",
-          symbols: ["BTC_KRW", ...bithumbList.map((coin) => `${coin}_KRW`)],
+          symbols: [
+            "BTC_KRW",
+            ...bithumbList.map((coin) => `${coin.name}_KRW`),
+          ],
           tickTypes: ["30M", "1H"],
         };
         wsBithumb.send(JSON.stringify(data));

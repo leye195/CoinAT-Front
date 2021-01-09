@@ -133,11 +133,14 @@ export default handleActions(
     [COIN_LIST_REQUEST]: (state, action) => produce(state, (draft) => {}),
     [COIN_LIST_SUCCESS]: (state, action) =>
       produce(state, (draft) => {
-        const coinList = action.payload.map((coin) => {
+        const coinNames = action.payload.map((coin) => {
           return coin.name;
         });
+        const coinList = action.payload.map((coin) => {
+          return coin;
+        });
         getList(coinList);
-        draft.coinList = coinList;
+        draft.coinList = coinNames;
       }),
     [COIN_LIST_FAILURE]: (state, action) => produce(state, (draft) => {}),
     [BITHUMB_BITCOIN_KRW]: (state, action) =>

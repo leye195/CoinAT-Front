@@ -35,7 +35,6 @@ const App = () => {
   }, [dispatch]);
   useEffect(() => {
     dispatch(loadCoinList());
-    //getCurrency();
   }, [dispatch]);
   return (
     <>
