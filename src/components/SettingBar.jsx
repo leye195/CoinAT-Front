@@ -1,12 +1,15 @@
 import React, { useCallback, useState, useRef, useEffect } from "react";
 import styled from "styled-components";
 import { useDispatch, useSelector } from "react-redux";
-import { sendMessage, cancelMessage } from "../reducers/bot";
 import { faCog } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import ItemList from "./ItemList";
 import SettingTrade from "./SettingTrade";
+import { sendMessage, cancelMessage } from "../reducers/bot";
+
+
 const SettingBarDiv = styled.div`
+  display: none;
   position: fixed;
   top: 0;
   right: 10px;
@@ -14,8 +17,6 @@ const SettingBarDiv = styled.div`
   background: #c4cfd8;
   border-bottom-left-radius: 5px;
   border-bottom-right-radius: 5px;
-  display: flex;
-  flex-direction: column;
   box-shadow: -1px 1px 3px 0px #696969;
   z-index: 10;
   @media (max-width: 425px) {
@@ -23,10 +24,12 @@ const SettingBarDiv = styled.div`
     right: 0px;
   }
 `;
+
 const InputWrapper = styled.div`
   display: flex;
   flex-direction: column;
 `;
+
 const SelectContainer = styled.div`
   display: flex;
   flex-direction: row;
@@ -38,6 +41,7 @@ const SelectContainer = styled.div`
     flex: 1;
   }
 `;
+
 const SelectBtn = styled.button`
   color: white;
   background-color: #bdc3c7;

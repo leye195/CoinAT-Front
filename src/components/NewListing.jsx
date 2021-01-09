@@ -5,7 +5,7 @@ import { v4 } from "uuid";
 import { faMinus, faPlus } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { loadUpbitNewListing } from "../reducers/coin";
-//import { getList } from "../utills/utills";
+
 const NewListingDiv = styled.div`
   display: flex;
   flex-direction: column;
@@ -19,6 +19,7 @@ const NewListingDiv = styled.div`
   border: 3px solid #d4d2d270;
   box-shadow: 2px 2px 6px 1px;
   overflow: scroll;
+
   @media (min-width: 1025px) {
     width: ${(props) => (props.hide ? "auto" : "270px")};
     height: ${(props) => (props.hide ? "auto" : "65vh")};
@@ -69,6 +70,7 @@ const UpbitInfoUl = styled.ul`
   padding: 5px;
   margin: 2px;
 `;
+
 const UpbitInfoli = styled.li`
   list-style: none;
   font-size: 0.8rem;
@@ -81,7 +83,7 @@ const BinanceInfoli = styled(UpbitInfoli.withComponent("li"))`
 `;
 
 function NewListing() {
-  const { upbitNewListing, binanceNewListing, coinList } = useSelector(
+  const { upbitNewListing, binanceNewListing } = useSelector(
     (state) => state.coin
   );
   const [selected, setSelected] = useState(0);
@@ -112,7 +114,6 @@ function NewListing() {
   const getNewListing = useCallback(() => {
     if (!timer.current) {
       dispatch(loadUpbitNewListing());
-      //dispatch(loadBianceNewListing());
       setTimeout(() => {
         timer.current = null;
         getNewListing();
