@@ -178,7 +178,6 @@ function coinListAPI() {
 function* coinList() {
   try {
     const result = yield call(coinListAPI);
-    console.log(result);
     yield put({
       type: COIN_LIST_SUCCESS,
       payload: result.data,
