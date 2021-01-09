@@ -14,6 +14,11 @@ import { useDispatch, useSelector } from "react-redux";
 import { getPercent, combineTickers } from "../utills/utills";
 import { v4 } from "uuid";
 import { useEffect } from "react";
+
+const Container = styled.main`
+  min-height: 100vh;
+`;
+
 const ExchangesWrapper = styled.section`
   display: flex;
   flex-direction: column;
@@ -323,7 +328,7 @@ function ExchangeList() {
     [sortType]
   );
   return (
-    <main>
+    <Container>
       <SettingBar coinInfo={upbitCoinInfo} upbitBitKrw={upbitBitKrw} />
       <CurrentExchangeBar nav={nav} isFixed={isFixed} />
       <ExchangesWrapper
@@ -415,7 +420,7 @@ function ExchangeList() {
       {(loading || upbitCoinInfo.length < coinList.length) && (
         <Loading isLoading={true} />
       )}
-    </main>
+    </Container>
   );
 }
 export default React.memo(ExchangeList);
