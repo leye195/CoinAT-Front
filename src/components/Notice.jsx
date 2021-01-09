@@ -19,6 +19,7 @@ const Container = styled.section`
     display: none;
   }
 `;
+
 const ListContainer = styled.div`
   width: 100%;
   height: 30px;
@@ -42,6 +43,7 @@ const ListItem = styled.div`
   @media screen and (max-width: 425px) {
   }
 `;
+
 const Title = styled.p`
   display: inline-block;
   margin: 0;
@@ -56,6 +58,7 @@ const Listing = () => {
   const { upbitNewListing } = useSelector((state) => state.coin);
   const [innerWidth, setInnerWidth] = useState(window.innerWidth);
   let cnt = useRef(0);
+
   const handleNoticeAnimation = useCallback(() => {
     setInterval(() => {
       if (cnt.current > 5) {
@@ -98,10 +101,12 @@ const Listing = () => {
       }
     }, 4000);
   }, []);
+
   const handleResize = () => {
     const innerWidth = window.innerWidth;
     setInnerWidth(innerWidth);
   };
+
   useEffect(() => {
     window.addEventListener("resize", handleResize);
     handleNoticeAnimation();
@@ -109,6 +114,7 @@ const Listing = () => {
       window.removeEventListener("resize", handleResize);
     };
   }, [dispatch, handleNoticeAnimation]);
+  
   return (
     <Container>
       <ListContainer
