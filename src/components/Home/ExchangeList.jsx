@@ -1,6 +1,8 @@
-import React, { useState, useLayoutEffect, useCallback, useRef } from "react";
+import React, { useState, useLayoutEffect, useCallback, useRef, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { v4 } from "uuid";
 import styled, { css } from "styled-components";
-import Loading from "./Loading";
+import Loading from "../Loading";
 import CurrentExchangeBar from "./CurrentExchangeBar";
 import SettingBar from "./SettingBar";
 import {
@@ -9,11 +11,9 @@ import {
   loadBithumbBitkrw,
   loadUsdToKrw,
   loadUpbitNewListing,
-} from "../reducers/coin";
-import { useDispatch, useSelector } from "react-redux";
-import { getPercent, combineTickers } from "../utills/utills";
-import { v4 } from "uuid";
-import { useEffect } from "react";
+} from "../../reducers/coin";
+import { getPercent, combineTickers } from "../../utills/utills";
+
 
 const Container = styled.main`
   min-height: 100vh;
@@ -150,13 +150,15 @@ function ExchangeList() {
   const [loading, setLoading] = useState(true);
   const [isFixed, setIsFixed] = useState(false);
   const [navTop, setNavTop] = useState(null);
+  
   const nav = useRef(null);
-  //const [sortType, setSortType] = useState(-1);
-  const dispatch = useDispatch();
-  const { coinList, upbitBitKrw } = useSelector((state) => state.coin);
   const info = useRef([]);
   const sortType = useRef(-1);
   const timer = useRef(null);
+
+  const dispatch = useDispatch();
+  const { coinList, upbitBitKrw } = useSelector((state) => state.coin);
+
   const getExchangeTickers = useCallback(() => {
     if (isFirstLoading === false && loading === false) setLoading(true);
     const coinTickers = combineTickers(upbitBitKrw, coinList);
@@ -219,6 +221,7 @@ function ExchangeList() {
       }
     }
   }, [loading, isFirstLoading, dispatch, sortType, coinList, upbitBitKrw]);
+
   const navFix = () => {
     if (window.scrollY >= navTop) {
       //console.log("fixed");
@@ -228,6 +231,7 @@ function ExchangeList() {
       setIsFixed(false);
     }
   };
+
   useEffect(() => {
     if (navTop === null) setNavTop(nav.current.offsetTop);
     window.addEventListener("scroll", navFix);
@@ -235,12 +239,14 @@ function ExchangeList() {
       window.removeEventListener("scroll", navFix);
     };
   }, [navTop]);
+  
   useLayoutEffect(() => {
     if (timer.current === null) getExchangeTickers();
     return () => {
       //clearTimeout(timer.current);
     };
   }, [getExchangeTickers, upbitBitKrw, coinList, info]);
+
   const onSort = useCallback(
     (coinInfo) => (e) => {
       const {
@@ -327,6 +333,7 @@ function ExchangeList() {
     },
     [sortType]
   );
+  
   return (
     <Container>
       <SettingBar coinInfo={upbitCoinInfo} upbitBitKrw={upbitBitKrw} />

@@ -1,5 +1,6 @@
 import React from 'react';
-import ExchangeList from '../components/ExchangeList';
+import ExchangeList from '../components/Home/ExchangeList';
+
 const Home = () => {
   return <ExchangeList />
 };

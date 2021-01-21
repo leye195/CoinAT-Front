@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useState } from "react";
 import styled, { css } from "styled-components";
 import { useSelector, useDispatch } from "react-redux";
-import { setBtc } from "../reducers/coin";
+import { setBtc } from "../../reducers/coin";
 const ExchangeContainer = styled.section`
   ${(props) =>
     props.isFixed
