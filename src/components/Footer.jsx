@@ -3,8 +3,9 @@ import styled from 'styled-components';
 
 const Container = styled.footer`
     min-height: 2.5rem;
-    border-top: 1px solid #e3e3e3;
+    width: 100%;
     margin-top: 1.2rem;
+    border-top: 1px solid #e3e3e3;
     background-color: #fafafa;
 `;
 

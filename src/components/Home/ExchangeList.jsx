@@ -397,7 +397,7 @@ function ExchangeList() {
                   </Coin>
                   <Coin head={percentUP === "-100.00"} up={percentUP > 0}>
                     {percentUP !== "Infinity"
-                      ? percentUP === "-100.00"
+                      ? percentUP === "-100.00"||isNaN(percentUP)
                         ? "미 상장"
                         : `${percentUP}%`
                       : "로딩중"}
@@ -414,7 +414,7 @@ function ExchangeList() {
                     data-type={percentBit === "-100.00" ? "unlist" : "list"}
                   >
                     {percentBit !== "Infinity"
-                      ? percentBit === "-100.00"
+                      ? percentBit === "-100.00"||isNaN(percentUP)
                         ? "미 상장"
                         : `${percentBit}%`
                       : "로딩중"}

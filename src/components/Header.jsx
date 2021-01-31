@@ -6,10 +6,9 @@ const Container = styled.header`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin: 0 10px 0 10px;
+  padding: 3px 10px 3px 10px;
   height: 50px;
-  padding-top: 3px;
-  padding-bottom: 3px;
+  border-bottom: 1px solid #e3e3e3;
   background-color: #fafafa;
 
   & a {
@@ -25,7 +24,6 @@ const Container = styled.header`
 const Title = styled.p`
   font-family: 800;
   font-weight: bold;
-
 `;
 
 
@@ -36,7 +34,7 @@ const Header = ({title}) => (
             {title}
           </Link>
         </Title>
-        <Link to={`/event`}>Event</Link>
+        <Link to={`/event`}>공지사항</Link>
     </Container>
 );
 export default Header;
