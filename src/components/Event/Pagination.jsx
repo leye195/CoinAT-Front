@@ -5,7 +5,11 @@ import { faAngleRight, faAngleDoubleRight, faAngleLeft, faAngleDoubleLeft } from
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 const Container = styled.div`
-    padding: 1.5rem;
+    position: absolute;
+    width: 100%;
+    padding: 0  0 1rem 0;
+    bottom: 0;
+
 `;
 
 const PaginationUl = styled.ul`
@@ -16,12 +20,37 @@ const PaginationUl = styled.ul`
     list-style: none;
 `;
 
-const PaginationLi = styled.li``;
+const PaginationLi = styled.li`
+    background-color: #2c3e50;
+    &:first-child {
+        border-top-left-radius: 10px;
+        border-bottom-left-radius: 10px;
+    }
 
-const Button = styled.button``;
+    &:last-child {
+        border-top-right-radius: 10px;
+        border-bottom-right-radius: 10px;
+    }
+
+    &:hover {
+        opacity: 0.85;
+    }
+`;
+
+const Button = styled.button`
+    padding: 10px;
+    width: 50px;
+    height: 50px;
+    font-weight: bold;
+    color: white;
+    background-color: transparent;
+    border: none;
+    outline: none;
+    cursor: pointer;
+`;
 
 
-const Pagination = ({pagesLength = 0,pagesToShow,callback, currentPage}) => {
+const Pagination = ({pagesLength = 0, pagesToShow, callback, currentPage}) => {
     const pages = useMemo(() => {
         const halfPageToShow = Math.floor(pagesToShow / 2);
         const startPage = clamp(currentPage - halfPageToShow, 1, pagesLength - pagesToShow + 1);
@@ -32,7 +61,6 @@ const Pagination = ({pagesLength = 0,pagesToShow,callback, currentPage}) => {
 
     function moveTo(e, page) {
         e.preventDefault();
-    
         if (page < 1 || page > pagesLength) return;
         callback(page);
     }

@@ -1,5 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
+import moment from 'moment';
 
 const TableRow = styled.tr`
 
@@ -18,14 +19,15 @@ const NoticeDate = styled.p`
   text-align: center;
   font-weight: 400;
 `;
-const NoticeItem = () => {
+const NoticeItem = ({title,updatedAt}) => {
+
     return <>
         <TableRow>
             <TableCell>
-                <NoticeTitle>[거래] 원화마켓 신규 상장 (샌드박스 SAND)</NoticeTitle>
+                <NoticeTitle>{title}</NoticeTitle>
             </TableCell>
             <TableCell>
-                <NoticeDate>2021.01.21</NoticeDate>
+                <NoticeDate>{moment(updatedAt).format('YYYY-MM-DD')}</NoticeDate>
             </TableCell>
         </TableRow>
     </>

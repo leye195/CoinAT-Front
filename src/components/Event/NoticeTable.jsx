@@ -31,18 +31,6 @@ const NoticeTable = ({items=[]}) => {
         </TableHead>
         <TableBody>
             {items.map((item)=><NoticeItem {...item} />)}
-            <NoticeItem  />
-            <NoticeItem  />
-            <NoticeItem  />
-            <NoticeItem  />
-            <NoticeItem  />
-            <NoticeItem  />
-            <NoticeItem  />
-            <NoticeItem  />
-            <NoticeItem  />
-            <NoticeItem  />
-            <NoticeItem  />
-            <NoticeItem  />
         </TableBody>
     </Table>
 };
