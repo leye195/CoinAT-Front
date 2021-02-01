@@ -3,9 +3,9 @@ import styled from "styled-components";
 import { useDispatch, useSelector } from "react-redux";
 import { faCog } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import ItemList from "./ItemList";
-import SettingTrade from "./SettingTrade";
-import { sendMessage, cancelMessage } from "../reducers/bot";
+import ItemList from "../ItemList";
+import SettingTrade from "../SettingTrade";
+import { sendMessage, cancelMessage } from "../../reducers/bot";
 
 
 const SettingBarDiv = styled.div`

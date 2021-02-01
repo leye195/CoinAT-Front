@@ -39,10 +39,10 @@ import {
   TICKERS_FAILUER,
 } from "../reducers/coin";
 import axios from "axios";
-import dotenv from "dotenv";
-dotenv.config();
+
 const API_URL = process.env.REACT_APP_API;
 const HEROKU_URL = "https://secure-waters-04189.herokuapp.com/";
+
 function loadCurrencyAPI() {
   return axios.get(`${HEROKU_URL}currency`, {
     headers: {

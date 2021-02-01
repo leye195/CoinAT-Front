@@ -1,5 +1,4 @@
 import React, { useEffect, useRef, useCallback } from "react";
-import ExchangeList from "./components/ExchangeList";
 import { useDispatch } from "react-redux";
 import { loadCoinList, loadUsdToKrw } from "./reducers/coin";
 import Routes from "./Routes";
