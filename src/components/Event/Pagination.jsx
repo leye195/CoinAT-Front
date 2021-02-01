@@ -78,7 +78,7 @@ const Pagination = ({pagesLength = 0, pagesToShow, callback, currentPage}) => {
                     <FontAwesomeIcon icon={faAngleLeft} />
                 </Button>
             </PaginationLi>
-            {pages.map((page)=><PaginationLi>
+            {pages.map((page)=><PaginationLi key={page}>
                 <Button type="button" 
                 onClick={(e) => {
                   moveTo(e, page);
