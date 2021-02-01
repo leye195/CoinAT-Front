@@ -4,6 +4,7 @@ import styled from 'styled-components';
 import EventContainer from '../components/Event/EventContainer';
 import NoticeTable from '../components/Event/NoticeTable';
 import Pagination from '../components/Event/Pagination';
+import Loading from '../components/Loading';
 import { loadNotice } from '../reducers/notice';
 
 const Container = styled.div`
@@ -36,10 +37,9 @@ const NoticeHeader = styled.header`
 const Event = () => {
 
     const [currentPage, setCurrentPage] = useState(1);
-    const [pagesLength, setPagesLength] = useState(0);
     
     const dispatch = useDispatch();
-    const {notices,totalPage} = useSelector((state)=>state.notice);
+    const {notices = [],totalPage = 1, isLoading = true} = useSelector((state)=>state.notice);
 
     const handlePagination = (page) =>{
         dispatch(loadNotice({page}));
@@ -58,8 +58,8 @@ const Event = () => {
                     <Pagination currentPage={currentPage} pagesToShow={totalPage} pagesLength={totalPage} callback={handlePagination}/>
                 </NoticeArticle>
             </NoticeSection>
-
         </EventContainer>
+        {isLoading&&<Loading isLoading={true}/>}
     </Container>
 };
 export default Event;
