@@ -30,7 +30,7 @@ const NoticeTable = ({items=[]}) => {
             </TableRow>
         </TableHead>
         <TableBody>
-            {items.map((item)=><NoticeItem {...item} />)}
+            {items.map((item)=><NoticeItem key={item._id} {...item} />)}
         </TableBody>
     </Table>
 };
