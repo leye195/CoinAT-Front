@@ -4,8 +4,9 @@ import { loadCoinList, loadUsdToKrw } from "./reducers/coin";
 import Routes from "./Routes";
 
 const App = () => {
-  const dispatch = useDispatch();
   let timer = useRef(null);
+  const dispatch = useDispatch();
+
   const getCurrency = useCallback(() => {
     dispatch(loadUsdToKrw());
     if (!timer.current) {
@@ -15,14 +16,12 @@ const App = () => {
       }, 8000);
     }
   }, [dispatch]);
+
   useEffect(() => {
     dispatch(loadCoinList());
   }, [dispatch]);
-  return (
-    <>
-      <Routes/>
-    </>
-  );
+
+  return <Routes/>;
 };
 
 export default App;

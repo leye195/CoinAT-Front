@@ -3,20 +3,28 @@ import axios from "axios";
 import { GET_NOTICE_REQUEST, GET_NOTICE_SUCCESS, GET_NOTICE_FAILURE } from "../reducers/notice";
 
 const HEROKU_URL =  "https://secure-waters-04189.herokuapp.com/"; //process.env.REACT_APP_HERO;
-function loadNoticesAPI({page=1}) {
-  return axios.get(`${HEROKU_URL}notice/upbit`,{
+
+function loadNoticesAPI({page=1,type="notice"}) {
+  return type==="notice"?axios.get(`${HEROKU_URL}notice/upbit`,{
       params:{
-          page
+        page
       }
-  });
+  }): axios.get(`https://project-team.upbit.com/api/v1/disclosure?region=kr&per_page=${12*page}`);
 }
 function* loadNotices(action) {
   try {
-    const result = yield call(loadNoticesAPI,action.payload);
-    yield put({
-      type: GET_NOTICE_SUCCESS,
-      payload: result.data,
-    });
+    const {type,page} = action.payload;
+    const {data} = yield call(loadNoticesAPI,action.payload);
+    const notices = type==="notice"? data.notices.map((notice)=>notice):data.data.posts.map((post)=>({title:post.text,updatedAt:post.start_date}));  
+    type==="notice"?    
+      yield put({
+        type: GET_NOTICE_SUCCESS,
+        payload: {notices,more:page<data.totalPage?true:false, page, type},
+      }) : 
+      yield put({
+        type: GET_NOTICE_SUCCESS,
+        payload: {notices,more: data.data.more, page, type}
+      });
   } catch (e) {
     yield put({
       type: GET_NOTICE_FAILURE,

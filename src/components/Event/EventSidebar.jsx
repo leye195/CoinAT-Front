@@ -1,0 +1,66 @@
+import React from 'react';
+import {NavLink, useLocation} from 'react-router-dom';
+import styled from 'styled-components';
+import qs from 'qs';
+
+const Section = styled.section`
+  width: 200px;
+  height: fit-content;
+  margin-right: 50px;
+  box-shadow: rgb(0 0 0 / 16%) 0px 0px 4px, rgb(0 0 0 / 23%) 0px 0px 4px;
+`;
+
+const Aside = styled.aside`
+  min-height: auto;
+`;
+
+const MenuListContainer = styled.div`
+  padding: 0;
+`;
+
+const MenuList = styled.ul`
+  padding: 0;
+  margin: 0;
+  list-style: none;
+`;
+
+const Menu = styled.li`
+  padding: 10px;
+  background-color: ${({isActive})=>isActive===true?'#fafafa':'inherit'};
+
+  & a {
+    color: #000000;
+    text-decoration: none;
+
+    &.event-active {
+      color: #525f6e;
+      font-weight: bold;
+    }
+  }
+`;
+
+const EventSideBar = () => {
+  const location = useLocation();
+  const isActive = (type) => (match,location) => {
+    return type === qs.parse(location.search)['?type']? true : false;
+  }
+
+  return (
+    <Section>
+      <Aside>
+        <MenuListContainer>
+            <MenuList>
+              <Menu isActive={isActive('notice')('',location)}>
+                <NavLink isActive={isActive('notice')} activeClassName={'event-active'} to={'event?type=notice'}>공지사항</NavLink>
+              </Menu>
+              <Menu isActive={isActive('disclosure')('',location)}>
+                <NavLink isActive={isActive('disclosure')} activeClassName={'event-active'} to={'event?type=disclosure'}>프로젝트 공시</NavLink>
+              </Menu>
+            </MenuList>
+        </MenuListContainer>
+      </Aside>
+    </Section>
+  );
+}
+
+export default EventSideBar;
