@@ -67,7 +67,7 @@ function ItemList({ coins, onChangePercent }) {
         {coins &&
           coins.map((coin) => {
             return (
-              <ItemListLi>
+              <ItemListLi key={coin}>
                 <ItemSpan>{coin}</ItemSpan>
                 <ItemInput
                   type="number"

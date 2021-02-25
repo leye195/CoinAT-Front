@@ -1,65 +1,96 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { useHistory, useLocation } from 'react-router-dom';
 import styled from 'styled-components';
+import qs from 'qs'
 import EventContainer from '../components/Event/EventContainer';
+import EventSideBar from '../components/Event/EventSidebar';
 import NoticeTable from '../components/Event/NoticeTable';
-import Pagination from '../components/Event/Pagination';
+import Loading from '../components/Loading';
+import LoadMore from '../components/Event/LoadMore';
 import { loadNotice } from '../reducers/notice';
 
+const convertTitle = {
+  'notice': '공지사항',
+  'disclosure': '프로젝트 공시'  
+};
+
 const Container = styled.div`
-    padding-top: 2.5rem;
-    padding-bottom: 2rem;
+  padding-top: 2.5rem;
+  padding-bottom: 2rem;
+  min-height: 744px;
 `;
 
 const NoticeSection= styled.section`
-    width:100%;
+  width:100%;
+  box-shadow: rgb(0 0 0 / 16%) 0px 0px 4px, rgb(0 0 0 / 23%) 0px 0px 4px;
 `;
 
 const NoticeArticle = styled.article`
-   position: relative;
-    min-height: 800px;
-    margin-bottom: 10px;
+  position: relative;
+  min-height: 600px;
+  margin-bottom: 10px;
 `;
 
 const NoticeHeader = styled.header`
-    display: flex;
-    align-items: center;
-    height: 60px;
-    padding-left: 1rem;
-    padding-right: 1rem;
-    font-weight: bold;
-    background: #525f6e;
-    color:white;
+  display: flex;
+  align-items: center;
+  height: 60px;
+  padding-left: 1rem;
+  padding-right: 1rem;
+  font-weight: bold;
+  background: #525f6e;
+  color:white;
 `; 
 
+const LoadMoreContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  margin: 5px 5px 0 5px;
+  width: auto;
+`;
 
 const Event = () => {
-
+    const [type, setType] = useState('notice');
     const [currentPage, setCurrentPage] = useState(1);
-    const [pagesLength, setPagesLength] = useState(0);
-    
+    const location = useLocation();
+    const history = useHistory();
     const dispatch = useDispatch();
-    const {notices,totalPage} = useSelector((state)=>state.notice);
+    const {notices = [], isLoading = true, more} = useSelector((state)=>state.notice);
+    
 
-    const handlePagination = (page) =>{
-        dispatch(loadNotice({page}));
-        setCurrentPage(page);
+    const handleLoadMore = () =>{
+      dispatch(loadNotice({page: currentPage+1,type}));
+      setCurrentPage(currentPage+1);
     }
+    
+    useEffect(() => {
+      const type = qs.parse(location.search)['?type'];
+      if(!type){
+        history.replace('/event?type=notice');
+        return;
+      }
+      setType(type);
+    },[location, history]);
 
     useEffect(()=>{
-        dispatch(loadNotice({page:1}));
-    },[dispatch]);
+      dispatch(loadNotice({page:1,type: type? type:'notice'}));
+    },[dispatch,type]);
+
     return <Container>
         <EventContainer>
+            <EventSideBar/>
             <NoticeSection>
                 <NoticeArticle>
-                    <NoticeHeader>공지사항</NoticeHeader>
+                    <NoticeHeader>{convertTitle[type]}</NoticeHeader>
                     <NoticeTable items={notices}/>
-                    <Pagination currentPage={currentPage} pagesToShow={totalPage} pagesLength={totalPage} callback={handlePagination}/>
+                    <LoadMoreContainer>
+                      <LoadMore isMore={more} handleLoadMore={handleLoadMore}/>
+                    </LoadMoreContainer>
                 </NoticeArticle>
             </NoticeSection>
-
         </EventContainer>
+        {isLoading&&<Loading isLoading={true}/>}
     </Container>
 };
 export default Event;

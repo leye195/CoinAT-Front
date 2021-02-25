@@ -12,6 +12,7 @@ const NoticeTitle = styled.p`
     padding: 0.8rem 0.4rem;
     margin: 0;
     font-weight: bold;
+    cursor: pointer;
 `;
 const NoticeDate = styled.p`
   padding: 0.8rem 0.4rem;
@@ -20,7 +21,6 @@ const NoticeDate = styled.p`
   font-weight: 400;
 `;
 const NoticeItem = ({title,updatedAt}) => {
-
     return <>
         <TableRow>
             <TableCell>

@@ -3,36 +3,38 @@ import styled from 'styled-components';
 import NoticeItem from './NoticeItem';
 
 const Table = styled.table`
-    width: 100%;
-    margin: 0 auto;
-    border-spacing: 0;
-    background: white;
+  width: 100%;
+  margin: 0 auto;
+  border-spacing: 0;
+  background: white;
 `;
 const TableHead = styled.thead`
   background-color: #f9fafc;
 `;
-const TableBody = styled.tbody``;
+const TableBody = styled.tbody`
+  height: 588px;
+`;
 const TableRow = styled.tr`
 `;
 const TableHeadCell = styled.th`
     padding: 10px 0;
     border-bottom: 1px solid #e3e3e3;
-
 `; 
 
-
 const NoticeTable = ({items=[]}) => {
-    return <Table>
+    return (
+      <Table>
         <TableHead>
-            <TableRow>
-                <TableHeadCell>제목</TableHeadCell>
-                <TableHeadCell>등록일</TableHeadCell>
-            </TableRow>
+          <TableRow>
+            <TableHeadCell>제목</TableHeadCell>
+            <TableHeadCell>등록일</TableHeadCell>
+          </TableRow>
         </TableHead>
         <TableBody>
-            {items.map((item)=><NoticeItem key={item._id} {...item} />)}
+          {items.map((item,idx)=><NoticeItem key={idx} {...item} />)}
         </TableBody>
-    </Table>
+      </Table>
+    );
 };
 
 export default NoticeTable;

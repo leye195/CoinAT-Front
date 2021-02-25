@@ -8,19 +8,27 @@ export const GET_NOTICE_SUCCESS = "GET_NOTICE_SUCCESS";
 export const loadNotice = createAction(GET_NOTICE_REQUEST);
 
 const initialState = {
-    notices:[],
-    totalPage:1,
+  notices:[],
+  more:false,
+  isLoading: false,
 };
 export default handleActions(
   {
-    [GET_NOTICE_REQUEST]: (state, action) => produce(state, (draft) => {}),
+    [GET_NOTICE_REQUEST]: (state, action) => produce(state, (draft) => {
+        draft.isLoading = true;
+    }),
     [GET_NOTICE_SUCCESS]: (state, action) =>
       produce(state, (draft) => {
-        const {notices, totalPage} = action.payload;
-        draft.notices = notices;
-        draft.totalPage = totalPage;
+     
+        const {notices, more, page, type} = action.payload;
+        
+        draft.notices = type==="notice"?(page>1?[...draft.notices,...notices]:notices):notices;
+        draft.more = more;
+        draft.isLoading = false;
       }),
-    [GET_NOTICE_FAILURE]: (state, action) => produce(state, (draft) => {}),
+    [GET_NOTICE_FAILURE]: (state, action) => produce(state, (draft) => {
+        draft.isLoading = false;
+    }),
   },
   initialState
 );

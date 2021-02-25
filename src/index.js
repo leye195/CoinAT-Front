@@ -8,12 +8,11 @@ import { Provider } from "react-redux";
 import reducers from "./reducers";
 import createSagaMiddleware from "redux-saga";
 import rootSaga from "./sagas";
-import dotenv from "dotenv";
-//import { initSocket } from "./socket";
-dotenv.config();
+
 const sagaMiddleware = createSagaMiddleware();
 const store = createStore(reducers, applyMiddleware(sagaMiddleware));
 sagaMiddleware.run(rootSaga);
+
 ReactDOM.render(
   <React.StrictMode>
     <Provider store={store}>
