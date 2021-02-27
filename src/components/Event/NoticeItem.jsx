@@ -2,12 +2,13 @@ import React from 'react';
 import styled from 'styled-components';
 import moment from 'moment';
 import {breakDown} from '../../styles/_mixin';
+import { colors } from '../../styles/_variables';
 
 const TableRow = styled.tr`
 
 `;
 const TableCell = styled.td`
-  border-bottom: 1px solid #e3e3e3;
+  border-bottom: 1px solid ${colors['gray-100']};
   ${breakDown.sm`
     &:firstchild{
       width: 60%;

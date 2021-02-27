@@ -9,6 +9,7 @@ import NoticeTable from '../components/Event/NoticeTable';
 import Loading from '../components/Loading';
 import LoadMore from '../components/Event/LoadMore';
 import { loadNotice } from '../reducers/notice';
+import { colors } from '../styles/_variables';
 
 const convertTitle = {
   'notice': '공지사항',
@@ -39,8 +40,8 @@ const NoticeHeader = styled.header`
   padding-left: 1rem;
   padding-right: 1rem;
   font-weight: bold;
-  background: #90abbf;
-  color:white;
+  background:${colors['blueSky']};
+  color:${colors['white']};
 `; 
 
 const LoadMoreContainer = styled.div`

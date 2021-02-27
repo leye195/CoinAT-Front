@@ -1,11 +1,14 @@
 import React from "react";
 import styled from "styled-components";
+import { colors } from "../styles/_variables";
+
 const ItemListDiv = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
   margin: 5px;
 `;
+
 const ItemListUl = styled.ul`
   display: flex;
   flex-direction: column;
@@ -16,7 +19,7 @@ const ItemListUl = styled.ul`
   height: 200px;
   padding: 0;
   margin: 0;
-  background-color: white;
+  background-color: ${colors['white']};
   margin: 5px;
   padding: 5px;
   overflow-y: scroll;
@@ -29,25 +32,29 @@ const ItemListUl = styled.ul`
     -ms-overflow-style: none;
   }
 `;
+
 const ItemListLi = styled.li`
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding: 10px;
-  border: 1px solid #e3e3e3;
+  border: 1px solid ${colors['gray-100']};
   border-left: 0;
   border-right: 0;
   width: 100%;
 `;
+
 const ItemSpan = styled.span`
   font-size: 0.8rem;
 `;
+
 const ItemInput = styled.input`
   background-color: white;
-  border: 2px solid #e3e3e3;
+  border: 2px solid ${colors['gray-100']};
   width: 30%;
   padding: 5px;
 `;
+
 function ItemList({ coins, onChangePercent }) {
   return (
     <ItemListDiv>
