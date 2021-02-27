@@ -17,7 +17,7 @@ const convertTitle = {
 
 const Container = styled.div`
   padding-top: 2.5rem;
-  padding-bottom: 2rem;
+  padding-bottom: 2.5rem;
   min-height: 744px;
 `;
 
@@ -39,7 +39,7 @@ const NoticeHeader = styled.header`
   padding-left: 1rem;
   padding-right: 1rem;
   font-weight: bold;
-  background: #525f6e;
+  background: #90abbf;
   color:white;
 `; 
 
@@ -82,11 +82,16 @@ const Event = () => {
             <EventSideBar/>
             <NoticeSection>
                 <NoticeArticle>
-                    <NoticeHeader>{convertTitle[type]}</NoticeHeader>
-                    <NoticeTable items={notices}/>
-                    <LoadMoreContainer>
-                      <LoadMore isMore={more} handleLoadMore={handleLoadMore}/>
-                    </LoadMoreContainer>
+                  <NoticeHeader>{convertTitle[type]}</NoticeHeader>
+                  {notices?.length>0&&(
+                    <>
+                      <NoticeTable items={notices}/>
+                      <LoadMoreContainer>
+                        <LoadMore isMore={more} handleLoadMore={handleLoadMore}/>
+                      </LoadMoreContainer>
+                    </>
+                   )
+                  }
                 </NoticeArticle>
             </NoticeSection>
         </EventContainer>

@@ -17,8 +17,8 @@ const TableBody = styled.tbody`
 const TableRow = styled.tr`
 `;
 const TableHeadCell = styled.th`
-    padding: 10px 0;
-    border-bottom: 1px solid #e3e3e3;
+  padding: 10px 0;
+  border-bottom: 1px solid #e3e3e3;
 `; 
 
 const NoticeTable = ({items=[]}) => {

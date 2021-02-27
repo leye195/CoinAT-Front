@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, NavLink } from 'react-router-dom';
 import styled from "styled-components";
 
 const Container = styled.header`
@@ -9,11 +9,11 @@ const Container = styled.header`
   padding: 3px 10px 3px 10px;
   height: 50px;
   border-bottom: 1px solid #e3e3e3;
-  background-color: #fafafa;
-
+  background-color: #525f6e;
+  font-weight: bold;
   & a {
     text-decoration: none;
-    color: black;
+    color: white;
   }
   
   @media (max-width: 768px) {
@@ -23,18 +23,18 @@ const Container = styled.header`
 
 const Title = styled.p`
   font-family: 800;
-  font-weight: bold;
+  font-size: 1.2rem;
 `;
 
 
 const Header = ({title}) => (
     <Container>
-        <Title>
-          <Link to={'/'}>
-            {title}
-          </Link>
-        </Title>
-        <Link to={`/event`}>공지사항</Link>
+      <Title>
+        <Link to={'/'}>
+          {title}
+        </Link>
+      </Title>
+      <NavLink activeClassName={''} to={`/event`}>소식</NavLink>
     </Container>
 );
 export default Header;
