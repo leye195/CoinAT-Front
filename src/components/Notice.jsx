@@ -3,6 +3,7 @@ import styled from "styled-components";
 import { useDispatch, useSelector } from "react-redux";
 import { v4 } from "uuid";
 import { useCallback } from "react";
+import { colors } from "../styles/_variables";
 
 const Container = styled.section`
   display: inline-flex;
@@ -10,9 +11,9 @@ const Container = styled.section`
   overflow: hidden;
   min-height: 40px;
   width: 100vw;
-  border-top: 1px solid #e3e3e3;
+  border-top: 1px solid ${colors['gray-100']};
   margin: 0 auto;
-  background-color: #e3e3e3;
+  background-color: ${colors['gray-100']};
   -ms-overflow-style: none; /* IE and Edge */
   scrollbar-width: none; /* Firefox */
   &::-webkit-scrollbar {
@@ -38,7 +39,7 @@ const ListItem = styled.div`
   padding: 5px;
   white-space: pre;
   font-weight: bolder;
-  background-color: white;
+  background-color: ${colors['white']};
   height: 25px;
   @media screen and (max-width: 425px) {
   }

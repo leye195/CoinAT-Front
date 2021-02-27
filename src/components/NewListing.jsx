@@ -5,6 +5,7 @@ import { v4 } from "uuid";
 import { faMinus, faPlus } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { loadUpbitNewListing } from "../reducers/coin";
+import { colors } from "../styles/_variables";
 
 const NewListingDiv = styled.div`
   display: flex;
@@ -32,6 +33,7 @@ const NewListingDiv = styled.div`
     opacity: ${(props) => (props.hide ? "0.2" : "1.0")};
   }
 `;
+
 const FontDiv = styled.div`
   display: flex;
   align-self: flex-start;
@@ -40,6 +42,7 @@ const FontDiv = styled.div`
     cursor: pointer;
   }
 `;
+
 const NewListingUl = styled.ul`
   display: ${(props) => (props.hide ? "none" : "flex")};
   padding: 0;
@@ -47,21 +50,21 @@ const NewListingUl = styled.ul`
   justify-content: center;
   text-align: center;
   margin: 0;
-  border-bottom: 3px solid #ffffff;
+  border-bottom: 3px solid ${colors['white']};
   cursor: pointer;
 `;
 const NewListingli = styled.li`
   list-style: none;
   flex: 1;
   padding: 5px;
-  color: ${(props) => (props.selected ? "black" : "#ffffff")};
-  font-weight: ${(props) => (props.selected ? "400" : "200")};
+  color: ${(props) => (props.selected ? `${colors['black']};` : `${colors['white']};`)};
+  font-weight: ${(props) => (props.selected ? '400' : '200')};
   font-size: 0.8rem;
   margin-bottom: 5px;
   word-break: keep-all;
 `;
 const InfoContainer = styled.div`
-  display: ${(props) => (props.hide ? "none" : "flex")};
+  display: ${(props) => (props.hide ?'none' : 'flex')};
   border-top: 1px solid #0404043b;
 `;
 const UpbitInfoUl = styled.ul`
@@ -77,7 +80,9 @@ const UpbitInfoli = styled.li`
   margin-bottom: 5px;
   font-weight: ${(props) => (props.new ? "600" : "300")};
 `;
+
 const BinanceInfoUl = UpbitInfoUl.withComponent("ul");
+
 const BinanceInfoli = styled(UpbitInfoli.withComponent("li"))`
   font-weight: ${(props) => (props.new ? "600" : "300")};
 `;

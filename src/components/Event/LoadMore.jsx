@@ -1,11 +1,12 @@
 import React from 'react';
 import styled from 'styled-components';
+import {colors} from '../../styles/_variables';
 
 const Button = styled.button`
   padding: 10px;
   width: 100%;
   border: none;
-  background: #f9fafc;
+  background: ${colors['gray-100']};
   font-size: 1.05rem;
   font-weight: bold;
   cursor: pointer;

@@ -3,10 +3,12 @@ import styled from 'styled-components';
 
 const Container = styled.div`
     display: flex;
+    flex-direction: column;
     margin: 0 auto;
     width: 90vw;
     @media (min-width:992px){
-        width:970px;
+      flex-direction: row;
+      width:970px;
     }
 `;
 
