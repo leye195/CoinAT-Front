@@ -9,6 +9,11 @@ const Section = styled.section`
   height: fit-content;
   margin-right: 50px;
   box-shadow: rgb(0 0 0 / 16%) 0px 0px 4px, rgb(0 0 0 / 23%) 0px 0px 4px;
+
+  @media (max-width:991px){
+    margin-right: 0;
+    margin-bottom: 10px;
+  }
 `;
 
 const Aside = styled.aside`
