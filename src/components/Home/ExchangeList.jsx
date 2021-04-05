@@ -217,7 +217,7 @@ function ExchangeList() {
         timer.current = setTimeout(() => {
           timer.current = null;
           getExchangeTickers();
-        }, 2000);
+        }, 1300);
       }
     }
   }, [loading, isFirstLoading, dispatch, sortType, coinList, upbitBitKrw]);
