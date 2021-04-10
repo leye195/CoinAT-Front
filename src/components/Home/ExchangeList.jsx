@@ -4,7 +4,6 @@ import { v4 } from "uuid";
 import styled, { css } from "styled-components";
 import Loading from "../Loading";
 import CurrentExchangeBar from "./CurrentExchangeBar";
-import SettingBar from "./SettingBar";
 import {
   loadUpbitBitKrw,
   loadBinanceBitUsdt,
@@ -151,7 +150,6 @@ function ExchangeList() {
   const [navTop, setNavTop] = useState(null);
   
   const nav = useRef(null);
-  const info = useRef([]);
   const sortType = useRef(-1);
   const isMounted = useRef(false);
   const timer = useRef(null);
@@ -336,7 +334,6 @@ function ExchangeList() {
   
   return (
     <Container>
-      <SettingBar coinInfo={upbitCoinInfo} upbitBitKrw={upbitBitKrw} />
       <CurrentExchangeBar nav={nav} isFixed={isFixed} />
       <ExchangesWrapper
         isFixed={isFixed}

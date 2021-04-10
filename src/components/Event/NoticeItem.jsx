@@ -29,6 +29,10 @@ const NoticeTitle = styled.p`
   ${breakDown.lg`
     font-size:0.8rem;
   `}
+
+  & > a {
+    color: black;
+  }
 `;
 const NoticeDate = styled.p`
   padding: 0.8rem 0.4rem;
@@ -39,11 +43,19 @@ const NoticeDate = styled.p`
     font-size:0.8rem;
   `}
 `;
-const NoticeItem = ({title,updatedAt}) => {
+const NoticeItem = ({title,updated_at: updatedAt, id, type}) => {
     return <>
         <TableRow>
             <TableCell>
-                <NoticeTitle>{title}</NoticeTitle>
+                <NoticeTitle>
+                  {
+                    type==='notice'?
+                    <a href={`https://upbit.com/service_center/notice?id=${id}`}>
+                      {title}
+                    </a>
+                    : title
+                  }
+                </NoticeTitle>
             </TableCell>
             <TableCell>
                 <NoticeDate>{moment(updatedAt).format('YYYY-MM-DD')}</NoticeDate>

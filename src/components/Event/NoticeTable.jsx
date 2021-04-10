@@ -22,7 +22,7 @@ const TableHeadCell = styled.th`
   border-bottom: 1px solid ${colors['gray-100']};
 `; 
 
-const NoticeTable = ({items=[]}) => {
+const NoticeTable = ({items=[], type}) => {
     return (
       <Table>
         <TableHead>
@@ -32,7 +32,7 @@ const NoticeTable = ({items=[]}) => {
           </TableRow>
         </TableHead>
         <TableBody>
-          {items.map((item,idx)=><NoticeItem key={idx} {...item} />)}
+          {items.map((item,idx)=><NoticeItem key={idx} type={type} {...item} />)}
         </TableBody>
       </Table>
     );

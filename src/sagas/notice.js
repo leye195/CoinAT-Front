@@ -2,10 +2,10 @@ import { all, takeLatest, fork, put, call } from "redux-saga/effects";
 import axios from "axios";
 import { GET_NOTICE_REQUEST, GET_NOTICE_SUCCESS, GET_NOTICE_FAILURE } from "../reducers/notice";
 
-const HEROKU_URL =  "https://secure-waters-04189.herokuapp.com/"; //process.env.REACT_APP_HERO;
+const BASE_URL =  process.env.NODE_ENV !=='production'?'http://localhost:4500/':"https://secure-waters-04189.herokuapp.com/"; //process.env.REACT_APP_HERO;
 
 function loadNoticesAPI({page=1,type="notice"}) {
-  return type==="notice"?axios.get(`${HEROKU_URL}notice/upbit`,{
+  return type==="notice"?axios.get(`${BASE_URL}notice/upbit`,{
       params:{
         page
       }

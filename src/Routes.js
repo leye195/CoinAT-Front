@@ -14,6 +14,7 @@ export default () => (
         <Switch>
           <Route path="/" exact component={Home}/>
           <Route path="/event" exact component={Event}/>
+          <Route path="/event/:name" exact component={Event}/>
         </Switch>
       </Layout>
     </Router>
