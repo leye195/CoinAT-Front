@@ -96,7 +96,7 @@ const binanceWS = async (coinList) => {
         const {
           data: { s, c },
         } = JSON.parse(e.data);
-        //console.log(e.data);
+
         const symbol = s.slice(0, s.length - 3);
         if (symbol === "BTCU") {
           binanceBTC = parseFloat(c);
