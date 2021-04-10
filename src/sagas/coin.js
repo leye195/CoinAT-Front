@@ -49,7 +49,6 @@ function loadCurrencyAPI() {
       "Access-Control-Allow-Origin": "*",
     },
   });
-  //https://www.freeforexapi.com/api/live?pairs=USDKRW
 }
 function* loadCurrency() {
   try {
