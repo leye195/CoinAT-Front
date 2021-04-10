@@ -10,7 +10,6 @@ import {
   loadBinanceBitUsdt,
   loadBithumbBitkrw,
   loadUsdToKrw,
-  loadUpbitNewListing,
 } from "../../reducers/coin";
 import { getPercent, combineTickers } from "../../utills/utills";
 
@@ -154,6 +153,7 @@ function ExchangeList() {
   const nav = useRef(null);
   const info = useRef([]);
   const sortType = useRef(-1);
+  const isMounted = useRef(false);
   const timer = useRef(null);
 
   const dispatch = useDispatch();
@@ -212,25 +212,32 @@ function ExchangeList() {
       if (isFirstLoading === false) setIsFirstLoading(true);
       setUpbitCoinInfo(info);
       dispatch(loadUsdToKrw());
-      dispatch(loadUpbitNewListing());
       if (!timer.current) {
         timer.current = setTimeout(() => {
           timer.current = null;
           getExchangeTickers();
-        }, 2000);
+        }, 1000);
       }
     }
   }, [loading, isFirstLoading, dispatch, sortType, coinList, upbitBitKrw]);
 
-  const navFix = () => {
+  const navFix = useCallback(() => {
     if (window.scrollY >= navTop) {
-      //console.log("fixed");
       setIsFixed(true);
     } else {
-      //console.log("normal");
       setIsFixed(false);
     }
-  };
+  },[navTop]);
+
+  useEffect(() => {
+    isMounted.current = true;
+    return () => {
+      if(isMounted.current){
+        clearTimeout(timer.current);
+      }
+      isMounted.current = false;
+    }
+  },[]);
 
   useEffect(() => {
     if (navTop === null) setNavTop(nav.current.offsetTop);
@@ -238,14 +245,13 @@ function ExchangeList() {
     return () => {
       window.removeEventListener("scroll", navFix);
     };
-  }, [navTop]);
+  }, [navTop,navFix]);
   
+
   useLayoutEffect(() => {
     if (timer.current === null) getExchangeTickers();
-    return () => {
-      //clearTimeout(timer.current);
-    };
-  }, [getExchangeTickers, upbitBitKrw, coinList, info]);
+  }, [getExchangeTickers]);
+
 
   const onSort = useCallback(
     (coinInfo) => (e) => {
@@ -260,13 +266,11 @@ function ExchangeList() {
             return x.symbol > y.symbol ? 1 : -1;
           });
           sortType.current = -1;
-          //setSortType(-1);
         } else {
           coinInfo.sort((x, y) => {
             return x.symbol < y.symbol ? 1 : -1;
           });
           sortType.current = 1;
-          //setSortType(1);
         }
       } else if (parseInt(id, 10) === 2) {
         if (sortType.current === 2) {
@@ -274,13 +278,12 @@ function ExchangeList() {
             return x.last > y.last ? 1 : -1;
           });
           sortType.current = -2;
-          //setSortType(-2);
+
         } else {
           coinInfo.sort((x, y) => {
             return x.last < y.last ? 1 : -1;
           });
           sortType.current = 2;
-          //setSortType(2);
         }
       } else if (parseInt(id, 10) === 3) {
         if (sortType.current === 3) {
@@ -288,13 +291,11 @@ function ExchangeList() {
             return x.blast > y.blast ? 1 : -1;
           });
           sortType.current = -3;
-          //setSortType(-3);
         } else {
           coinInfo.sort((x, y) => {
             return x.blast < y.blast ? 1 : -1;
           });
           sortType.current = 3;
-          //setSortType(3);
         }
       } else if (parseInt(id, 10) === 4) {
         if (sortType.current === 4) {
@@ -327,7 +328,6 @@ function ExchangeList() {
             }
           });
           sortType.current = 4;
-          //setSortType(4);
         }
       }
     },
