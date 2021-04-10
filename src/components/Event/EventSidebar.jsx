@@ -45,7 +45,7 @@ const Menu = styled.li`
   }
 `;
 
-const EventSideBar = () => {
+const EventSideBar = ({name}) => {
   const location = useLocation();
   const isActive = (type) => (match,location) => {
     return type === qs.parse(location.search)['?type']? true : false;
@@ -57,10 +57,10 @@ const EventSideBar = () => {
         <MenuListContainer>
             <MenuList>
               <Menu isActive={isActive('notice')('',location)}>
-                <NavLink isActive={isActive('notice')} activeClassName={'event-active'} to={'event?type=notice'}>공지사항</NavLink>
+                <NavLink isActive={isActive('notice')} activeClassName={'event-active'} to={`event/${name}?type=notice`}>공지사항</NavLink>
               </Menu>
               <Menu isActive={isActive('disclosure')('',location)}>
-                <NavLink isActive={isActive('disclosure')} activeClassName={'event-active'} to={'event?type=disclosure'}>프로젝트 공시</NavLink>
+                <NavLink isActive={isActive('disclosure')} activeClassName={'event-active'} to={`event/${name}?type=disclosure`}>프로젝트 공시</NavLink>
               </Menu>
             </MenuList>
         </MenuListContainer>

@@ -113,7 +113,7 @@ const Event = () => {
       </EventHeader>
       <Container>
         <EventContainer>
-            <EventSideBar/>
+            <EventSideBar name={params.name}/>
             <NoticeSection>
                 <NoticeArticle>
                   <NoticeHeader>{convertTitle[type]}</NoticeHeader>
