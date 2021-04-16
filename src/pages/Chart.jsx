@@ -277,8 +277,8 @@ const Chart = () => {
           data: candleStickData,
           itemStyle: {
             normal: {
-              color: '#06B800',
-              color0: '#FA0000',
+              color: '#FA0000',
+              color0: '#1161C4',
               borderColor: null,
               borderColor0: null  
             }
