@@ -303,7 +303,7 @@ const Chart = () => {
     dispatch(getChartData({candleType, market:`KRW-${market}`}));
     timeId.current = setTimeout(()=>{
         regularUpdate({candleType,market});
-    },1000);
+    },1200);
   },[dispatch]);
 
   const loadChartData = useCallback(({candleType = "minutes", market}) => {
