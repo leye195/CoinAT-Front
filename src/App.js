@@ -1,6 +1,6 @@
-import React, { useEffect, useRef, useCallback } from "react";
+import React, { useRef, useCallback } from "react";
 import { useDispatch } from "react-redux";
-import { loadCoinList, loadUsdToKrw } from "./reducers/coin";
+import { loadUsdToKrw } from "./reducers/coin";
 import Routes from "./Routes";
 
 const App = () => {
@@ -15,10 +15,6 @@ const App = () => {
         getCurrency();
       }, 8000);
     }
-  }, [dispatch]);
-
-  useEffect(() => {
-    dispatch(loadCoinList());
   }, [dispatch]);
 
   return <Routes/>;

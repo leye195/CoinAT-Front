@@ -1,7 +1,7 @@
 import { createAction, handleActions } from "redux-actions";
 import produce from "immer";
 import moment from "moment";
-import { getList } from "../utills/utills";
+import { getAllList } from "../utills/utills";
 
 export const SETTING_BTC = "SETTING_BTC";
 export const COIN_INFO_REQUEST = "COIN_INFO_REQUEST";
@@ -139,7 +139,7 @@ export default handleActions(
         const coinList = action.payload.map((coin) => {
           return coin;
         });
-        getList(coinList);
+        getAllList(coinList);
         draft.coinList = coinNames;
       }),
     [COIN_LIST_FAILURE]: (state, action) => produce(state, (draft) => {}),

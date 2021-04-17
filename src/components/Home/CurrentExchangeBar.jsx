@@ -1,7 +1,8 @@
 import React, { useEffect, useMemo, useState } from "react";
-import styled, { css } from "styled-components";
 import { useSelector, useDispatch } from "react-redux";
+import styled, { css } from "styled-components";
 import { setBtc } from "../../reducers/coin";
+
 const ExchangeContainer = styled.section`
   ${(props) =>
     props.isFixed
@@ -71,11 +72,13 @@ function CurrentExchangeBar({ nav, isFixed }) {
         ((parseFloat(bithumbBitKrw, 10) - convertUsdToKrw) / convertUsdToKrw) *
         100
       ).toFixed(2);
+    
     if(converted&&upbitBitKrw) {
       const difference = ((parseFloat(upbitBitKrw, 10) - convertUsdToKrw) / convertUsdToKrw) *100;
       setDifference(difference)
       setUsdtRate((usdToKrw * (1+(difference/100))))
     }
+
     dispatch(
       setBtc({
         symbol: "BTC",
@@ -87,6 +90,7 @@ function CurrentExchangeBar({ nav, isFixed }) {
       })
     );
   }, [convertUsdToKrw, dispatch, upbitBitKrw, bithumbBitKrw, usdToKrw]);
+  
   return (
     <>
       <ExchangeContainer ref={nav} isFixed={isFixed}>

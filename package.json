@@ -13,6 +13,7 @@
     "@testing-library/user-event": "^7.2.1",
     "axios": "^0.21.1",
     "dotenv": "^8.2.0",
+    "echarts": "^5.0.2",
     "gh-pages": "^2.2.0",
     "immer": "^8.0.1",
     "lodash": "^4.17.20",

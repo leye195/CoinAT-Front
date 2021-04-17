@@ -1,5 +1,6 @@
 import React, { useState, useLayoutEffect, useCallback, useRef, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import {Link} from 'react-router-dom';
 import { v4 } from "uuid";
 import styled, { css } from "styled-components";
 import Loading from "../Loading";
@@ -140,7 +141,80 @@ const Coin = styled.p`
         : "#0984e3"};
     border-radius: 10px;
   }
+
+  & > a {
+    display: inherit;
+    align-items: inherit;
+    justify-content: inherit;
+    color: black;
+    text-decoration: none;
+  }
 `;
+
+function ExchangeInfo({coinInfo = [],upbitBitKrw}) {
+  return coinInfo
+  ?.filter((ticker) => ticker.symbol !== "BTC")
+  .map((v) => {
+    const convertedBinance = parseFloat(
+      (v.blast * upbitBitKrw).toFixed(2),
+      10
+    );
+    const percentUP = getPercent(v.last, convertedBinance).toFixed(2);
+    const percentBit = getPercent(v.thumb, convertedBinance).toFixed(
+      2
+    );
+
+    return (
+      <CoinContainer key={v4()}>
+        <Coin>
+          <Link to={`/chart/${v.symbol}`}>
+            {v.last !== 0 && (
+              <CoinImage
+                src={`https://static.upbit.com/logos/${v.symbol}.png`}
+              />
+            )}
+          {v.symbol}
+          </Link>
+        </Coin>
+        <Coin
+          head={percentUP === "-100.00"}
+          data-type={percentUP === "-100.00" ? "unlist" : "list"}
+        >
+          {v.last}₩
+        </Coin>
+        <Coin up={percentUP > 0}>
+          {v.blast && v.blast.toFixed(8)}
+          {"\n"}
+          {convertedBinance}₩
+        </Coin>
+        <Coin head={percentUP === "-100.00"} up={percentUP > 0}>
+          {percentUP !== "Infinity"
+            ? percentUP === "-100.00"||isNaN(percentUP)
+              ? "미 상장"
+              : `${percentUP}%`
+            : "로딩중"}
+        </Coin>
+        <Coin
+          head={percentBit === "-100.00"}
+          data-type={percentBit === "-100.00" ? "unlist" : "list"}
+        >
+          {v.thumb}₩
+        </Coin>
+        <Coin
+          head={percentBit === "-100.00"}
+          up={percentBit > 0}
+          data-type={percentBit === "-100.00" ? "unlist" : "list"}
+        >
+          {percentBit !== "Infinity"
+            ? percentBit === "-100.00"||isNaN(percentUP)
+              ? "미 상장"
+              : `${percentBit}%`
+            : "로딩중"}
+        </Coin>
+      </CoinContainer>
+    );
+  });
+}
 
 function ExchangeList() {
   const [upbitCoinInfo, setUpbitCoinInfo] = useState([]);
@@ -160,9 +234,9 @@ function ExchangeList() {
   const getExchangeTickers = useCallback(() => {
     if (isFirstLoading === false && loading === false) setLoading(true);
     const coinTickers = combineTickers(upbitBitKrw, coinList);
-    //console.log(coinTickers);
+
     if (coinTickers && coinTickers.tickers) {
-      let info = [...coinTickers.tickers]?.sort((x, y) => {
+      const info = [...coinTickers.tickers]?.sort((x, y) => {
         if (sortType.current === -1) return x.symbol > y.symbol ? 1 : -1;
         else if (sortType.current === 1) return x.symbol < y.symbol ? 1 : -1;
         else if (sortType.current === -2) return x.last > y.last ? 1 : -1;
@@ -191,6 +265,9 @@ function ExchangeList() {
           }
         }
       });
+      
+
+
       dispatch(
         loadUpbitBitKrw({
           BTC: info.filter((ticker) => ticker.symbol === "BTC")[0]?.last || 0,
@@ -245,7 +322,6 @@ function ExchangeList() {
     };
   }, [navTop,navFix]);
   
-
   useLayoutEffect(() => {
     if (timer.current === null) getExchangeTickers();
   }, [getExchangeTickers]);
@@ -360,65 +436,7 @@ function ExchangeList() {
           </Coin>
         </CoinHeadContainer>
         <ExchangeCoinsContainer>
-          {upbitCoinInfo
-            ?.filter((ticker) => ticker.symbol !== "BTC")
-            .map((v) => {
-              const convertedBinance = parseFloat(
-                (v.blast * upbitBitKrw).toFixed(2),
-                10
-              );
-              const percentUP = getPercent(v.last, convertedBinance).toFixed(2);
-              const percentBit = getPercent(v.thumb, convertedBinance).toFixed(
-                2
-              );
-              return (
-                <CoinContainer key={v4()}>
-                  <Coin>
-                    {v.last !== 0 && (
-                      <CoinImage
-                        src={`https://static.upbit.com/logos/${v.symbol}.png`}
-                      />
-                    )}
-                    {v.symbol}
-                  </Coin>
-                  <Coin
-                    head={percentUP === "-100.00"}
-                    data-type={percentUP === "-100.00" ? "unlist" : "list"}
-                  >
-                    {v.last}₩
-                  </Coin>
-                  <Coin up={percentUP > 0}>
-                    {v.blast && v.blast.toFixed(8)}
-                    {"\n"}
-                    {convertedBinance}₩
-                  </Coin>
-                  <Coin head={percentUP === "-100.00"} up={percentUP > 0}>
-                    {percentUP !== "Infinity"
-                      ? percentUP === "-100.00"||isNaN(percentUP)
-                        ? "미 상장"
-                        : `${percentUP}%`
-                      : "로딩중"}
-                  </Coin>
-                  <Coin
-                    head={percentBit === "-100.00"}
-                    data-type={percentBit === "-100.00" ? "unlist" : "list"}
-                  >
-                    {v.thumb}₩
-                  </Coin>
-                  <Coin
-                    head={percentBit === "-100.00"}
-                    up={percentBit > 0}
-                    data-type={percentBit === "-100.00" ? "unlist" : "list"}
-                  >
-                    {percentBit !== "Infinity"
-                      ? percentBit === "-100.00"||isNaN(percentUP)
-                        ? "미 상장"
-                        : `${percentBit}%`
-                      : "로딩중"}
-                  </Coin>
-                </CoinContainer>
-              );
-            })}
+          <ExchangeInfo upbitBitKrw={upbitBitKrw} coinInfo={upbitCoinInfo}/>
         </ExchangeCoinsContainer>
       </ExchangesWrapper>
       {(loading || upbitCoinInfo.length < coinList.length) && (
