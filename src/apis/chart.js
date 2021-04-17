@@ -13,5 +13,5 @@ export const getCandles = ({market, candleType, count = 200,  minute = 3 }) => {
  
   if(candleType==="weeks") return api.get(`/weeks?market=${market}&count=${count}`);
 
-  return api.get(`/month?market=${market}&count=${count}`);
+  return api.get(`/months?market=${market}&count=${count}`);
 }

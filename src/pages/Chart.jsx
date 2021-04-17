@@ -1,7 +1,7 @@
-import React, { useCallback, useEffect, useRef } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useRouteMatch } from 'react-router';
-import { getChartData } from 'reducers/trade';
+import { getChartData, setIsFirstLoad } from 'reducers/trade';
 import moment from 'moment';
 import * as echarts from 'echarts';
 import styled from 'styled-components';
@@ -38,7 +38,7 @@ const TitleWrapper = styled.div`
   align-items: flex-start;
   justify-content: center;
   flex-direction: column;
-  margin: 20px 0 20px 0;
+  margin: 20px 0 5px 0;
   position: relative;
   font-weight: bold;
 
@@ -55,7 +55,6 @@ const ExchangeTitle = styled.p`
   margin: 0 0 0.5rem 0;
   padding-left: 10px;
   opacity: 0.6;
-
 `;
 
 const CoinTitle = styled.p`
@@ -64,29 +63,57 @@ const CoinTitle = styled.p`
   font-size: 1.5rem;
 `
 
+const PriceWrapper = styled.div`
+  margin: 0.5rem auto 0.5rem auto;
+  width: 95%;
+`;
+
+const Price = styled.span`
+  font-weight: bold;
+  font-size: 1.5rem;
+`;
+
+const CurrencyType =styled.span`
+  margin-left: 5px;
+`;
 
 const TradeChart = styled.div` 
   width: 95%;
   height: 100%;
   padding: 10px;
+  margin: 0 auto;
   border: 1px solid #e3e3e3;
   border-radius: 10px;
 `;
 
+const ButtonGroup = styled.div`
+  width: 95%;
+  margin: 0 auto;
+  padding: 5px 0;
+`;
+
+const Button = styled.button`
+  font-weight: bold;
+  background-color: white;
+  border: 1px solid #d3d3d3;
+  outline: none;
+  cursor: pointer;
+`;
 
 const Chart = () => {
   const dispatch = useDispatch();
   const match = useRouteMatch();
+  const [candleType,setCandleType] = useState('minutes');
 
   const chartRef = useRef(null);
   const echart = useRef(null);
   const series = useRef(null);
   const xAxis = useRef(null);
   const timeId = useRef(null);
-  const isLoaded = useRef(false);
 
-  const {chartData, loading} = useSelector(({trade})=>({
-      chartData: trade.chartData
+  const {chartData, loading, isFirstLoad} = useSelector(({trade})=>({
+    chartData: trade.chartData,
+    isFirstLoad: trade.isFirstLoad
   }));
 
   const {name} = match.params;
@@ -276,12 +303,10 @@ const Chart = () => {
           name: '가격변화',
           data: candleStickData,
           itemStyle: {
-            normal: {
-              color: '#FA0000',
-              color0: '#1161C4',
-              borderColor: null,
-              borderColor0: null  
-            }
+            color: '#FA0000',
+            color0: '#1161C4',
+            borderColor: null,
+            borderColor0: null  
           },
         },
         {
@@ -314,6 +339,15 @@ const Chart = () => {
     },1000);
   },[dispatch,regularUpdate])
 
+  const handleClick = (type) => (e) => {
+    setCandleType((prev)=>{
+      if(prev!==type) {
+        clearTimeout(timeId.current);
+      }
+      return type;
+    })
+  }
+
   const handleResize = debounce(() => {
     if(echart.current) {
       echart.current.resize();
@@ -321,24 +355,24 @@ const Chart = () => {
   },100);
 
   useEffect(() => {
-    if(!isLoaded.current&&!loading){
-        drawChart();
-        isLoaded.current = true;
-        return;
+    if(isFirstLoad&&chartData.length){
+      drawChart();
+      dispatch(setIsFirstLoad({isFirstLoad: false}));
+      return;
     } else {
-       updateChart(); 
-       return;
+      updateChart(); 
+      return;
     }
-  },[drawChart,loading,chartData,updateChart,handleResize])
+  },[dispatch,drawChart,chartData,updateChart,handleResize,isFirstLoad])
 
   useEffect(()=>{
     if(!name) return;
 
-    loadChartData({market:name});
+    loadChartData({candleType, market:name});
     return () => {
       clearTimeout(timeId.current);
     }
-  },[dispatch,name,loadChartData]);
+  },[dispatch,name,loadChartData, candleType]);
 
   useEffect(() => {
     window.addEventListener('resize',handleResize);
@@ -346,14 +380,24 @@ const Chart = () => {
       window.removeEventListener('resize',handleResize);
     }
   },[handleResize])
-
+  
   return ( 
     <Container>
       <TitleWrapper>
         <CoinTitle>{name}/KRW 거래</CoinTitle>
         <ExchangeTitle>Upbit(업비트)</ExchangeTitle>
       </TitleWrapper>
+      <PriceWrapper>
+        <Price>{chartData&&!!chartData.length? chartData.slice(-1)[0]['trade_price']:0}</Price>
+        <CurrencyType>KRW</CurrencyType>
+      </PriceWrapper>
       <TradeChartWrapper>
+        <ButtonGroup>
+          <Button onClick={handleClick('month')}>1달</Button>
+          <Button onClick={handleClick('weeks')}>1주</Button>
+          <Button onClick={handleClick('days')}>1일</Button>
+          <Button onClick={handleClick('minutes')}>3분</Button>
+        </ButtonGroup>
         <TradeChart ref={chartRef}/>
       </TradeChartWrapper>
     </Container>
