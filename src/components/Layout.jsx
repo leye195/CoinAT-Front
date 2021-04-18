@@ -4,7 +4,7 @@ import Header from './Header';
 
 const Layout = ({children}) => {
   return <>
-    <Header title='CoinAT'/>
+    <Header title=''/>
     {children}
     <Footer/>
   </>
