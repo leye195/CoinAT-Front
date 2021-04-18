@@ -207,12 +207,14 @@ const Chart = () => {
           top: '10%',
           left: '0%',
           right: '10%',
-          height: '60%'
+          height: '60%',
+          show: true,
         }, {
           left: '0%',
           right: '10%',
           bottom: '10%',
-          height: '15%'
+          height: '15%',
+          show: true,
         }   
       ],
       xAxis: [
