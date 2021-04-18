@@ -35,7 +35,6 @@ const Header = ({title}) => (
           {title}
         </Link>
       </Title>
-      <NavLink activeClassName={''} to={`/event/upbit`}>소식</NavLink>
     </Container>
 );
 export default Header;

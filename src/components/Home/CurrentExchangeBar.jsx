@@ -97,9 +97,9 @@ function CurrentExchangeBar({ nav, isFixed }) {
         <Info>{`1$: ${usdToKrw}₩`}</Info>
         <Info>{`업비트: ${upbitBitKrw} BTC/KRW`}</Info>
         <Info>{`바이낸스: ${convertUsdToKrw} BTC/KRW`}</Info>
-        <Info>{`차이: ${differene.toFixed(2)}%`}</Info>
+        <Info>{`차이: ${isFinite(differene)? differene.toFixed(2):0}%`}</Info>
         <Info>
-          {`1USDT: ${usdtRate.toFixed(3)}₩`}
+          {`1USDT: ${isFinite(usdtRate)? usdtRate.toFixed(3):0}₩`}
         </Info>
       </ExchangeContainer>
     </>

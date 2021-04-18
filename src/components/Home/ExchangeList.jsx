@@ -411,34 +411,6 @@ function ExchangeList() {
   return (
     <Container>
       <CurrentExchangeBar nav={nav} isFixed={isFixed} />
-      <ExchangesWrapper
-        isFixed={isFixed}
-        offsetHeight={nav.current !== null && nav.current.offsetHeight}
-      >
-        <CoinHeadContainer>
-          <Coin head={true} onClick={onSort(upbitCoinInfo)} data-id={1}>
-            코인
-          </Coin>
-          <Coin head={true} onClick={onSort(upbitCoinInfo)} data-id={2}>
-            업비트(₩)
-          </Coin>
-          <Coin head={true} onClick={onSort(upbitCoinInfo)} data-id={3}>
-            바이낸스(BTC)
-          </Coin>
-          <Coin head={true} onClick={onSort(upbitCoinInfo)} data-id={4}>
-            차이(%)
-          </Coin>
-          <Coin head={true} onClick={onSort(upbitCoinInfo)} data-id={5}>
-            빗썸(₩)
-          </Coin>
-          <Coin head={true} onClick={onSort(upbitCoinInfo)} data-id={6}>
-            차이(%)
-          </Coin>
-        </CoinHeadContainer>
-        <ExchangeCoinsContainer>
-          <ExchangeInfo upbitBitKrw={upbitBitKrw} coinInfo={upbitCoinInfo}/>
-        </ExchangeCoinsContainer>
-      </ExchangesWrapper>
       {(loading || upbitCoinInfo.length < coinList.length) && (
         <Loading isLoading={true} />
       )}
