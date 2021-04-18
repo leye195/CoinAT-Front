@@ -371,6 +371,7 @@ const Chart = () => {
     loadChartData({candleType, market:name});
     return () => {
       clearTimeout(timeId.current);
+      dispatch(setIsFirstLoad({isFirstLoad: true}));
     }
   },[dispatch,name,loadChartData, candleType]);
 
