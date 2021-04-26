@@ -183,6 +183,7 @@ const bithumbWS = async (coinList) => {
 
 export const combineTickers = (currency, coinList) => {
   const tickers = ["BTC", ...coinList].map((v) => {
+
     return {
       symbol: v, //tickers1[`${v}/KRW`].symbol.slice(0, tickers1[v].symbol.indexOf("/")),
       last: tickers1[`${v}`] === undefined ? 0 : tickers1[`${v}`].tradePrice,
@@ -196,7 +197,7 @@ export const combineTickers = (currency, coinList) => {
         tickers1[`${v}`] === undefined || tickers2[`${v}`] === undefined
           ? undefined
           : getPercent(
-              tickers1[`${v}`],
+              tickers1[`${v}`].tradePrice,
               parseFloat((tickers2[`${v}`].tradePrice * upbitBTCKrw).toFixed(2), 10)
             ),
       per2:
