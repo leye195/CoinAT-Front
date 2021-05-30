@@ -254,7 +254,7 @@ function setBinanceKeyAPI(data) {
     },
     {
       withCredentials: true,
-    }
+    },
   );
 }
 function* setBinanceKey(action) {
@@ -283,7 +283,7 @@ function setUpbitKeyAPI(data) {
     },
     {
       withCredentials: true,
-    }
+    },
   );
 }
 function* setUpbitKey(action) {
@@ -324,7 +324,7 @@ function setKeyAPI(data) {
     },
     {
       withCredentials: true,
-    }
+    },
   );
 }
 function* setKey(action) {

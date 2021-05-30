@@ -41,5 +41,5 @@ export default handleActions(
         draft.isSending = false;
       }),
   },
-  initialState
+  initialState,
 );

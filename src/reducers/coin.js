@@ -117,7 +117,6 @@ const initialState = {
   coinList: [],
   tradeError: 0,
   watchList: [],
-
 };
 export default handleActions(
   {
@@ -127,7 +126,7 @@ export default handleActions(
       }),
     [COIN_INFO_REQUEST]: (state, action) =>
       produce(state, (draft) => {
-          draft.coinInfo = action.payload;
+        draft.coinInfo = action.payload;
       }),
     [TICKERS_REQUEST]: (state, action) => produce(state, (draft) => {}),
     [TICKERS_SUCCESS]: (state, action) =>
@@ -293,22 +292,26 @@ export default handleActions(
       produce(state, (draft) => {
         draft.tradeError = 0;
       }),
-    [SET_WATCH_LIST]: (state,action) => 
+    [SET_WATCH_LIST]: (state, action) =>
       produce(state, (draft) => {
-        const {payload} = action;
-        
-        if(payload) {
-          const isExist = draft.watchList.includes(payload)
-          isExist ? ((()=>{
-            draft.watchList = [...draft.watchList.filter((symbol)=>symbol!==payload)];
-          })()): draft.watchList = [...draft.watchList,payload]
+        const { payload } = action;
+
+        if (payload) {
+          const isExist = draft.watchList.includes(payload);
+          isExist
+            ? (() => {
+                draft.watchList = [
+                  ...draft.watchList.filter((symbol) => symbol !== payload),
+                ];
+              })()
+            : (draft.watchList = [...draft.watchList, payload]);
         }
       }),
-    [UPDATE_WATCH_LIST]: (state,action) => 
+    [UPDATE_WATCH_LIST]: (state, action) =>
       produce(state, (draft) => {
-        const {payload} = action;
+        const { payload } = action;
         draft.watchList = [...payload];
-      })
+      }),
   },
-  initialState
+  initialState,
 );

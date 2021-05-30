@@ -1,4 +1,3 @@
-
 import { createAction, handleActions } from "redux-actions";
 import produce from "immer";
 
@@ -14,26 +13,30 @@ export const setIsFirstLoad = createAction(IS_FIRST_LOAD);
 
 const initialState = {
   chartData: [],
-  type: 'upbit',
+  type: "upbit",
   loading: true,
   isFirstLoad: true,
 };
 export default handleActions(
   {
-    [GET_CHART_DATA_REQUEST]: (state, action) => produce(state, (draft) => {
-      draft.isLoading = true;
-    }),
-    [GET_CHART_DATA_SUCCESS]: (state,action) => produce(state,(draft) => {
-      const data = action.payload;
-      draft.isLoading = false;
-      draft.chartData = [...data.reverse()];
-    }),
-    [GET_CHART_DATA_FAILURE]: (state,action) => produce(state,(draft) => {
-      draft.isLoading = false;
-    }),
-    [IS_FIRST_LOAD]: (state,action) => produce(state,(draft)=>{
-      draft.isFirstLoad = action.payload.isFirstLoad;
-    })
+    [GET_CHART_DATA_REQUEST]: (state, action) =>
+      produce(state, (draft) => {
+        draft.isLoading = true;
+      }),
+    [GET_CHART_DATA_SUCCESS]: (state, action) =>
+      produce(state, (draft) => {
+        const data = action.payload;
+        draft.isLoading = false;
+        draft.chartData = [...data.reverse()];
+      }),
+    [GET_CHART_DATA_FAILURE]: (state, action) =>
+      produce(state, (draft) => {
+        draft.isLoading = false;
+      }),
+    [IS_FIRST_LOAD]: (state, action) =>
+      produce(state, (draft) => {
+        draft.isFirstLoad = action.payload.isFirstLoad;
+      }),
   },
-  initialState
+  initialState,
 );

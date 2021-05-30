@@ -19,7 +19,7 @@ const ItemListUl = styled.ul`
   height: 200px;
   padding: 0;
   margin: 0;
-  background-color: ${colors['white']};
+  background-color: ${colors["white"]};
   margin: 5px;
   padding: 5px;
   overflow-y: scroll;
@@ -38,7 +38,7 @@ const ItemListLi = styled.li`
   align-items: center;
   justify-content: space-between;
   padding: 10px;
-  border: 1px solid ${colors['gray-100']};
+  border: 1px solid ${colors["gray-100"]};
   border-left: 0;
   border-right: 0;
   width: 100%;
@@ -50,7 +50,7 @@ const ItemSpan = styled.span`
 
 const ItemInput = styled.input`
   background-color: white;
-  border: 2px solid ${colors['gray-100']};
+  border: 2px solid ${colors["gray-100"]};
   width: 30%;
   padding: 5px;
 `;

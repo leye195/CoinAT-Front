@@ -1,8 +1,14 @@
-import React, { useState, useLayoutEffect, useCallback, useRef, useEffect } from "react";
+import React, {
+  useState,
+  useLayoutEffect,
+  useCallback,
+  useRef,
+  useEffect,
+} from "react";
 import { useDispatch, useSelector } from "react-redux";
 import styled, { css } from "styled-components";
 import Loading from "components/Loading";
-import ExchangeInfo from 'components/Home/ExchangeInfo';
+import ExchangeInfo from "components/Home/ExchangeInfo";
 import CurrentExchangeBar from "components/Home/CurrentExchangeBar";
 import Coin from "components/Home/Coin";
 import {
@@ -13,7 +19,6 @@ import {
   setCoinInfo,
 } from "reducers/coin";
 import { combineTickers } from "utills/utills";
-
 
 const Container = styled.main`
   min-height: 100vh;
@@ -77,14 +82,16 @@ function ExchangeList() {
   const [loading, setLoading] = useState(true);
   const [isFixed, setIsFixed] = useState(false);
   const [navTop, setNavTop] = useState(null);
-  
+
   const nav = useRef(null);
   const sortType = useRef(-1);
   const isMounted = useRef(false);
   const timer = useRef(null);
 
   const dispatch = useDispatch();
-  const { coinList, upbitBitKrw, watchList } = useSelector((state) => state.coin);
+  const { coinList, upbitBitKrw, watchList } = useSelector(
+    (state) => state.coin,
+  );
 
   const getExchangeTickers = useCallback(() => {
     if (isFirstLoading === false && loading === false) setLoading(true);
@@ -120,23 +127,21 @@ function ExchangeList() {
           }
         }
       });
-      
-
 
       dispatch(
         loadUpbitBitKrw({
           BTC: info.filter((ticker) => ticker.symbol === "BTC")[0]?.last || 0,
-        })
+        }),
       );
       dispatch(
         loadBithumbBitkrw({
           BTC: info.filter((ticker) => ticker.symbol === "BTC")[0]?.thumb || 0,
-        })
+        }),
       );
       dispatch(
         loadBinanceBitUsdt({
           BTC: info.filter((ticker) => ticker.symbol === "BTC")[0]?.blast || 0,
-        })
+        }),
       );
       if (loading === true) setLoading(false);
       if (isFirstLoading === false) setIsFirstLoading(true);
@@ -158,17 +163,17 @@ function ExchangeList() {
     } else {
       setIsFixed(false);
     }
-  },[navTop]);
+  }, [navTop]);
 
   useEffect(() => {
     isMounted.current = true;
     return () => {
-      if(isMounted.current){
+      if (isMounted.current) {
         clearTimeout(timer.current);
       }
       isMounted.current = false;
-    }
-  },[]);
+    };
+  }, []);
 
   useEffect(() => {
     if (navTop === null) setNavTop(nav.current.offsetTop);
@@ -176,14 +181,14 @@ function ExchangeList() {
     return () => {
       window.removeEventListener("scroll", navFix);
     };
-  }, [navTop,navFix]);
-  
+  }, [navTop, navFix]);
+
   useLayoutEffect(() => {
     if (timer.current === null) getExchangeTickers();
   }, [getExchangeTickers]);
 
-
-  const onSort = useCallback((coinInfo) => (e) => {
+  const onSort = useCallback(
+    (coinInfo) => (e) => {
       const {
         target: {
           dataset: { id },
@@ -209,7 +214,6 @@ function ExchangeList() {
             return x.last > y.last ? 1 : -1;
           });
           sortType.current = -2;
-
         } else {
           coinList.sort((x, y) => {
             return x.last < y.last ? 1 : -1;
@@ -261,7 +265,9 @@ function ExchangeList() {
           sortType.current = 4;
         }
       }
-  },[sortType]);
+    },
+    [sortType],
+  );
 
   return (
     <Container>
@@ -291,7 +297,11 @@ function ExchangeList() {
           </Coin>
         </CoinHeadContainer>
         <ExchangeCoinsContainer>
-          <ExchangeInfo upbitBitKrw={upbitBitKrw} coinInfo={upbitCoinInfo} fixList={watchList}/>
+          <ExchangeInfo
+            upbitBitKrw={upbitBitKrw}
+            coinInfo={upbitCoinInfo}
+            fixList={watchList}
+          />
         </ExchangeCoinsContainer>
       </ExchangesWrapper>
       {(loading || upbitCoinInfo.length < coinList.length) && (

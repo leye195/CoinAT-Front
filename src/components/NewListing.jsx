@@ -50,21 +50,22 @@ const NewListingUl = styled.ul`
   justify-content: center;
   text-align: center;
   margin: 0;
-  border-bottom: 3px solid ${colors['white']};
+  border-bottom: 3px solid ${colors["white"]};
   cursor: pointer;
 `;
 const NewListingli = styled.li`
   list-style: none;
   flex: 1;
   padding: 5px;
-  color: ${(props) => (props.selected ? `${colors['black']};` : `${colors['white']};`)};
-  font-weight: ${(props) => (props.selected ? '400' : '200')};
+  color: ${(props) =>
+    props.selected ? `${colors["black"]};` : `${colors["white"]};`};
+  font-weight: ${(props) => (props.selected ? "400" : "200")};
   font-size: 0.8rem;
   margin-bottom: 5px;
   word-break: keep-all;
 `;
 const InfoContainer = styled.div`
-  display: ${(props) => (props.hide ?'none' : 'flex')};
+  display: ${(props) => (props.hide ? "none" : "flex")};
   border-top: 1px solid #0404043b;
 `;
 const UpbitInfoUl = styled.ul`
@@ -89,7 +90,7 @@ const BinanceInfoli = styled(UpbitInfoli.withComponent("li"))`
 
 function NewListing() {
   const { upbitNewListing, binanceNewListing } = useSelector(
-    (state) => state.coin
+    (state) => state.coin,
   );
   const [selected, setSelected] = useState(0);
   const [isHide, setHide] = useState(false);
