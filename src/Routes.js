@@ -9,7 +9,7 @@ export default () => (
   <Router>
     <Layout>
       <Switch>
-        <Route path="/CoinAT-Front" exact component={Home} />
+        <Route path="/" exact component={Home} />
         <Route path="/event" exact component={Event} />
         <Route path="/event/:name" exact component={Event} />
         <Route path="/chart/:name" exact component={Chart} />
