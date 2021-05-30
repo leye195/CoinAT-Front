@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import { colors } from "../styles/_variables";
+import { colors } from "styles/_variables";
 
 const ItemListDiv = styled.div`
   display: flex;

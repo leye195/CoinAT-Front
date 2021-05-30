@@ -4,8 +4,8 @@ import styled from "styled-components";
 import { v4 } from "uuid";
 import { faMinus, faPlus } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { loadUpbitNewListing } from "../reducers/coin";
-import { colors } from "../styles/_variables";
+import { loadUpbitNewListing } from "reducers/coin";
+import { colors } from "styles/_variables";
 
 const NewListingDiv = styled.div`
   display: flex;

@@ -3,13 +3,13 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useHistory, useLocation, NavLink, useRouteMatch } from 'react-router-dom';
 import styled from 'styled-components';
 import qs from 'qs'
-import EventContainer from '../components/Event/EventContainer';
-import EventSideBar from '../components/Event/EventSidebar';
-import NoticeTable from '../components/Event/NoticeTable';
-import Loading from '../components/Loading';
-import LoadMore from '../components/Event/LoadMore';
-import { loadNotice } from '../reducers/notice';
-import { colors } from '../styles/_variables';
+import EventContainer from 'components/Event/EventContainer';
+import EventSideBar from 'components/Event/EventSidebar';
+import NoticeTable from 'components/Event/NoticeTable';
+import Loading from 'components/Loading';
+import LoadMore from 'components/Event/LoadMore';
+import { loadNotice } from 'reducers/notice';
+import { colors } from 'styles/_variables';
 
 const convertTitle = {
   'notice': '공지사항',

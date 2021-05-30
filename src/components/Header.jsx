@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link, NavLink } from 'react-router-dom';
 import styled from "styled-components";
-import { colors } from '../styles/_variables';
+import { colors } from 'styles/_variables';
 
 const Container = styled.header`
   display: flex;
