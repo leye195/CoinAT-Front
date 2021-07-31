@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
+import { useRouteMatch } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { useRouteMatch } from "react-router";
 import { getChartData, setIsFirstLoad } from "reducers/trade";
 import moment from "moment";
 import * as echarts from "echarts";
@@ -353,7 +353,7 @@ const Chart = () => {
     [dispatch, regularUpdate],
   );
 
-  const handleClick = (type) => (e) => {
+  const handleClick = (type) => () => {
     setCandleType((prev) => {
       if (prev !== type) {
         clearTimeout(timeId.current);
@@ -373,10 +373,8 @@ const Chart = () => {
       drawChart();
       dispatch(setIsFirstLoad({ isFirstLoad: false }));
       return;
-    } else {
-      updateChart();
-      return;
     }
+    updateChart();
   }, [dispatch, drawChart, chartData, updateChart, handleResize, isFirstLoad]);
 
   useEffect(() => {

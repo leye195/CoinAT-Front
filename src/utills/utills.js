@@ -8,9 +8,9 @@ let wsBinance = null;
 let wsUpbit = null;
 let wsBithumb = null;
 
-let tickers1 = {};
-let tickers2 = {};
-let tickers3 = {};
+const tickers1 = {};
+const tickers2 = {};
+const tickers3 = {};
 
 export let coinTickers = { tickers: [], id: -1 };
 
@@ -18,16 +18,7 @@ export const getPercent = (x, y) => {
   return ((x - y) / y) * 100;
 };
 
-export const getAllList = (coinList) => {
-  if (coinList.length > 0) {
-    const coinNames = coinList.map((coin) => coin.name);
-    //console.log("connedted");
-    if (wsUpbit === null) upbitWS(coinNames);
-    if (wsBinance === null) binanceWS(coinNames);
-    if (wsBithumb === null) bithumbWS(coinList);
-  }
-};
-//업비트 소켓 연결
+// 업비트 소켓 연결
 const upbitWS = async (coinList) => {
   if (wsUpbit === null) {
     const upbitList = (
@@ -52,26 +43,26 @@ const upbitWS = async (coinList) => {
       }
     };
     wsUpbit.onmessage = (e) => {
-      //if (wsUpbit !== null && wsUpbit.readyState === 1) {
+      // if (wsUpbit !== null && wsUpbit.readyState === 1) {
       const enc = new TextDecoder("utf-8");
       const arr = new Uint8Array(e.data);
       const {
         code,
-        trade_price,
-        opening_price,
-        high_price,
-        low_price,
-        trade_date,
+        trade_price: tradePrice,
+        opening_price: openPrice,
+        high_price: highPrice,
+        low_price: lowPrice,
+        trade_date: tradeDate,
       } = JSON.parse(enc.decode(arr));
       const symbol = code.slice(code.indexOf("-") + 1, code.length);
 
-      if (symbol === "BTC") upbitBTCKrw = trade_price;
+      if (symbol === "BTC") upbitBTCKrw = tradePrice;
       tickers1[symbol] = {
-        tradePrice: trade_price,
-        highPrice: high_price,
-        lowPrice: low_price,
-        openPrice: opening_price,
-        date: trade_date,
+        tradePrice,
+        highPrice,
+        lowPrice,
+        openPrice,
+        date: tradeDate,
       };
     };
     wsUpbit.onclose = () => {
@@ -89,7 +80,7 @@ const upbitWS = async (coinList) => {
     };
   }
 };
-//바이낸스 소켓 연결
+// 바이낸스 소켓 연결
 const binanceWS = async (coinList) => {
   if (wsBinance === null) {
     let streams = "";
@@ -100,7 +91,7 @@ const binanceWS = async (coinList) => {
     }
     streams += `btcusdt@ticker`;
     wsBinance = new WebSocket(
-      `wss://stream.binance.com:9443/stream?streams=${streams}`, //ethbtc@ticker" //"
+      `wss://stream.binance.com:9443/stream?streams=${streams}`, // ethbtc@ticker" //"
     );
     wsBinance.onopen = () => {
       if (wsBinance !== null && wsBinance.readyState === 1) {
@@ -144,7 +135,7 @@ const binanceWS = async (coinList) => {
   }
 };
 
-//빗썸 소켓 연결
+// 빗썸 소켓 연결
 const bithumbWS = async (coinList) => {
   if (wsBithumb === null) {
     wsBithumb = new WebSocket(`wss://pubwss.bithumb.com/pub/ws`);
@@ -210,7 +201,7 @@ const bithumbWS = async (coinList) => {
 export const combineTickers = (currency, coinList) => {
   const tickers = ["BTC", ...coinList].map((v) => {
     return {
-      symbol: v, //tickers1[`${v}/KRW`].symbol.slice(0, tickers1[v].symbol.indexOf("/")),
+      symbol: v, // tickers1[`${v}/KRW`].symbol.slice(0, tickers1[v].symbol.indexOf("/")),
       last: tickers1[`${v}`] === undefined ? 0 : tickers1[`${v}`].tradePrice,
       blast: tickers2[`${v}`] === undefined ? 0 : tickers2[`${v}`].tradePrice,
       convertedBlast:
@@ -246,4 +237,14 @@ export const combineTickers = (currency, coinList) => {
   coinTickers.tickers = tickers.length > 0 ? tickers : [];
   coinTickers.id = v4();
   return coinTickers;
+};
+
+export const getAllList = (coinList) => {
+  if (coinList.length > 0) {
+    const coinNames = coinList.map((coin) => coin.name);
+    // console.log("connedted");
+    if (wsUpbit === null) upbitWS(coinNames);
+    if (wsBinance === null) binanceWS(coinNames);
+    if (wsBithumb === null) bithumbWS(coinList);
+  }
 };
