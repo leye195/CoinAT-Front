@@ -8,9 +8,9 @@ import {
   CANCEL_MESSAGE_FAILURE,
   CANCEL_MESSAGE_REQUEST,
 } from "../reducers/bot";
-import dotenv from "dotenv";
-dotenv.config();
+
 const API_URL = "https://secure-waters-04189.herokuapp.com/";
+
 function sendMessageAPI(data) {
   return axios.post(`${API_URL}bot/start`, data);
 }

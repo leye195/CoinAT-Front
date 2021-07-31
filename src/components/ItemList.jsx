@@ -19,7 +19,7 @@ const ItemListUl = styled.ul`
   height: 200px;
   padding: 0;
   margin: 0;
-  background-color: ${colors["white"]};
+  background-color: ${colors.white};
   margin: 5px;
   padding: 5px;
   overflow-y: scroll;
@@ -68,7 +68,7 @@ function ItemList({ coins, onChangePercent }) {
             step={0.1}
             placeholder="N%"
             onChange={onChangePercent}
-            data-name={"BTC"}
+            data-name="BTC"
           />
         </ItemListLi>
         {coins &&

@@ -4,7 +4,7 @@ import { loadUsdToKrw } from "./reducers/coin";
 import Routes from "./Routes";
 
 const App = () => {
-  let timer = useRef(null);
+  const timer = useRef(null);
   const dispatch = useDispatch();
 
   const getCurrency = useCallback(() => {

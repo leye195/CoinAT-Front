@@ -1,5 +1,6 @@
 import { v4 } from "uuid";
 import { all, takeLatest, fork, put, call, throttle } from "redux-saga/effects";
+import axios from "axios";
 import {
   CURRENCY_REQUEST,
   CURRENCY_FAILURE,
@@ -38,7 +39,6 @@ import {
   TICKERS_SUCCESS,
   TICKERS_FAILUER,
 } from "../reducers/coin";
-import axios from "axios";
 
 const API_URL = process.env.REACT_APP_API;
 const HEROKU_URL = "https://secure-waters-04189.herokuapp.com/";
@@ -202,7 +202,7 @@ function upbitBidAPI(data) {
 }
 function* upbitBid(action) {
   try {
-    //console.log(action.payload);
+    // console.log(action.payload);
     const result = yield call(upbitBidAPI, action.payload);
     yield put({
       type: UPBIT_BID_SUCCESS,
@@ -304,7 +304,8 @@ function* watchSetUpbitKey() {
 }
 
 function setKeyAPI(data) {
-  let uid = undefined;
+  let uid;
+
   if (data.type !== "cancel") {
     uid = v4();
     localStorage.setItem("uid", uid);

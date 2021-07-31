@@ -4,7 +4,7 @@ const baseURL = `https://api.upbit.com/v1/candles`;
 const api = axios.create({
   baseURL,
 });
-//upbit coin candles
+// upbit coin candles
 
 export const getCandles = ({ market, candleType, count = 200, minute = 3 }) => {
   if (candleType === "minutes")

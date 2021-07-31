@@ -9,7 +9,7 @@ import {
 const BASE_URL =
   process.env.NODE_ENV !== "production"
     ? "http://localhost:4500/"
-    : "https://secure-waters-04189.herokuapp.com/"; //process.env.REACT_APP_HERO;
+    : "https://secure-waters-04189.herokuapp.com/"; // process.env.REACT_APP_HERO;
 
 function loadNoticesAPI({ page = 1, type = "notice" }) {
   return type === "notice"

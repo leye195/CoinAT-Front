@@ -1,5 +1,6 @@
 import React from "react";
 import styled, { css, keyframes } from "styled-components";
+
 const LoadingAni = keyframes`
     from{
         opacity:0.3;
@@ -45,9 +46,9 @@ function Loading({ isLoading }) {
     <>
       {isLoading ? (
         <LoadingContainer>
-          <LoadingBar size={"l"} />
-          <LoadingBar size={"m"} />
-          <LoadingBar size={"s"} />
+          <LoadingBar size="l" />
+          <LoadingBar size="m" />
+          <LoadingBar size="s" />
         </LoadingContainer>
       ) : (
         <></>

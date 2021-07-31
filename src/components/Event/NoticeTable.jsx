@@ -7,7 +7,7 @@ const Table = styled.table`
   width: 100%;
   margin: 0 auto;
   border-spacing: 0;
-  background: ${colors["white"]};
+  background: ${colors.white};
 `;
 const TableHead = styled.thead`
   background-color: ${colors["gray-100"]};

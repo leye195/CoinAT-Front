@@ -11,7 +11,7 @@ const Container = styled.footer`
 `;
 
 const Footer = () => {
-  return <Container></Container>;
+  return <Container />;
 };
 
 export default Footer;

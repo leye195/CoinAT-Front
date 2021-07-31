@@ -50,7 +50,7 @@ const NewListingUl = styled.ul`
   justify-content: center;
   text-align: center;
   margin: 0;
-  border-bottom: 3px solid ${colors["white"]};
+  border-bottom: 3px solid ${colors.white};
   cursor: pointer;
 `;
 const NewListingli = styled.li`
@@ -58,7 +58,7 @@ const NewListingli = styled.li`
   flex: 1;
   padding: 5px;
   color: ${(props) =>
-    props.selected ? `${colors["black"]};` : `${colors["white"]};`};
+    props.selected ? `${colors.black};` : `${colors.white};`};
   font-weight: ${(props) => (props.selected ? "400" : "200")};
   font-size: 0.8rem;
   margin-bottom: 5px;
@@ -111,8 +111,7 @@ function NewListing() {
   }, []);
 
   const checkSize = () => {
-    const innerWidth = window.innerWidth;
-    if (innerWidth <= 768) {
+    if (window.innerWidth <= 768) {
       setHide(true);
     }
   };
