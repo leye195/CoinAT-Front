@@ -68,8 +68,8 @@ const NoticeHeader = styled.header`
   padding-left: 1rem;
   padding-right: 1rem;
   font-weight: bold;
-  background: ${colors["blueSky"]};
-  color: ${colors["white"]};
+  background: ${colors.blueSky};
+  color: ${colors.white};
 `;
 
 const LoadMoreContainer = styled.div`
@@ -100,17 +100,17 @@ const Event = () => {
   };
 
   useEffect(() => {
-    const type = qs.parse(location.search)["?type"];
+    const parseType = qs.parse(location.search)["?type"];
 
-    if (!type) {
+    if (!parseType) {
       history.replace(`${location.pathname}?type=notice`);
       return;
     }
-    setType(type);
+    setType(parseType);
   }, [location, history]);
 
   useEffect(() => {
-    dispatch(loadNotice({ page: 1, type: type ? type : "notice" }));
+    dispatch(loadNotice({ page: 1, type: type || "notice" }));
   }, [dispatch, type]);
   return (
     <>
@@ -118,7 +118,7 @@ const Event = () => {
         <div>
           <NavLink
             activeClassName={params.name === "upbit" && "event-notice"}
-            to={`/event/upbit`}
+            to="/event/upbit"
           >
             업비트
           </NavLink>
@@ -141,7 +141,7 @@ const Event = () => {
             </NoticeArticle>
           </NoticeSection>
         </EventContainer>
-        {isLoading && <Loading isLoading={true} />}
+        {isLoading && <Loading isLoading />}
       </Container>
     </>
   );

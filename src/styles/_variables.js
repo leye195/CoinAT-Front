@@ -1,4 +1,4 @@
-//breakpoints
+// breakpoints
 export const breakpoints = {
   xs: "428px",
   sm: "640px",
@@ -7,7 +7,7 @@ export const breakpoints = {
   xlg: "1440px",
 };
 
-//colors
+// colors
 export const colors = {
   white: "#ffffff",
   black: "#000000",

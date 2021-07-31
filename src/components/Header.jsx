@@ -30,9 +30,9 @@ const Title = styled.p`
 const Header = ({ title }) => (
   <Container>
     <Title>
-      <Link to={"/"}>{title}</Link>
+      <Link to="/">{title}</Link>
     </Title>
-    <NavLink activeClassName={""} to={`/event/upbit`}>
+    <NavLink activeClassName="" to="/event/upbit">
       소식
     </NavLink>
   </Container>

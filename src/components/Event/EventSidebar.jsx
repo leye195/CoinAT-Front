@@ -36,7 +36,7 @@ const Menu = styled.li`
     isActive === true ? `${colors["gray-50"]};` : "inherit"};
 
   & a {
-    color: ${colors["black"]};
+    color: ${colors.black};
     text-decoration: none;
 
     &.event-active {
@@ -48,8 +48,8 @@ const Menu = styled.li`
 
 const EventSideBar = ({ name }) => {
   const location = useLocation();
-  const isActive = (type) => (match, location) => {
-    return type === qs.parse(location.search)["?type"] ? true : false;
+  const isActive = (type) => (match, currentLocation) => {
+    return type === qs.parse(currentLocation.search)["?type"];
   };
 
   return (
@@ -60,8 +60,8 @@ const EventSideBar = ({ name }) => {
             <Menu isActive={isActive("notice")("", location)}>
               <NavLink
                 isActive={isActive("notice")}
-                activeClassName={"event-active"}
-                to={`event/${name}?type=notice`}
+                activeClassName="event-active"
+                to={`/event/${name}?type=notice`}
               >
                 공지사항
               </NavLink>
@@ -69,8 +69,8 @@ const EventSideBar = ({ name }) => {
             <Menu isActive={isActive("disclosure")("", location)}>
               <NavLink
                 isActive={isActive("disclosure")}
-                activeClassName={"event-active"}
-                to={`event/${name}?type=disclosure`}
+                activeClassName="event-active"
+                to={`/event/${name}?type=disclosure`}
               >
                 프로젝트 공시
               </NavLink>
