@@ -64,7 +64,9 @@ export const UPBIT_ASK_FAILURE = "UPBIT_ASK_FAILURE";
 
 export const TRADE_ERROR_REQUEST = "TRADE_ERROR_REQUEST";
 
-export const loadCoinInfo = createAction(COIN_INFO_REQUEST);
+export const SET_WATCH_LIST = "SET_WATCH_LIST";
+export const UPDATE_WATCH_LIST = "UPDATE_WATCH_LIST";
+
 export const loadCoinList = createAction(COIN_LIST_REQUEST);
 export const loadBithumbBitkrw = createAction(BITHUMB_BITCOIN_KRW);
 export const loadUpbitBitKrw = createAction(UPBIT_BITCOIN_KRW);
@@ -80,13 +82,15 @@ export const checkBinanceCoin = createAction(BINANCE_CHECK_COIN_REQUEST);
 export const setUpbit = createAction(UPBIT_SETTING);
 export const setBinance = createAction(BINANCE_SETTING);
 export const setKey = createAction(KEY_SETTING_REQUEST);
-
 export const setBtc = createAction(SETTING_BTC);
+export const setCoinInfo = createAction(COIN_INFO_REQUEST);
 
 export const upbitBid = createAction(UPBIT_BID_REQUEST);
 export const upbitAsk = createAction(UPBIT_ASK_REQUEST);
 
 export const setTradeError = createAction(TRADE_ERROR_REQUEST);
+export const setWatchList = createAction(SET_WATCH_LIST);
+export const updateWatchList = createAction(UPDATE_WATCH_LIST);
 
 const initialState = {
   tickers: [],
@@ -112,6 +116,7 @@ const initialState = {
   coinInfo: [],
   coinList: [],
   tradeError: 0,
+  watchList: [],
 };
 export default handleActions(
   {
@@ -121,8 +126,7 @@ export default handleActions(
       }),
     [COIN_INFO_REQUEST]: (state, action) =>
       produce(state, (draft) => {
-        if (draft.coinInfo.length < action.payload.coinInfo.length)
-          draft.coinInfo = action.payload.coinInfo;
+        draft.coinInfo = action.payload;
       }),
     [TICKERS_REQUEST]: (state, action) => produce(state, (draft) => {}),
     [TICKERS_SUCCESS]: (state, action) =>
@@ -288,6 +292,26 @@ export default handleActions(
       produce(state, (draft) => {
         draft.tradeError = 0;
       }),
+    [SET_WATCH_LIST]: (state, action) =>
+      produce(state, (draft) => {
+        const { payload } = action;
+
+        if (payload) {
+          const isExist = draft.watchList.includes(payload);
+          isExist
+            ? (() => {
+                draft.watchList = [
+                  ...draft.watchList.filter((symbol) => symbol !== payload),
+                ];
+              })()
+            : (draft.watchList = [...draft.watchList, payload]);
+        }
+      }),
+    [UPDATE_WATCH_LIST]: (state, action) =>
+      produce(state, (draft) => {
+        const { payload } = action;
+        draft.watchList = [...payload];
+      }),
   },
-  initialState
+  initialState,
 );

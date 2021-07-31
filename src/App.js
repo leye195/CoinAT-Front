@@ -17,7 +17,7 @@ const App = () => {
     }
   }, [dispatch]);
 
-  return <Routes/>;
+  return <Routes />;
 };
 
 export default App;

@@ -11,9 +11,9 @@ const Container = styled.section`
   overflow: hidden;
   min-height: 40px;
   width: 100vw;
-  border-top: 1px solid ${colors['gray-100']};
+  border-top: 1px solid ${colors["gray-100"]};
   margin: 0 auto;
-  background-color: ${colors['gray-100']};
+  background-color: ${colors["gray-100"]};
   -ms-overflow-style: none; /* IE and Edge */
   scrollbar-width: none; /* Firefox */
   &::-webkit-scrollbar {
@@ -39,7 +39,7 @@ const ListItem = styled.div`
   padding: 5px;
   white-space: pre;
   font-weight: bolder;
-  background-color: ${colors['white']};
+  background-color: ${colors["white"]};
   height: 25px;
   @media screen and (max-width: 425px) {
   }
@@ -72,7 +72,7 @@ const Listing = () => {
             fill: "forwards",
             duration: 1500,
             delay: 1000,
-          }
+          },
         );
         listRef.current.animate(
           [
@@ -83,7 +83,7 @@ const Listing = () => {
             fill: "forwards",
             duration: 1500,
             delay: 2000,
-          }
+          },
         );
         cnt.current = 0;
       } else {
@@ -96,7 +96,7 @@ const Listing = () => {
             fill: "forwards",
             duration: 1500,
             delay: 2000,
-          }
+          },
         );
         cnt.current += 1;
       }
@@ -115,7 +115,7 @@ const Listing = () => {
       window.removeEventListener("resize", handleResize);
     };
   }, [dispatch, handleNoticeAnimation]);
-  
+
   return (
     <Container>
       <ListContainer

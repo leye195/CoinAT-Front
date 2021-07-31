@@ -1,7 +1,8 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import styled, { css } from "styled-components";
-import { setBtc } from "../../reducers/coin";
+import { setBtc } from "reducers/coin";
+import WatchList from "components/Home/WatchList";
 
 const ExchangeContainer = styled.section`
   ${(props) =>
@@ -17,18 +18,24 @@ const ExchangeContainer = styled.section`
           position: relative;
         `}
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
   background: #90abbf;
   font-weight: 800;
   color: white;
   text-shadow: 1px 1px 5px #545454;
-  height: 35px;
+  min-height: 35px;
   transition: all 0.5;
   @media (max-width: 768px) {
     width: 100%;
-    height: 6vh;
+    min-height: 6vh;
   }
+`;
+const InfoContainer = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
 `;
 const Info = styled.p`
   padding-left: 5px;
@@ -50,12 +57,10 @@ const Info = styled.p`
 
 function CurrentExchangeBar({ nav, isFixed }) {
   const dispatch = useDispatch();
-  const { upbitBitKrw, usdToKrw, binanceBitUsdt, bithumbBitKrw } = useSelector(
-    (state) => state.coin
-  );
-  const [differene,setDifference] = useState(0);
-  const [usdtRate,setUsdtRate] = useState(0); 
-
+  const { upbitBitKrw, usdToKrw, binanceBitUsdt, bithumbBitKrw, watchList } =
+    useSelector((state) => state.coin);
+  const [differene, setDifference] = useState(0);
+  const [usdtRate, setUsdtRate] = useState(0);
 
   const convertUsdToKrw = useMemo(() => {
     const converted = parseFloat(binanceBitUsdt, 10) * usdToKrw;
@@ -72,11 +77,13 @@ function CurrentExchangeBar({ nav, isFixed }) {
         ((parseFloat(bithumbBitKrw, 10) - convertUsdToKrw) / convertUsdToKrw) *
         100
       ).toFixed(2);
-    
-    if(converted&&upbitBitKrw) {
-      const difference = ((parseFloat(upbitBitKrw, 10) - convertUsdToKrw) / convertUsdToKrw) *100;
-      setDifference(difference)
-      setUsdtRate((usdToKrw * (1+(difference/100))))
+
+    if (converted && upbitBitKrw) {
+      const difference =
+        ((parseFloat(upbitBitKrw, 10) - convertUsdToKrw) / convertUsdToKrw) *
+        100;
+      setDifference(difference);
+      setUsdtRate(usdToKrw * (1 + difference / 100));
     }
 
     dispatch(
@@ -87,20 +94,25 @@ function CurrentExchangeBar({ nav, isFixed }) {
         percent1: parseFloat(percent1, 10),
         thumb: bithumbBitKrw,
         percent2: parseFloat(percent2, 10),
-      })
+      }),
     );
   }, [convertUsdToKrw, dispatch, upbitBitKrw, bithumbBitKrw, usdToKrw]);
-  
+
   return (
     <>
       <ExchangeContainer ref={nav} isFixed={isFixed}>
-        <Info>{`1$: ${usdToKrw}₩`}</Info>
-        <Info>{`업비트: ${upbitBitKrw} BTC/KRW`}</Info>
-        <Info>{`바이낸스: ${convertUsdToKrw} BTC/KRW`}</Info>
-        <Info>{`차이: ${differene.toFixed(2)}%`}</Info>
-        <Info>
-          {`1USDT: ${usdtRate.toFixed(3)}₩`}
-        </Info>
+        <InfoContainer>
+          <Info>{`1$: ${usdToKrw}₩`}</Info>
+          <Info>{`업비트: ${upbitBitKrw} BTC/KRW`}</Info>
+          <Info>{`바이낸스: ${convertUsdToKrw} BTC/KRW`}</Info>
+          <Info>{`차이: ${differene.toFixed(2)}%`}</Info>
+          <Info>{`1USDT: ${usdtRate.toFixed(3)}₩`}</Info>
+        </InfoContainer>
+        {!!watchList.length && (
+          <InfoContainer>
+            <WatchList />
+          </InfoContainer>
+        )}
       </ExchangeContainer>
     </>
   );

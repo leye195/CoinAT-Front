@@ -1,25 +1,24 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { useRouteMatch } from 'react-router';
-import { getChartData, setIsFirstLoad } from 'reducers/trade';
-import moment from 'moment';
-import * as echarts from 'echarts';
-import styled from 'styled-components';
-import debounce from 'lodash/debounce';
-import { breakUp } from 'styles/_mixin';
+import React, { useCallback, useEffect, useRef, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useRouteMatch } from "react-router";
+import { getChartData, setIsFirstLoad } from "reducers/trade";
+import moment from "moment";
+import * as echarts from "echarts";
+import styled from "styled-components";
+import debounce from "lodash/debounce";
+import { breakUp } from "styles/_mixin";
 
 const Container = styled.div`
   margin: 0 auto;
   padding-top: 20px;
   width: 95%;
   height: calc(100vh - 90px);
-  
+
   ${breakUp.lg`
       max-width: 1550px;
       width: 80%;
   `}
 `;
-
 
 const TradeChartWrapper = styled.div`
   display: flex;
@@ -44,7 +43,7 @@ const TitleWrapper = styled.div`
 
   &::before {
     position: absolute;
-    content: '';
+    content: "";
     width: 5px;
     height: 80%;
     background-color: #accff7;
@@ -61,7 +60,7 @@ const CoinTitle = styled.p`
   margin: 0 0 0.5rem 0;
   padding-left: 10px;
   font-size: 1.5rem;
-`
+`;
 
 const PriceWrapper = styled.div`
   margin: 0.5rem auto 0.5rem auto;
@@ -73,11 +72,11 @@ const Price = styled.span`
   font-size: 1.5rem;
 `;
 
-const CurrencyType =styled.span`
+const CurrencyType = styled.span`
   margin-left: 5px;
 `;
 
-const TradeChart = styled.div` 
+const TradeChart = styled.div`
   width: 95%;
   height: 100%;
   padding: 10px;
@@ -103,7 +102,7 @@ const Button = styled.button`
 const Chart = () => {
   const dispatch = useDispatch();
   const match = useRouteMatch();
-  const [candleType,setCandleType] = useState('minutes');
+  const [candleType, setCandleType] = useState("minutes");
 
   const chartRef = useRef(null);
   const echart = useRef(null);
@@ -111,28 +110,31 @@ const Chart = () => {
   const xAxis = useRef(null);
   const timeId = useRef(null);
 
-  const {chartData, loading, isFirstLoad} = useSelector(({trade})=>({
+  const { chartData, loading, isFirstLoad } = useSelector(({ trade }) => ({
     chartData: trade.chartData,
-    isFirstLoad: trade.isFirstLoad
+    isFirstLoad: trade.isFirstLoad,
   }));
 
-  const {name} = match.params;
-  
+  const { name } = match.params;
 
-  const updateChart = useCallback(() =>{
-    if(!echart.current || !series.current) return;
+  const updateChart = useCallback(() => {
+    if (!echart.current || !series.current) return;
 
-    if(!chartData.length) return;
+    if (!chartData.length) return;
 
-    const dates = chartData.map((info)=>new moment(info["timestamp"]).format('YYYY-MM-DD HH:mm'));
-    const candleStickData = chartData.map((info)=> ([
-        info["opening_price"],
-        info["trade_price"],
-        info["low_price"],
-        info["high_price"],
-    ]));
-    const volumes = chartData.map((info)=>info['candle_acc_trade_volume'].toFixed(3));
-    
+    const dates = chartData.map((info) =>
+      new moment(info["timestamp"]).format("YYYY-MM-DD HH:mm"),
+    );
+    const candleStickData = chartData.map((info) => [
+      info["opening_price"],
+      info["trade_price"],
+      info["low_price"],
+      info["high_price"],
+    ]);
+    const volumes = chartData.map((info) =>
+      info["candle_acc_trade_volume"].toFixed(3),
+    );
+
     xAxis.current[0].data = dates;
     xAxis.current[1].data = dates;
     series.current[0].data = candleStickData;
@@ -140,14 +142,14 @@ const Chart = () => {
 
     echart.current.setOption({
       series: series.current,
-      xAxis: xAxis.current
+      xAxis: xAxis.current,
     });
-  },[chartData])
+  }, [chartData]);
 
   const drawChart = useCallback(() => {
-    if(loading) return;
+    if (loading) return;
 
-    if(echart.current) {
+    if (echart.current) {
       echart.current.dispose();
       echart.current = null;
     }
@@ -155,92 +157,96 @@ const Chart = () => {
     const chart = echarts.init(chartRef.current);
     echart.current = chart;
 
-    if(!chartData.length) return;
+    if (!chartData.length) return;
 
-    const dates = chartData.map((info)=>new moment(info["timestamp"]).format('YYYY-MM-DD HH:mm'));
-    const candleStickData = chartData.map((info)=> ([
-        info["opening_price"],
-        info["trade_price"],
-        info["low_price"],
-        info["high_price"],
-    ]));
-    const volumes = chartData.map((info)=>info['candle_acc_trade_volume'].toFixed(3));
+    const dates = chartData.map((info) =>
+      new moment(info["timestamp"]).format("YYYY-MM-DD HH:mm"),
+    );
+    const candleStickData = chartData.map((info) => [
+      info["opening_price"],
+      info["trade_price"],
+      info["low_price"],
+      info["high_price"],
+    ]);
+    const volumes = chartData.map((info) =>
+      info["candle_acc_trade_volume"].toFixed(3),
+    );
     const option = {
-      backgroundColor: '#ffff',
+      backgroundColor: "#ffff",
       tooltip: {
-        trigger: 'axis',
+        trigger: "axis",
         axisPointer: {
           label: {
-            formatter: (object) => isNaN(object.value)
-                ? moment(object.value).format('YYYY MMM DD HH:mm')
-                : object.value
+            formatter: (object) =>
+              isNaN(object.value)
+                ? moment(object.value).format("YYYY MMM DD HH:mm")
+                : object.value,
           },
-          type: 'cross'
+          type: "cross",
         },
-        backgroundColor: 'rgba(245, 245, 245, 0.8)',
+        backgroundColor: "rgba(245, 245, 245, 0.8)",
         borderWidth: 1,
-        borderColor: '#ccc',
+        borderColor: "#ccc",
         padding: 10,
         textStyle: {
-          color: '#000'
+          color: "#000",
         },
-        position: function(pos,params,dom,rect,size) {
+        position: function (pos, params, dom, rect, size) {
           const obj = {
-            top: 10          
+            top: 10,
           };
 
-          obj[
-            ['left', 'right'][+ (pos[0] < size.viewSize[0] / 2)]
-          ] = 100;
+          obj[["left", "right"][+(pos[0] < size.viewSize[0] / 2)]] = 100;
           return obj;
         },
-        extraCssText: 'width: 140px'
+        extraCssText: "width: 140px",
       },
       axisPointer: {
         label: {
-          backgroundColor: '#777',
+          backgroundColor: "#777",
         },
-        link: {xAxisIndex: 'all'},
+        link: { xAxisIndex: "all" },
       },
       grid: [
         {
-          top: '10%',
-          left: '0%',
-          right: '10%',
-          height: '60%',
+          top: "10%",
+          left: "0%",
+          right: "10%",
+          height: "60%",
           show: true,
-        }, {
-          left: '0%',
-          right: '10%',
-          bottom: '10%',
-          height: '15%',
+        },
+        {
+          left: "0%",
+          right: "10%",
+          bottom: "10%",
+          height: "15%",
           show: true,
-        }   
+        },
       ],
       xAxis: [
         {
-          type: 'category',
+          type: "category",
           data: dates,
           scale: true,
           boundaryGap: false,
           axisLabel: {
-            formatter: (date) => moment(date).format('MMM DD HH:mm')
+            formatter: (date) => moment(date).format("MMM DD HH:mm"),
           },
           axisLine: {
-            onZero: false
+            onZero: false,
           },
           splitLine: {
             show: true,
           },
           splitNumber: 20,
-          min: 'dataMin',
-          max: 'dataMax',
+          min: "dataMin",
+          max: "dataMax",
           axisPointer: {
-            z: 100
-          }
+            z: 100,
+          },
         },
         {
-          type: 'category',
+          type: "category",
           gridIndex: 1,
           data: dates,
           scale: true,
@@ -252,159 +258,169 @@ const Chart = () => {
             show: false,
           },
           axisLabel: {
-            show: false
+            show: false,
           },
           splitLine: {
             show: false,
           },
           splitNumber: 20,
-          min: 'dataMin',
-          max: 'dataMax',
-        }
+          min: "dataMin",
+          max: "dataMax",
+        },
       ],
       yAxis: [
         {
           scale: true,
           splitArea: {
-            show: true
+            show: true,
           },
-          position: 'right'
+          position: "right",
         },
         {
           scale: true,
           gridIndex: 1,
           splitNumber: 2,
-          axisLabel: {show: false},
-          axisLine: {show: false},
-          axisTick: {show: false},
-          splitLine: {show: false},
-
-        }
+          axisLabel: { show: false },
+          axisLine: { show: false },
+          axisTick: { show: false },
+          splitLine: { show: false },
+        },
       ],
       dataZoom: [
         {
-          type: 'inside',
-          xAxisIndex: [0,1],
+          type: "inside",
+          xAxisIndex: [0, 1],
           start: 60,
-          end: 100
-        }, {
+          end: 100,
+        },
+        {
           show: true,
-          xAxisIndex: [0,1],
-          type: 'slider',
-          bottom: '0%',
-          height: '10%',
+          xAxisIndex: [0, 1],
+          type: "slider",
+          bottom: "0%",
+          height: "10%",
           start: 60,
           end: 100,
           showDetail: false,
-        }
+        },
       ],
       animation: false,
       series: [
         {
-          type: 'candlestick',
-          name: '가격변화',
+          type: "candlestick",
+          name: "가격변화",
           data: candleStickData,
           itemStyle: {
-            color: '#FA0000',
-            color0: '#1161C4',
+            color: "#FA0000",
+            color0: "#1161C4",
             borderColor: null,
-            borderColor0: null  
+            borderColor0: null,
           },
         },
         {
-          name: '거래량',
-          type: 'bar',
+          name: "거래량",
+          type: "bar",
           xAxisIndex: 1,
           yAxisIndex: 1,
-          data: volumes
-        }
-      ]
-    }
+          data: volumes,
+        },
+      ],
+    };
 
     series.current = option.series;
     xAxis.current = option.xAxis;
     chart.setOption(option);
-  },[chartData,loading])
+  }, [chartData, loading]);
 
-  const regularUpdate = useCallback(({candleType = "minutes", market}) => {
-    dispatch(getChartData({candleType, market:`KRW-${market}`}));
-    timeId.current = setTimeout(()=>{
-        regularUpdate({candleType,market});
-    },1200);
-  },[dispatch]);
+  const regularUpdate = useCallback(
+    ({ candleType = "minutes", market }) => {
+      dispatch(getChartData({ candleType, market: `KRW-${market}` }));
+      timeId.current = setTimeout(() => {
+        regularUpdate({ candleType, market });
+      }, 1200);
+    },
+    [dispatch],
+  );
 
-  const loadChartData = useCallback(({candleType = "minutes", market}) => {
-    dispatch(getChartData({candleType, market:`KRW-${market}`}));
-    clearTimeout(timeId.current);
-    timeId.current = setTimeout(()=>{
-      regularUpdate({candleType,market});
-    },1000);
-  },[dispatch,regularUpdate])
+  const loadChartData = useCallback(
+    ({ candleType = "minutes", market }) => {
+      dispatch(getChartData({ candleType, market: `KRW-${market}` }));
+      clearTimeout(timeId.current);
+      timeId.current = setTimeout(() => {
+        regularUpdate({ candleType, market });
+      }, 1000);
+    },
+    [dispatch, regularUpdate],
+  );
 
   const handleClick = (type) => (e) => {
-    setCandleType((prev)=>{
-      if(prev!==type) {
+    setCandleType((prev) => {
+      if (prev !== type) {
         clearTimeout(timeId.current);
       }
       return type;
-    })
-  }
+    });
+  };
 
   const handleResize = debounce(() => {
-    if(echart.current) {
+    if (echart.current) {
       echart.current.resize();
     }
-  },100);
+  }, 100);
 
   useEffect(() => {
-    if(isFirstLoad&&chartData.length){
+    if (isFirstLoad && chartData.length) {
       drawChart();
-      dispatch(setIsFirstLoad({isFirstLoad: false}));
+      dispatch(setIsFirstLoad({ isFirstLoad: false }));
       return;
     } else {
-      updateChart(); 
+      updateChart();
       return;
     }
-  },[dispatch,drawChart,chartData,updateChart,handleResize,isFirstLoad])
-
-  useEffect(()=>{
-    if(!name) return;
-
-    loadChartData({candleType, market:name});
-    return () => {
-      clearTimeout(timeId.current);
-      dispatch(setIsFirstLoad({isFirstLoad: true}));
-    }
-  },[dispatch,name,loadChartData, candleType]);
+  }, [dispatch, drawChart, chartData, updateChart, handleResize, isFirstLoad]);
 
   useEffect(() => {
-    window.addEventListener('resize',handleResize);
+    if (!name) return;
+
+    loadChartData({ candleType, market: name });
     return () => {
-      window.removeEventListener('resize',handleResize);
-    }
-  },[handleResize])
-  
-  return ( 
+      clearTimeout(timeId.current);
+      dispatch(setIsFirstLoad({ isFirstLoad: true }));
+    };
+  }, [dispatch, name, loadChartData, candleType]);
+
+  useEffect(() => {
+    window.addEventListener("resize", handleResize);
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, [handleResize]);
+
+  return (
     <Container>
       <TitleWrapper>
         <CoinTitle>{name}/KRW 거래</CoinTitle>
         <ExchangeTitle>Upbit(업비트)</ExchangeTitle>
       </TitleWrapper>
       <PriceWrapper>
-        <Price>{chartData&&!!chartData.length? chartData.slice(-1)[0]['trade_price']:0}</Price>
+        <Price>
+          {chartData && !!chartData.length
+            ? chartData.slice(-1)[0]["trade_price"]
+            : 0}
+        </Price>
         <CurrencyType>KRW</CurrencyType>
       </PriceWrapper>
       <TradeChartWrapper>
         <ButtonGroup>
-          <Button onClick={handleClick('month')}>1달</Button>
-          <Button onClick={handleClick('weeks')}>1주</Button>
-          <Button onClick={handleClick('days')}>1일</Button>
-          <Button onClick={handleClick('minutes')}>3분</Button>
+          <Button onClick={handleClick("month")}>1달</Button>
+          <Button onClick={handleClick("weeks")}>1주</Button>
+          <Button onClick={handleClick("days")}>1일</Button>
+          <Button onClick={handleClick("minutes")}>3분</Button>
         </ButtonGroup>
-        <TradeChart ref={chartRef}/>
+        <TradeChart ref={chartRef} />
       </TradeChartWrapper>
     </Container>
-  )
-}
+  );
+};
 
 export default Chart;

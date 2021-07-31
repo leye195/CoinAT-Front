@@ -1,14 +1,12 @@
-import React from 'react';
-import styled from 'styled-components';
-import moment from 'moment';
-import {breakDown} from '../../styles/_mixin';
-import { colors } from '../../styles/_variables';
+import React from "react";
+import styled from "styled-components";
+import moment from "moment";
+import { breakDown } from "../../styles/_mixin";
+import { colors } from "../../styles/_variables";
 
-const TableRow = styled.tr`
-
-`;
+const TableRow = styled.tr``;
 const TableCell = styled.td`
-  border-bottom: 1px solid ${colors['gray-100']};
+  border-bottom: 1px solid ${colors["gray-100"]};
   ${breakDown.sm`
     &:firstchild{
       width: 60%;
@@ -43,25 +41,27 @@ const NoticeDate = styled.p`
     font-size:0.8rem;
   `}
 `;
-const NoticeItem = ({title,updated_at: updatedAt, id, type}) => {
-    return <>
-        <TableRow>
-            <TableCell>
-                <NoticeTitle>
-                  {
-                    type==='notice'?
-                    <a href={`https://upbit.com/service_center/notice?id=${id}`}>
-                      {title}
-                    </a>
-                    : title
-                  }
-                </NoticeTitle>
-            </TableCell>
-            <TableCell>
-                <NoticeDate>{moment(updatedAt).format('YYYY-MM-DD')}</NoticeDate>
-            </TableCell>
-        </TableRow>
+const NoticeItem = ({ title, updated_at: updatedAt, id, type }) => {
+  return (
+    <>
+      <TableRow>
+        <TableCell>
+          <NoticeTitle>
+            {type === "notice" ? (
+              <a href={`https://upbit.com/service_center/notice?id=${id}`}>
+                {title}
+              </a>
+            ) : (
+              title
+            )}
+          </NoticeTitle>
+        </TableCell>
+        <TableCell>
+          <NoticeDate>{moment(updatedAt).format("YYYY-MM-DD")}</NoticeDate>
+        </TableCell>
+      </TableRow>
     </>
+  );
 };
 
 export default NoticeItem;
