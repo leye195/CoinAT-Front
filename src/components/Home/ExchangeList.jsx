@@ -51,6 +51,7 @@ const ExchangeCoinsContainer = styled.div`
     padding: 0px;
   }
 `;
+
 const CoinHeadContainer = styled.section`
   display: flex;
   flex-direction: row;
@@ -100,32 +101,33 @@ function ExchangeList() {
     if (coinTickers && coinTickers.tickers) {
       const info = [...coinTickers.tickers]?.sort((x, y) => {
         if (sortType.current === -1) return x.symbol > y.symbol ? 1 : -1;
-        else if (sortType.current === 1) return x.symbol < y.symbol ? 1 : -1;
-        else if (sortType.current === -2) return x.last > y.last ? 1 : -1;
-        else if (sortType.current === 2) return x.last < y.last ? 1 : -1;
-        else if (sortType.current === -3) return x.blast > y.blast ? 1 : -1;
-        else if (sortType.current === 3) return x.blast < y.blast ? 1 : -1;
-        else if (sortType.current === -4) {
+        if (sortType.current === 1) return x.symbol < y.symbol ? 1 : -1;
+        if (sortType.current === -2) return x.last > y.last ? 1 : -1;
+        if (sortType.current === 2) return x.last < y.last ? 1 : -1;
+        if (sortType.current === -3) return x.blast > y.blast ? 1 : -1;
+        if (sortType.current === 3) return x.blast < y.blast ? 1 : -1;
+        if (sortType.current === -4) {
           if (x.per1 !== undefined && y.per1 !== undefined) {
             return x.per1 > y.per1 ? 1 : -1;
-          } else {
-            if (x.per1 === undefined) {
-              return -1;
-            } else if (y.per1 === undefined) {
-              return 1;
-            }
+          }
+          if (x.per1 === undefined) {
+            return -1;
+          }
+          if (y.per1 === undefined) {
+            return 1;
           }
         } else if (sortType.current === 4) {
           if (x.per1 !== undefined && y.per1 !== undefined) {
             return x.per1 < y.per1 ? 1 : -1;
-          } else {
-            if (x.per1 === undefined) {
-              return 1;
-            } else if (y.per1 === undefined) {
-              return -1;
-            }
+          }
+          if (x.per1 === undefined) {
+            return 1;
+          }
+          if (y.per1 === undefined) {
+            return -1;
           }
         }
+        return 0;
       });
 
       dispatch(
@@ -194,73 +196,71 @@ function ExchangeList() {
           dataset: { id },
         },
       } = e;
-      const coinList = [...coinInfo];
+      const coinInfoList = [...coinInfo];
 
       if (parseInt(id, 10) === 1) {
         if (sortType.current === 1) {
-          coinList.sort((x, y) => {
+          coinInfoList.sort((x, y) => {
             return x.symbol > y.symbol ? 1 : -1;
           });
           sortType.current = -1;
         } else {
-          coinList.sort((x, y) => {
+          coinInfoList.sort((x, y) => {
             return x.symbol < y.symbol ? 1 : -1;
           });
           sortType.current = 1;
         }
       } else if (parseInt(id, 10) === 2) {
         if (sortType.current === 2) {
-          coinList.sort((x, y) => {
+          coinInfoList.sort((x, y) => {
             return x.last > y.last ? 1 : -1;
           });
           sortType.current = -2;
         } else {
-          coinList.sort((x, y) => {
+          coinInfoList.sort((x, y) => {
             return x.last < y.last ? 1 : -1;
           });
           sortType.current = 2;
         }
       } else if (parseInt(id, 10) === 3) {
         if (sortType.current === 3) {
-          coinList.sort((x, y) => {
+          coinInfoList.sort((x, y) => {
             return x.blast > y.blast ? 1 : -1;
           });
           sortType.current = -3;
         } else {
-          coinList.sort((x, y) => {
+          coinInfoList.sort((x, y) => {
             return x.blast < y.blast ? 1 : -1;
           });
           sortType.current = 3;
         }
       } else if (parseInt(id, 10) === 4) {
         if (sortType.current === 4) {
-          coinList.sort((x, y) => {
+          coinInfoList.sort((x, y) => {
             if (x.per1 !== undefined && y.per1 !== undefined) {
               return x.per1 > y.per1 ? 1 : -1;
-            } else {
-              if (x.per1 === undefined) {
-                return -1;
-              } else if (y.per1 === undefined) {
-                return 1;
-              } else {
-                return -1;
-              }
             }
+            if (x.per1 === undefined) {
+              return -1;
+            }
+            if (y.per1 === undefined) {
+              return 1;
+            }
+            return -1;
           });
           sortType.current = -4;
         } else {
-          coinList.sort((x, y) => {
+          coinInfoList.sort((x, y) => {
             if (x.per1 !== undefined && y.per1 !== undefined) {
               return x.per1 < y.per1 ? 1 : -1;
-            } else {
-              if (x.per1 === undefined) {
-                return 1;
-              } else if (y.per1 === undefined) {
-                return -1;
-              } else {
-                return -1;
-              }
             }
+            if (x.per1 === undefined) {
+              return 1;
+            }
+            if (y.per1 === undefined) {
+              return -1;
+            }
+            return -1;
           });
           sortType.current = 4;
         }
@@ -305,7 +305,7 @@ function ExchangeList() {
         </ExchangeCoinsContainer>
       </ExchangesWrapper>
       {(loading || upbitCoinInfo.length < coinList.length) && (
-        <Loading isLoading={true} />
+        <Loading isLoading />
       )}
     </Container>
   );

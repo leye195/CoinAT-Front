@@ -35,20 +35,23 @@ function* loadNotices(action) {
             title: post.text,
             updatedAt: post.start_date,
           }));
-    type === "notice"
-      ? yield put({
-          type: GET_NOTICE_SUCCESS,
-          payload: {
-            notices,
-            more: page < data.totalPage ? true : false,
-            page,
-            type,
-          },
-        })
-      : yield put({
-          type: GET_NOTICE_SUCCESS,
-          payload: { notices, more: data.data.more, page, type },
-        });
+
+    if (type === "notice") {
+      yield put({
+        type: GET_NOTICE_SUCCESS,
+        payload: {
+          notices,
+          more: page < data.totalPage,
+          page,
+          type,
+        },
+      });
+    } else {
+      yield put({
+        type: GET_NOTICE_SUCCESS,
+        payload: { notices, more: data.data.more, page, type },
+      });
+    }
   } catch (e) {
     yield put({
       type: GET_NOTICE_FAILURE,

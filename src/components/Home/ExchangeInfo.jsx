@@ -40,7 +40,7 @@ const ExchangeInfo = ({ coinInfo = [], upbitBitKrw, fixList = [] }) => {
   const dispatch = useDispatch();
   const { watchList } = useSelector((state) => state.coin);
 
-  const handleWatchList = (symbol) => (e) => {
+  const handleWatchList = (symbol) => () => {
     dispatch(setWatchList(symbol));
   };
 
