@@ -28,11 +28,11 @@
 ### 설치
 
 ```
-npm install
+yarn
 ```
 
 ### 실행
 
 ```
-npm run start
+yarn start
 ```
