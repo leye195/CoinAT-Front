@@ -41,7 +41,7 @@ import {
 } from "../reducers/coin";
 
 const API_URL = process.env.REACT_APP_API;
-const HEROKU_URL = "https://secure-waters-04189.herokuapp.com/";
+const HEROKU_URL = "https://coinat.herokuapp.com/";
 
 function loadCurrencyAPI() {
   return axios.get(`${HEROKU_URL}currency`, {

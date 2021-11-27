@@ -13,7 +13,7 @@ const App = () => {
       timer.current = setTimeout(() => {
         timer.current = null;
         getCurrency();
-      }, 8000);
+      }, 20000);
     }
   }, [dispatch]);
 

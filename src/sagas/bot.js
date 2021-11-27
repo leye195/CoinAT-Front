@@ -9,7 +9,7 @@ import {
   CANCEL_MESSAGE_REQUEST,
 } from "../reducers/bot";
 
-const API_URL = "https://secure-waters-04189.herokuapp.com/";
+const API_URL = "https://coinat.herokuapp.com/";
 
 function sendMessageAPI(data) {
   return axios.post(`${API_URL}bot/start`, data);
