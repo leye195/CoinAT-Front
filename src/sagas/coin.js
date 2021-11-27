@@ -65,7 +65,7 @@ function* loadCurrency() {
   }
 }
 function* watchCurrency() {
-  yield throttle(1000, CURRENCY_REQUEST, loadCurrency);
+  yield throttle(30000, CURRENCY_REQUEST, loadCurrency);
 }
 
 function loadUpbitNewListingAPI() {
