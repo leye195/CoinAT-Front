@@ -2,29 +2,35 @@ import React from "react";
 import styled from "styled-components";
 
 const Container = styled.div`
-  cursor: ${(props) => (props.head ? "pointer" : "normal")};
-  width: 30%;
-  word-break: break-all;
-  font-size: 0.85rem;
-  color: black;
-  margin-left: 3px;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  padding: 0.1rem 0;
+  margin-left: 3px;
   margin: 0;
+  width: 30%;
+  min-height: 2rem;
+  word-break: break-all;
+  font-size: 0.85rem;
+  color: black;
   white-space: pre;
+  cursor: ${(props) => (props.head ? "pointer" : "normal")};
+
   @media (max-width: 768px) {
     font-size: 0.7rem;
   }
+
   &:first-child {
     flex-direction: row;
   }
+
   &:nth-child(2),
   &:nth-child(5) {
     color: ${(props) => (props.head === true ? "black" : "#27ae60")};
     font-weight: ${(props) => (props.head === true ? "800" : "600")};
   }
+
   &:nth-child(3) {
     color: ${(props) =>
       props.head === true
@@ -46,6 +52,7 @@ const Container = styled.div`
       }
     }
   }
+
   &:nth-child(4),
   &:nth-child(6) {
     color: ${(props) =>

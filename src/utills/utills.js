@@ -9,10 +9,11 @@ let wsUpbit = null;
 let wsBithumb = null;
 
 const tickers1 = {};
+const tickersBTC1 = {};
 const tickers2 = {};
 const tickers3 = {};
 
-export let coinTickers = { tickers: [], id: -1 };
+export const coinTickers = { tickers: [], id: -1, type: "KRW" };
 
 export const getPercent = (x, y) => {
   return ((x - y) / y) * 100;
@@ -25,7 +26,9 @@ const upbitWS = async (coinList) => {
       await axios.get("https://api.upbit.com/v1/market/all")
     ).data.filter(
       (coin) =>
-        coin.market.includes("KRW") && coinList.includes(coin.market.slice(4)),
+        coin.market.includes("KRW-") ||
+        (coin.market.includes("BTC-") &&
+          coinList.includes(coin.market.slice(4))),
     );
     wsUpbit = new WebSocket("wss://api.upbit.com/websocket/v1");
     wsUpbit.binaryType = "arraybuffer";
@@ -56,14 +59,23 @@ const upbitWS = async (coinList) => {
       } = JSON.parse(enc.decode(arr));
       const symbol = code.slice(code.indexOf("-") + 1, code.length);
 
-      if (symbol === "BTC") upbitBTCKrw = tradePrice;
-      tickers1[symbol] = {
-        tradePrice,
-        highPrice,
-        lowPrice,
-        openPrice,
-        date: tradeDate,
-      };
+      if (code === "KRW-BTC" && symbol === "BTC") upbitBTCKrw = tradePrice;
+      if (code === `KRW-${symbol}`)
+        tickers1[symbol] = {
+          tradePrice,
+          highPrice,
+          lowPrice,
+          openPrice,
+          date: tradeDate,
+        };
+      if (code === `BTC-${symbol}`)
+        tickersBTC1[symbol] = {
+          tradePrice,
+          highPrice,
+          lowPrice,
+          openPrice,
+          date: tradeDate,
+        };
     };
     wsUpbit.onclose = () => {
       if (wsUpbit !== null) {
@@ -198,43 +210,62 @@ const bithumbWS = async (coinList) => {
   }
 };
 
-export const combineTickers = (currency, coinList) => {
+export const combineTickers = (currency, coinList, type = "KRW") => {
   const tickers = ["BTC", ...coinList].map((v) => {
+    if (type === "KRW" || v === "BTC") {
+      return {
+        symbol: v, // tickers1[`${v}/KRW`].symbol.slice(0, tickers1[v].symbol.indexOf("/")),
+        last: tickers1[`${v}`] === undefined ? 0 : tickers1[`${v}`].tradePrice,
+        blast: tickers2[`${v}`] === undefined ? 0 : tickers2[`${v}`].tradePrice,
+        convertedBlast:
+          tickers2[`${v}`] === undefined
+            ? 0
+            : parseFloat(
+                (tickers2[`${v}`].tradePrice * upbitBTCKrw).toFixed(2),
+                10,
+              ),
+        thumb: tickers3[`${v}`] === undefined ? 0 : tickers3[`${v}`].tradePrice,
+        per1:
+          tickers1[`${v}`] === undefined || tickers2[`${v}`] === undefined
+            ? undefined
+            : getPercent(
+                tickers1[`${v}`].tradePrice,
+                parseFloat(
+                  (tickers2[`${v}`].tradePrice * upbitBTCKrw).toFixed(2),
+                  10,
+                ),
+              ),
+        per2:
+          tickers3[`${v}`] === undefined || tickers2[`${v}`] === undefined
+            ? undefined
+            : getPercent(
+                tickers3[`${v}`].tradePrice,
+                parseFloat(
+                  (tickers2[`${v}`].tradePrice * upbitBTCKrw).toFixed(2),
+                  10,
+                ),
+              ),
+      };
+    }
+
     return {
       symbol: v, // tickers1[`${v}/KRW`].symbol.slice(0, tickers1[v].symbol.indexOf("/")),
-      last: tickers1[`${v}`] === undefined ? 0 : tickers1[`${v}`].tradePrice,
+      last:
+        tickersBTC1[`${v}`] === undefined ? 0 : tickersBTC1[`${v}`].tradePrice,
       blast: tickers2[`${v}`] === undefined ? 0 : tickers2[`${v}`].tradePrice,
-      convertedBlast:
-        tickers2[`${v}`] === undefined
-          ? 0
-          : parseFloat(
-              (tickers2[`${v}`].tradePrice * upbitBTCKrw).toFixed(2),
-              10,
-            ),
       thumb: tickers3[`${v}`] === undefined ? 0 : tickers3[`${v}`].tradePrice,
       per1:
-        tickers1[`${v}`] === undefined || tickers2[`${v}`] === undefined
+        tickersBTC1[`${v}`] === undefined || tickers2[`${v}`] === undefined
           ? undefined
           : getPercent(
-              tickers1[`${v}`].tradePrice,
-              parseFloat(
-                (tickers2[`${v}`].tradePrice * upbitBTCKrw).toFixed(2),
-                10,
-              ),
-            ),
-      per2:
-        tickers3[`${v}`] === undefined || tickers2[`${v}`] === undefined
-          ? undefined
-          : getPercent(
-              tickers3[`${v}`].tradePrice,
-              parseFloat(
-                (tickers2[`${v}`].tradePrice * upbitBTCKrw).toFixed(2),
-                10,
-              ),
+              tickersBTC1[`${v}`].tradePrice,
+              tickers2[`${v}`].tradePrice,
             ),
     };
   });
+
   coinTickers.tickers = tickers.length > 0 ? tickers : [];
+  coinTickers.type = type !== "KRW" ? "BTC" : "KRW";
   coinTickers.id = v4();
   return coinTickers;
 };

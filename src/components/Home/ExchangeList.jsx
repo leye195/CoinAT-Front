@@ -6,7 +6,10 @@ import React, {
   useEffect,
 } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { useLocation } from "react-router-dom";
 import styled, { css } from "styled-components";
+import queryString from "query-string";
+
 import Loading from "components/Loading";
 import ExchangeInfo from "components/Home/ExchangeInfo";
 import CurrentExchangeBar from "components/Home/CurrentExchangeBar";
@@ -78,7 +81,7 @@ const CoinHeadContainer = styled.section`
 `;
 
 function ExchangeList() {
-  const [upbitCoinInfo, setUpbitCoinInfo] = useState([]);
+  const [coinPriceInfo, setCoinPriceInfo] = useState([]);
   const [isFirstLoading, setIsFirstLoading] = useState(false);
   const [loading, setLoading] = useState(true);
   const [isFixed, setIsFixed] = useState(false);
@@ -89,6 +92,9 @@ function ExchangeList() {
   const isMounted = useRef(false);
   const timer = useRef(null);
 
+  const { search } = useLocation();
+  const { type } = queryString.parse(search);
+
   const dispatch = useDispatch();
   const { coinList, upbitBitKrw, watchList } = useSelector(
     (state) => state.coin,
@@ -96,7 +102,10 @@ function ExchangeList() {
 
   const getExchangeTickers = useCallback(() => {
     if (isFirstLoading === false && loading === false) setLoading(true);
-    const coinTickers = combineTickers(upbitBitKrw, coinList);
+
+    const listType = type === "BTC" ? "BTC" : "KRW";
+
+    const coinTickers = combineTickers(upbitBitKrw, coinList, listType);
 
     if (coinTickers && coinTickers.tickers) {
       const info = [...coinTickers.tickers]?.sort((x, y) => {
@@ -147,7 +156,7 @@ function ExchangeList() {
       );
       if (loading === true) setLoading(false);
       if (isFirstLoading === false) setIsFirstLoading(true);
-      setUpbitCoinInfo(info);
+      setCoinPriceInfo(info);
       dispatch(setCoinInfo(info));
       dispatch(loadUsdToKrw());
       if (!timer.current) {
@@ -157,10 +166,18 @@ function ExchangeList() {
         }, 1000);
       }
     }
-  }, [loading, isFirstLoading, dispatch, sortType, coinList, upbitBitKrw]);
+  }, [
+    loading,
+    isFirstLoading,
+    dispatch,
+    sortType,
+    coinList,
+    upbitBitKrw,
+    type,
+  ]);
 
   const navFix = useCallback(() => {
-    if (window.scrollY >= navTop) {
+    if (window.scrollY > navTop) {
       setIsFixed(true);
     } else {
       setIsFixed(false);
@@ -277,34 +294,39 @@ function ExchangeList() {
         offsetHeight={nav.current !== null && nav.current.offsetHeight}
       >
         <CoinHeadContainer>
-          <Coin head handleClick={onSort(upbitCoinInfo)} id={1}>
+          <Coin head handleClick={onSort(coinPriceInfo)} id={1}>
             코인
           </Coin>
-          <Coin head handleClick={onSort(upbitCoinInfo)} id={2}>
-            업비트(₩)
+          <Coin head handleClick={onSort(coinPriceInfo)} id={2}>
+            업비트({type !== "BTC" ? "₩" : "BTC"})
           </Coin>
-          <Coin head handleClick={onSort(upbitCoinInfo)} id={3}>
+          <Coin head handleClick={onSort(coinPriceInfo)} id={3}>
             바이낸스(BTC)
           </Coin>
-          <Coin head handleClick={onSort(upbitCoinInfo)} id={4}>
+          <Coin head handleClick={onSort(coinPriceInfo)} id={4}>
             차이(%)
           </Coin>
-          <Coin head handleClick={onSort(upbitCoinInfo)} id={5}>
-            빗썸(₩)
-          </Coin>
-          <Coin head handleClick={onSort(upbitCoinInfo)} id={6}>
-            차이(%)
-          </Coin>
+          {type !== "BTC" && (
+            <Coin head handleClick={onSort(coinPriceInfo)} id={5}>
+              빗썸(₩)
+            </Coin>
+          )}
+          {type !== "BTC" && (
+            <Coin head handleClick={onSort(coinPriceInfo)} id={6}>
+              차이(%)
+            </Coin>
+          )}
         </CoinHeadContainer>
         <ExchangeCoinsContainer>
           <ExchangeInfo
             upbitBitKrw={upbitBitKrw}
-            coinInfo={upbitCoinInfo}
+            coinInfo={coinPriceInfo}
             fixList={watchList}
+            type={type}
           />
         </ExchangeCoinsContainer>
       </ExchangesWrapper>
-      {(loading || upbitCoinInfo.length < coinList.length) && (
+      {(loading || coinPriceInfo.length < coinList.length) && (
         <Loading isLoading />
       )}
     </Container>

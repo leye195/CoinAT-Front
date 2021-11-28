@@ -68,15 +68,15 @@ function CurrentExchangeBar({ nav, isFixed }) {
   }, [binanceBitUsdt, usdToKrw]);
 
   useEffect(() => {
-    const converted = convertUsdToKrw,
-      percent1 = (
-        ((parseFloat(upbitBitKrw, 10) - convertUsdToKrw) / convertUsdToKrw) *
-        100
-      ).toFixed(2),
-      percent2 = (
-        ((parseFloat(bithumbBitKrw, 10) - convertUsdToKrw) / convertUsdToKrw) *
-        100
-      ).toFixed(2);
+    const converted = convertUsdToKrw;
+    const percent1 = (
+      ((parseFloat(upbitBitKrw, 10) - convertUsdToKrw) / convertUsdToKrw) *
+      100
+    ).toFixed(2);
+    const percent2 = (
+      ((parseFloat(bithumbBitKrw, 10) - convertUsdToKrw) / convertUsdToKrw) *
+      100
+    ).toFixed(2);
 
     if (converted && upbitBitKrw) {
       const difference =

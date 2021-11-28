@@ -19,6 +19,7 @@
     "lodash": "^4.17.20",
     "moment": "^2.24.0",
     "qs": "^6.9.6",
+    "query-string": "^7.0.1",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "react-icons": "^4.2.0",
