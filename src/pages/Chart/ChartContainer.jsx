@@ -4,102 +4,10 @@ import { useDispatch, useSelector } from "react-redux";
 import { getChartData, setIsFirstLoad } from "reducers/trade";
 import moment from "moment";
 import * as echarts from "echarts";
-import styled from "styled-components";
 import debounce from "lodash/debounce";
-import { breakUp } from "styles/_mixin";
+import ChartPresentation from "./ChartPresentation";
 
-const Container = styled.div`
-  margin: 0 auto;
-  padding-top: 20px;
-  width: 95%;
-  height: calc(100vh - 90px);
-
-  ${breakUp.lg`
-      max-width: 1550px;
-      width: 80%;
-  `}
-`;
-
-const TradeChartWrapper = styled.div`
-  display: flex;
-  align-items: flex-start;
-  justify-content: center;
-  flex-direction: column;
-  margin-top: 0.5rem;
-  margin: 0 auto;
-  height: 500px;
-  position: relative;
-  overflow: hidden;
-`;
-
-const TitleWrapper = styled.div`
-  display: flex;
-  align-items: flex-start;
-  justify-content: center;
-  flex-direction: column;
-  margin: 20px 0 5px 0;
-  position: relative;
-  font-weight: bold;
-
-  &::before {
-    position: absolute;
-    content: "";
-    width: 5px;
-    height: 80%;
-    background-color: #accff7;
-  }
-`;
-
-const ExchangeTitle = styled.p`
-  margin: 0 0 0.5rem 0;
-  padding-left: 10px;
-  opacity: 0.6;
-`;
-
-const CoinTitle = styled.p`
-  margin: 0 0 0.5rem 0;
-  padding-left: 10px;
-  font-size: 1.5rem;
-`;
-
-const PriceWrapper = styled.div`
-  margin: 0.5rem auto 0.5rem auto;
-  width: 95%;
-`;
-
-const Price = styled.span`
-  font-weight: bold;
-  font-size: 1.5rem;
-`;
-
-const CurrencyType = styled.span`
-  margin-left: 5px;
-`;
-
-const TradeChart = styled.div`
-  width: 95%;
-  height: 100%;
-  padding: 10px;
-  margin: 0 auto;
-  border: 1px solid #e3e3e3;
-  border-radius: 10px;
-`;
-
-const ButtonGroup = styled.div`
-  width: 95%;
-  margin: 0 auto;
-  padding: 5px 0;
-`;
-
-const Button = styled.button`
-  font-weight: bold;
-  background-color: white;
-  border: 1px solid #d3d3d3;
-  outline: none;
-  cursor: pointer;
-`;
-
-const Chart = () => {
+const ChartContainer = () => {
   const dispatch = useDispatch();
   const match = useRouteMatch();
   const [candleType, setCandleType] = useState("minutes");
@@ -123,16 +31,16 @@ const Chart = () => {
     if (!chartData.length) return;
 
     const dates = chartData.map((info) =>
-      new moment(info["timestamp"]).format("YYYY-MM-DD HH:mm"),
+      new moment(info.timestamp).format("YYYY-MM-DD HH:mm"),
     );
     const candleStickData = chartData.map((info) => [
-      info["opening_price"],
-      info["trade_price"],
-      info["low_price"],
-      info["high_price"],
+      info.opening_price,
+      info.trade_price,
+      info.low_price,
+      info.high_price,
     ]);
     const volumes = chartData.map((info) =>
-      info["candle_acc_trade_volume"].toFixed(3),
+      info.candle_acc_trade_volume.toFixed(3),
     );
 
     xAxis.current[0].data = dates;
@@ -160,16 +68,16 @@ const Chart = () => {
     if (!chartData.length) return;
 
     const dates = chartData.map((info) =>
-      new moment(info["timestamp"]).format("YYYY-MM-DD HH:mm"),
+      new moment(info.timestamp).format("YYYY-MM-DD HH:mm"),
     );
     const candleStickData = chartData.map((info) => [
-      info["opening_price"],
-      info["trade_price"],
-      info["low_price"],
-      info["high_price"],
+      info.opening_price,
+      info.trade_price,
+      info.low_price,
+      info.high_price,
     ]);
     const volumes = chartData.map((info) =>
-      info["candle_acc_trade_volume"].toFixed(3),
+      info.candle_acc_trade_volume.toFixed(3),
     );
     const option = {
       backgroundColor: "#ffff",
@@ -395,30 +303,13 @@ const Chart = () => {
   }, [handleResize]);
 
   return (
-    <Container>
-      <TitleWrapper>
-        <CoinTitle>{name}/KRW 거래</CoinTitle>
-        <ExchangeTitle>Upbit(업비트)</ExchangeTitle>
-      </TitleWrapper>
-      <PriceWrapper>
-        <Price>
-          {chartData && !!chartData.length
-            ? chartData.slice(-1)[0]["trade_price"]
-            : 0}
-        </Price>
-        <CurrencyType>KRW</CurrencyType>
-      </PriceWrapper>
-      <TradeChartWrapper>
-        <ButtonGroup>
-          <Button onClick={handleClick("month")}>1달</Button>
-          <Button onClick={handleClick("weeks")}>1주</Button>
-          <Button onClick={handleClick("days")}>1일</Button>
-          <Button onClick={handleClick("minutes")}>3분</Button>
-        </ButtonGroup>
-        <TradeChart ref={chartRef} />
-      </TradeChartWrapper>
-    </Container>
+    <ChartPresentation
+      name={name}
+      chartData={chartData}
+      handleClick={handleClick}
+      chartRef={chartRef}
+    />
   );
 };
 
-export default Chart;
+export default ChartContainer;
