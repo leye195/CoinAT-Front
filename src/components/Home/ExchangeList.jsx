@@ -86,6 +86,7 @@ function ExchangeList() {
   const [loading, setLoading] = useState(true);
   const [isFixed, setIsFixed] = useState(false);
   const [navTop, setNavTop] = useState(null);
+  const [marketType, setMarketType] = useState("KRW");
 
   const nav = useRef(null);
   const sortType = useRef(-1);
@@ -103,9 +104,7 @@ function ExchangeList() {
   const getExchangeTickers = useCallback(() => {
     if (isFirstLoading === false && loading === false) setLoading(true);
 
-    const listType = type === "BTC" ? "BTC" : "KRW";
-
-    const coinTickers = combineTickers(upbitBitKrw, coinList, listType);
+    const coinTickers = combineTickers(upbitBitKrw, coinList, marketType);
 
     if (coinTickers && coinTickers.tickers) {
       const info = [...coinTickers.tickers]?.sort((x, y) => {
@@ -154,8 +153,9 @@ function ExchangeList() {
           BTC: info.filter((ticker) => ticker.symbol === "BTC")[0]?.blast || 0,
         }),
       );
-      if (loading === true) setLoading(false);
-      if (isFirstLoading === false) setIsFirstLoading(true);
+      setLoading(false);
+      if (!isFirstLoading) setIsFirstLoading(true);
+
       setCoinPriceInfo(info);
       dispatch(setCoinInfo(info));
       dispatch(loadUsdToKrw());
@@ -201,6 +201,13 @@ function ExchangeList() {
       window.removeEventListener("scroll", navFix);
     };
   }, [navTop, navFix]);
+
+  useEffect(() => {
+    setLoading(true);
+
+    if (type === "BTC") setMarketType("BTC");
+    else setMarketType("KRW");
+  }, [type]);
 
   useLayoutEffect(() => {
     if (timer.current === null) getExchangeTickers();
