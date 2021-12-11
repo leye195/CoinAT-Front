@@ -8,6 +8,7 @@ import { setWatchList } from "reducers/coin";
 import Coin from "components/Home/Coin";
 import { getPercent } from "utills/utills";
 import { colors } from "styles/_variables";
+import { breakDown } from "styles/_mixin";
 
 const CoinContainer = styled.section`
   display: flex;
@@ -31,10 +32,11 @@ const CoinImage = styled.img`
   margin-right: 2px;
   border: 1px solid #e3e3e3;
   border-radius: 50%;
-  @media (max-width: 768px) {
+
+  ${breakDown.md`
     height: 10px;
     width: 10px;
-  }
+  `};
 `;
 
 const ExchangeInfo = ({

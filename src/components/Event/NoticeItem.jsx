@@ -7,6 +7,7 @@ import { colors } from "../../styles/_variables";
 const TableRow = styled.tr``;
 const TableCell = styled.td`
   border-bottom: 1px solid ${colors["gray-100"]};
+
   ${breakDown.sm`
     &:firstchild{
       width: 60%;
@@ -24,6 +25,7 @@ const NoticeTitle = styled.p`
   font-weight: bold;
   word-break: break-word;
   cursor: pointer;
+
   ${breakDown.lg`
     font-size:0.8rem;
   `}

@@ -36,12 +36,10 @@ const ListItem = styled.div`
   display: flex;
   justify-content: center;
   padding: 5px;
+  height: 25px;
   white-space: pre;
   font-weight: bolder;
   background-color: ${colors.white};
-  height: 25px;
-  @media screen and (max-width: 425px) {
-  }
 `;
 
 const Title = styled.p`

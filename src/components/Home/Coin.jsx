@@ -1,5 +1,6 @@
 import React from "react";
 import styled from "styled-components";
+import { breakDown } from "styles/_mixin";
 import { colors } from "styles/_variables";
 
 const Container = styled.div`
@@ -45,12 +46,14 @@ const Container = styled.div`
       font-size: 0.85rem;
       margin-bottom: 0;
       margin-top: 0;
-      @media (max-width: 768px) {
-        font-size: 0.7rem;
-      }
-      @media (max-width: 425px) {
+
+      ${breakDown.md`
+         font-size: 0.7rem;
+      `};
+
+      ${breakDown.xs`
         align-self: flex-start;
-      }
+      `};
     }
   }
 

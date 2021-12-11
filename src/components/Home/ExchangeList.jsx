@@ -22,6 +22,7 @@ import {
   setCoinInfo,
 } from "reducers/coin";
 import { combineTickers } from "utills/utills";
+import { breakDown } from "styles/_mixin";
 
 const Container = styled.main`
   min-height: 100vh;
@@ -75,9 +76,10 @@ const CoinHeadContainer = styled.section`
     width: 90%;
     margin: 0 auto;
   }
-  @media (max-width: 768px) {
+
+  ${breakDown.md`
     width: 100%;
-  }
+  `}
 `;
 
 function ExchangeList() {

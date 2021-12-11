@@ -6,6 +6,7 @@ import { faMinus, faPlus } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { loadUpbitNewListing } from "reducers/coin";
 import { colors } from "styles/_variables";
+import { breakDown } from "styles/_mixin";
 
 const NewListingDiv = styled.div`
   display: flex;
@@ -28,10 +29,11 @@ const NewListingDiv = styled.div`
   @media (max-width: 1024px) {
     width: ${(props) => (props.hide ? "auto" : "250px")};
   }
-  @media (max-width: 768px) {
+
+  ${breakDown.md`
     width: ${(props) => (props.hide ? "auto" : "200px")};
     opacity: ${(props) => (props.hide ? "0.2" : "1.0")};
-  }
+  `}
 `;
 
 const FontDiv = styled.div`

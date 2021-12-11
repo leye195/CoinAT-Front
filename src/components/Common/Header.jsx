@@ -1,6 +1,7 @@
 import React from "react";
 import { Link, NavLink } from "react-router-dom";
 import styled from "styled-components";
+import { breakDown } from "styles/_mixin";
 import { colors } from "styles/_variables";
 
 const Container = styled.header`
@@ -17,9 +18,9 @@ const Container = styled.header`
     color: white;
   }
 
-  @media (max-width: 768px) {
+  ${breakDown.md`
     font-size: 0.85rem;
-  }
+  `}
 `;
 
 const Title = styled.p`
