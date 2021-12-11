@@ -9,7 +9,7 @@ export const Container = styled.div`
 
 export const EventHeader = styled.div`
   height: 50px;
-  background-color: #ffffff;
+  background-color: ${colors.white}
   border-bottom: 1.5px solid rgb(222 222 222 / 50%);
 
   & > div {
@@ -20,7 +20,7 @@ export const EventHeader = styled.div`
     width: 90vw;
 
     & a {
-      color: black;
+      color: ${colors.black};
       text-decoration: none;
     }
 

@@ -14,7 +14,7 @@ const initialState = {
 };
 export default handleActions(
   {
-    [GET_NOTICE_REQUEST]: (state, action) =>
+    [GET_NOTICE_REQUEST]: (state) =>
       produce(state, (draft) => {
         draft.isLoading = true;
       }),
@@ -31,7 +31,7 @@ export default handleActions(
         draft.more = more;
         draft.isLoading = false;
       }),
-    [GET_NOTICE_FAILURE]: (state, action) =>
+    [GET_NOTICE_FAILURE]: (state) =>
       produce(state, (draft) => {
         draft.isLoading = false;
       }),

@@ -1,5 +1,6 @@
 import React from "react";
 import styled from "styled-components";
+import { colors } from "styles/_variables";
 
 const Container = styled.div`
   display: flex;
@@ -27,7 +28,7 @@ const Container = styled.div`
 
   &:nth-child(2),
   &:nth-child(5) {
-    color: ${(props) => (props.head === true ? "black" : "#27ae60")};
+    color: ${(props) => (props.head === true ? "black" : colors.green)};
     font-weight: ${(props) => (props.head === true ? "800" : "600")};
   }
 
@@ -36,8 +37,8 @@ const Container = styled.div`
       props.head === true
         ? "black"
         : props.up === true
-        ? "#e74c3c"
-        : "#0984e3"};
+        ? colors.red
+        : colors.blue};
     font-weight: ${(props) =>
       props.head === true ? "800" : props.up === true ? "600" : "600"};
     p {
@@ -59,8 +60,8 @@ const Container = styled.div`
       props.head === true
         ? "black"
         : props.up === true
-        ? "#e74c3c"
-        : "#0984e3"};
+        ? colors.red
+        : colors.blue};
     border-radius: 10px;
   }
 

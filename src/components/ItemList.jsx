@@ -49,7 +49,7 @@ const ItemSpan = styled.span`
 `;
 
 const ItemInput = styled.input`
-  background-color: white;
+  background-color: ${colors.white}
   border: 2px solid ${colors["gray-100"]};
   width: 30%;
   padding: 5px;

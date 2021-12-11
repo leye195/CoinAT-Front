@@ -7,6 +7,7 @@ import { v4 } from "uuid";
 import { setWatchList } from "reducers/coin";
 import Coin from "components/Home/Coin";
 import { getPercent } from "utills/utills";
+import { colors } from "styles/_variables";
 
 const CoinContainer = styled.section`
   display: flex;
@@ -20,7 +21,7 @@ const CoinContainer = styled.section`
   }
 
   & .watch {
-    color: #fbbc03;
+    color: ${colors.yellow};
   }
 `;
 

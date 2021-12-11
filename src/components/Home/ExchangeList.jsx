@@ -173,7 +173,7 @@ function ExchangeList() {
     sortType,
     coinList,
     upbitBitKrw,
-    type,
+    marketType,
   ]);
 
   const navFix = useCallback(() => {

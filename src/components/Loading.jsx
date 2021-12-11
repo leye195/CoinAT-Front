@@ -1,5 +1,6 @@
 import React from "react";
 import styled, { css, keyframes } from "styled-components";
+import { colors } from "styles/_variables";
 
 const LoadingAni = keyframes`
     from{
@@ -21,8 +22,8 @@ const LoadingContainer = styled.div`
 `;
 const LoadingBar = styled.div`
   position: absolute;
-  border: 3px solid white;
-  border-color: white transparent transparent;
+  border: 3px solid ${colors.white};
+  border-color: ${colors.white} transparent transparent;
   width: ${(props) =>
     props.size === "l" ? "50px" : props.size === "m" ? "30px" : "10px"};
   height: ${(props) =>

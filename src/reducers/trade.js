@@ -19,7 +19,7 @@ const initialState = {
 };
 export default handleActions(
   {
-    [GET_CHART_DATA_REQUEST]: (state, action) =>
+    [GET_CHART_DATA_REQUEST]: (state) =>
       produce(state, (draft) => {
         draft.isLoading = true;
       }),
@@ -29,7 +29,7 @@ export default handleActions(
         draft.isLoading = false;
         draft.chartData = [...data.reverse()];
       }),
-    [GET_CHART_DATA_FAILURE]: (state, action) =>
+    [GET_CHART_DATA_FAILURE]: (state) =>
       produce(state, (draft) => {
         draft.isLoading = false;
       }),

@@ -33,7 +33,7 @@ const MenuList = styled.ul`
 const Menu = styled.li`
   padding: 10px;
   background-color: ${({ isActive }) =>
-    isActive === true ? `${colors["gray-50"]};` : "inherit"};
+    isActive ? `${colors["gray-50"]}` : "inherit"};
 
   & a {
     color: ${colors.black};

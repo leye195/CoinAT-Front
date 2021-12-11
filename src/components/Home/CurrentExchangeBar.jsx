@@ -3,6 +3,7 @@ import { useSelector, useDispatch } from "react-redux";
 import styled, { css } from "styled-components";
 import { setBtc } from "reducers/coin";
 import WatchList from "components/Home/WatchList";
+import { colors } from "styles/_variables";
 
 const ExchangeContainer = styled.section`
   ${(props) =>
@@ -21,9 +22,9 @@ const ExchangeContainer = styled.section`
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  background: #90abbf;
+  background: ${colors.blueSky};
   font-weight: 800;
-  color: white;
+  color: ${colors.white};
   text-shadow: 1px 1px 5px #545454;
   min-height: 35px;
   transition: all 0.5;
