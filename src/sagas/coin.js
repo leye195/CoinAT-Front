@@ -41,7 +41,7 @@ import {
 } from "../reducers/coin";
 
 const API_URL = process.env.REACT_APP_API;
-const HEROKU_URL = "https://coinat.herokuapp.com/";
+const HEROKU_URL = process.env.REACT_APP_HERO;
 
 function loadCurrencyAPI() {
   return axios.get(`${HEROKU_URL}currency`, {
@@ -171,12 +171,16 @@ function* watchBinanceNewCoin() {
   yield takeLatest(BINANCE_CHECK_COIN_REQUEST, binanceNewCoin);
 }
 
-function coinListAPI() {
-  return axios.get(`${HEROKU_URL}coins`);
+function coinListAPI(data) {
+  return axios.get(`${HEROKU_URL}coins`, {
+    params: {
+      type: data,
+    },
+  });
 }
-function* coinList() {
+function* coinList(action) {
   try {
-    const result = yield call(coinListAPI);
+    const result = yield call(coinListAPI, action.payload);
     yield put({
       type: COIN_LIST_SUCCESS,
       payload: result.data,

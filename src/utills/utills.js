@@ -25,10 +25,7 @@ const upbitWS = async (coinList) => {
     const upbitList = (
       await axios.get("https://api.upbit.com/v1/market/all")
     ).data.filter(
-      (coin) =>
-        coin.market.includes("KRW-") ||
-        (coin.market.includes("BTC-") &&
-          coinList.includes(coin.market.slice(4))),
+      (coin) => coin.market.includes("KRW-") || coin.market.includes("BTC-"),
     );
     wsUpbit = new WebSocket("wss://api.upbit.com/websocket/v1");
     wsUpbit.binaryType = "arraybuffer";
@@ -273,6 +270,10 @@ export const combineTickers = (currency, coinList, type = "KRW") => {
 export const getAllList = (coinList) => {
   if (coinList.length > 0) {
     const coinNames = coinList.map((coin) => coin.name);
+
+    wsUpbit = null;
+    wsBinance = null;
+
     // console.log("connedted");
     if (wsUpbit === null) upbitWS(coinNames);
     if (wsBinance === null) binanceWS(coinNames);

@@ -113,6 +113,7 @@ const initialState = {
   coinList: [],
   tradeError: 0,
   watchList: [],
+  type: "KRW",
 };
 export default handleActions(
   {
@@ -130,7 +131,10 @@ export default handleActions(
         draft.tickers = action.payload;
       }),
     [TICKERS_FAILUER]: (state) => produce(state, () => {}),
-    [COIN_LIST_REQUEST]: (state) => produce(state, () => {}),
+    [COIN_LIST_REQUEST]: (state, action) =>
+      produce(state, (draft) => {
+        draft.type = action.payload || "KRW";
+      }),
     [COIN_LIST_SUCCESS]: (state, action) =>
       produce(state, (draft) => {
         const coinNames = action.payload.map((coin) => {

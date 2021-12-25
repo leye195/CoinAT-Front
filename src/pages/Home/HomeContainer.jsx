@@ -13,8 +13,8 @@ const HomeContainer = () => {
   const { type } = queryString.parse(search);
 
   useEffect(() => {
-    dispatch(loadCoinList());
-  }, [dispatch]);
+    dispatch(loadCoinList(type ?? "KRW"));
+  }, [dispatch, type]);
 
   return <HomePresentation type={type} />;
 };
