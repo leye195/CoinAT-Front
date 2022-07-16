@@ -110,7 +110,7 @@ const ChartPresentation = ({ name, chartData, handleClick, chartRef }) => {
       </PriceWrapper>
       <TradeChartWrapper>
         <ButtonGroup>
-          <Button onClick={handleClick("month")}>1달</Button>
+          <Button onClick={handleClick("months")}>1달</Button>
           <Button onClick={handleClick("weeks")}>1주</Button>
           <Button onClick={handleClick("days")}>1일</Button>
           <Button onClick={handleClick("minutes")}>3분</Button>

@@ -1,6 +1,7 @@
 import { v4 } from "uuid";
 import { all, takeLatest, fork, put, call, throttle } from "redux-saga/effects";
 import axios from "axios";
+import api, { herokuApi } from "apis";
 import {
   CURRENCY_REQUEST,
   CURRENCY_FAILURE,
@@ -40,11 +41,8 @@ import {
   TICKERS_FAILUER,
 } from "../reducers/coin";
 
-const API_URL = process.env.REACT_APP_API;
-const HEROKU_URL = process.env.REACT_APP_HERO;
-
 function loadCurrencyAPI() {
-  return axios.get(`${HEROKU_URL}currency`, {
+  return herokuApi.get("currency", {
     headers: {
       "Access-Control-Allow-Origin": "*",
     },
@@ -69,7 +67,7 @@ function* watchCurrency() {
 }
 
 function loadUpbitNewListingAPI() {
-  return axios.get(`${HEROKU_URL}notice/upbit`, {
+  return herokuApi.get("notice/upbit", {
     headers: {
       "Access-Control-Allow-Origin": "*",
     },
@@ -94,7 +92,7 @@ function* watchUpbitNewListing() {
 }
 
 function loadBinanceNewListingAPI() {
-  return axios.get(`${HEROKU_URL}notice/binance`, {
+  return herokuApi.get("notice/binance", {
     headers: {
       "Access-Control-Allow-Origin": "*",
     },
@@ -120,7 +118,7 @@ function* watchBinanceNewListing() {
 }
 
 function upbitNewCoinAPI(data) {
-  return axios.post(`${API_URL}coin/notice/upbit`, data, {
+  return api.post("coin/notice/upbit", data, {
     headers: {
       "Access-Control-Allow-Origin": "*",
     },
@@ -146,7 +144,7 @@ function* watchUpbitNewCoin() {
 }
 
 function binanceNewCoinAPI(data) {
-  return axios.post(`${API_URL}coin/notice/binance`, data, {
+  return api.post("coin/notice/binance", data, {
     headers: {
       "Access-Control-Allow-Origin": "*",
     },
@@ -172,7 +170,7 @@ function* watchBinanceNewCoin() {
 }
 
 function coinListAPI(data) {
-  return axios.get(`${HEROKU_URL}coins`, {
+  return herokuApi.get("coins", {
     params: {
       type: data,
     },
@@ -197,7 +195,7 @@ function* watchCoinList() {
 }
 
 function upbitBidAPI(data) {
-  return axios.post(`${API_URL}trade/bid`, data, {
+  return api.post("trade/bid", data, {
     headers: {
       "Access-Control-Allow-Origin": "*",
     },
@@ -224,7 +222,7 @@ function* watchUpbitBid() {
 }
 
 function upbitAskAPI(data) {
-  return axios.post(`${API_URL}trade/ask`, data, {
+  return api.post("trade/ask", data, {
     headers: {
       "Access-Control-Allow-Origin": "*",
     },
@@ -250,8 +248,8 @@ function* watchUpbitAsk() {
 }
 
 function setBinanceKeyAPI(data) {
-  return axios.post(
-    `${API_URL}trade/binance_key`,
+  return api.post(
+    "trade/binance_key",
     {
       api: data.binanceApi,
       sec: data.binanceSec,
@@ -279,8 +277,8 @@ function* watchSetBinanceKey() {
 }
 
 function setUpbitKeyAPI(data) {
-  return axios.post(
-    `${API_URL}trade/upbit_key`,
+  return api.post(
+    "trade/upbit_key",
     {
       api: data.upbitApi,
       sec: data.upbitSec,
@@ -317,8 +315,9 @@ function setKeyAPI(data) {
     uid = localStorage.getItem("uid");
     localStorage.removeItem("uid");
   }
-  return axios.post(
-    `${API_URL}trade/key`,
+
+  return api.post(
+    "trade/key",
     {
       api1: data.upbitApi,
       sec1: data.upbitSec,
@@ -350,7 +349,7 @@ function* watchSetKey() {
 }
 
 function loadTickersAPI() {
-  return axios.get(`${API_URL}coin/tickers`, {
+  return api.get("coin/tickers", {
     headers: {
       "Access-Control-Allow-Origin": "*",
     },

@@ -10,6 +10,7 @@ export const CANCEL_MESSAGE_FAILURE = "CANCEL_MESSAGE_FAILURE";
 
 export const sendMessage = createAction(SEND_MESSAGE_REQUEST);
 export const cancelMessage = createAction(CANCEL_MESSAGE_REQUEST);
+
 const initialState = {
   isSending: false,
 };
