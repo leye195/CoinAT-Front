@@ -2,7 +2,7 @@ import React from "react";
 import { NavLink, useLocation } from "react-router-dom";
 import styled from "styled-components";
 import qs from "qs";
-import { colors } from "../../styles/_variables";
+import { colors } from "styles/_variables";
 
 const Section = styled.section`
   width: 200px;

@@ -3,8 +3,10 @@ import { useSelector } from "react-redux";
 import styled from "styled-components";
 import { useLocation } from "react-router-dom";
 import queryString from "query-string";
+
+import ExchangeInfo from "components/Home/ExchangeInfo";
+
 import { colors } from "styles/_variables";
-import ExchangeInfo from "./ExchangeInfo";
 
 const WatchListContainer = styled.div`
   min-height: 2rem;

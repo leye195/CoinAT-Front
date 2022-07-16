@@ -2,7 +2,9 @@ import React, { useEffect, useMemo, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import styled, { css } from "styled-components";
 import { setBtc } from "reducers/coin";
+
 import WatchList from "components/Home/WatchList";
+
 import { colors } from "styles/_variables";
 import { breakDown } from "styles/_mixin";
 
@@ -65,6 +67,7 @@ function CurrentExchangeBar({ nav, isFixed }) {
   const dispatch = useDispatch();
   const { upbitBitKrw, usdToKrw, binanceBitUsdt, bithumbBitKrw, watchList } =
     useSelector((state) => state.coin);
+
   const [differene, setDifference] = useState(0);
   const [usdtRate, setUsdtRate] = useState(0);
 

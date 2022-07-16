@@ -29,19 +29,14 @@ const Container = styled.div`
 
   &:nth-child(2),
   &:nth-child(5) {
-    color: ${(props) => (props.head === true ? "black" : colors.green)};
-    font-weight: ${(props) => (props.head === true ? "800" : "600")};
+    color: ${(props) => (props.head ? "black" : colors.green)};
+    font-weight: ${(props) => (props.head ? "800" : "600")};
   }
 
   &:nth-child(3) {
     color: ${(props) =>
-      props.head === true
-        ? "black"
-        : props.up === true
-        ? colors.red
-        : colors.blue};
-    font-weight: ${(props) =>
-      props.head === true ? "800" : props.up === true ? "600" : "600"};
+      props.head ? "black" : props.up ? colors.red : colors.blue};
+    font-weight: ${(props) => (props.head ? "800" : props.up ? "600" : "600")};
     p {
       font-size: 0.85rem;
       margin-bottom: 0;
@@ -60,11 +55,7 @@ const Container = styled.div`
   &:nth-child(4),
   &:nth-child(6) {
     color: ${(props) =>
-      props.head === true
-        ? "black"
-        : props.up === true
-        ? colors.red
-        : colors.blue};
+      props.head ? "black" : props.up ? colors.red : colors.blue};
     border-radius: 10px;
   }
 
@@ -80,7 +71,7 @@ const Container = styled.div`
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 0 0;
+    padding: 0;
 
     & > button {
       padding-left: 0.5rem;

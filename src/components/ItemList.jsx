@@ -14,15 +14,14 @@ const ItemListUl = styled.ul`
   flex-direction: column;
   justify-content: flex-start;
   align-items: center;
-  list-style: none;
   width: 100%;
   height: 200px;
   padding: 0;
   margin: 0;
   background-color: ${colors.white};
-  margin: 5px;
-  padding: 5px;
   overflow-y: scroll;
+  list-style: none;
+
   /* Hide scrollbar for Chrome, Safari and Opera */
   &::-webkit-scrollbar {
     display: none;
@@ -38,10 +37,10 @@ const ItemListLi = styled.li`
   align-items: center;
   justify-content: space-between;
   padding: 10px;
+  width: 100%;
   border: 1px solid ${colors["gray-100"]};
   border-left: 0;
   border-right: 0;
-  width: 100%;
 `;
 
 const ItemSpan = styled.span`
@@ -49,10 +48,10 @@ const ItemSpan = styled.span`
 `;
 
 const ItemInput = styled.input`
-  background-color: ${colors.white}
-  border: 2px solid ${colors["gray-100"]};
-  width: 30%;
   padding: 5px;
+  width: 30%;
+  background-color: ${colors.white};
+  border: 2px solid ${colors["gray-100"]};
 `;
 
 function ItemList({ coins, onChangePercent }) {

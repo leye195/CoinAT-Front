@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef, useCallback } from "react";
 import styled from "styled-components";
 import { useDispatch, useSelector } from "react-redux";
 import { v4 } from "uuid";
-import { colors } from "../styles/_variables";
+import { colors } from "styles/_variables";
 
 const Container = styled.section`
   display: inline-flex;
@@ -52,9 +52,11 @@ const Title = styled.p`
 
 const Listing = () => {
   const dispatch = useDispatch();
-  const listRef = useRef(null);
+
   const { upbitNewListing } = useSelector((state) => state.coin);
   const [innerWidth, setInnerWidth] = useState(window.innerWidth);
+
+  const listRef = useRef(null);
   const cnt = useRef(0);
 
   const handleNoticeAnimation = useCallback(() => {

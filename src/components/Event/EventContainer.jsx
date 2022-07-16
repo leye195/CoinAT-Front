@@ -6,6 +6,7 @@ const Container = styled.div`
   flex-direction: column;
   margin: 0 auto;
   width: 90vw;
+
   @media (min-width: 992px) {
     flex-direction: row;
     width: 970px;

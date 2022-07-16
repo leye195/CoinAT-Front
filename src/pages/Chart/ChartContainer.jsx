@@ -5,6 +5,7 @@ import { getChartData, setIsFirstLoad } from "reducers/trade";
 import moment from "moment";
 import * as echarts from "echarts";
 import debounce from "lodash/debounce";
+
 import ChartPresentation from "./ChartPresentation";
 
 const ChartContainer = () => {

@@ -4,9 +4,12 @@ import { useDispatch, useSelector } from "react-redux";
 import { AiOutlineStar, AiFillStar } from "react-icons/ai";
 import styled from "styled-components";
 import { v4 } from "uuid";
+
 import { setWatchList } from "reducers/coin";
-import Coin from "components/Home/Coin";
 import { getPercent } from "utills/utills";
+
+import Coin from "components/Home/Coin";
+
 import { colors } from "styles/_variables";
 import { breakDown } from "styles/_mixin";
 

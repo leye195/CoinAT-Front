@@ -10,10 +10,6 @@ import { useLocation } from "react-router-dom";
 import styled, { css } from "styled-components";
 import queryString from "query-string";
 
-import Loading from "components/Loading";
-import ExchangeInfo from "components/Home/ExchangeInfo";
-import CurrentExchangeBar from "components/Home/CurrentExchangeBar";
-import Coin from "components/Home/Coin";
 import {
   loadUpbitBitKrw,
   loadBinanceBitUsdt,
@@ -22,6 +18,12 @@ import {
   setCoinInfo,
 } from "reducers/coin";
 import { combineTickers } from "utills/utills";
+
+import Loading from "components/Loading";
+import ExchangeInfo from "components/Home/ExchangeInfo";
+import CurrentExchangeBar from "components/Home/CurrentExchangeBar";
+import Coin from "components/Home/Coin";
+
 import { breakDown } from "styles/_mixin";
 
 const Container = styled.main`
@@ -178,7 +180,7 @@ function ExchangeList() {
     marketType,
   ]);
 
-  const navFix = useCallback(() => {
+  const handleScroll = useCallback(() => {
     if (window.scrollY > navTop) {
       setIsFixed(true);
     } else {
@@ -198,11 +200,12 @@ function ExchangeList() {
 
   useEffect(() => {
     if (navTop === null) setNavTop(nav.current.offsetTop);
-    window.addEventListener("scroll", navFix);
+
+    window.addEventListener("scroll", handleScroll);
     return () => {
-      window.removeEventListener("scroll", navFix);
+      window.removeEventListener("scroll", handleScroll);
     };
-  }, [navTop, navFix]);
+  }, [navTop, handleScroll]);
 
   useEffect(() => {
     setLoading(true);
