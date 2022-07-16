@@ -1,6 +1,5 @@
 import { v4 } from "uuid";
 import { all, takeLatest, fork, put, call, throttle } from "redux-saga/effects";
-import axios from "axios";
 import api, { herokuApi } from "apis";
 import {
   CURRENCY_REQUEST,
@@ -40,13 +39,16 @@ import {
   TICKERS_SUCCESS,
   TICKERS_FAILUER,
 } from "../reducers/coin";
+import {
+  getBinanceNotice,
+  getCoinTicker,
+  getCurrency,
+  getUpbitNotice,
+  updateUpbitNewCoin,
+} from "apis/coin";
 
 function loadCurrencyAPI() {
-  return herokuApi.get("currency", {
-    headers: {
-      "Access-Control-Allow-Origin": "*",
-    },
-  });
+  return getCurrency();
 }
 function* loadCurrency() {
   try {
@@ -67,11 +69,7 @@ function* watchCurrency() {
 }
 
 function loadUpbitNewListingAPI() {
-  return herokuApi.get("notice/upbit", {
-    headers: {
-      "Access-Control-Allow-Origin": "*",
-    },
-  });
+  return getUpbitNotice();
 }
 function* loadUpbitNewListing() {
   try {
@@ -92,12 +90,7 @@ function* watchUpbitNewListing() {
 }
 
 function loadBinanceNewListingAPI() {
-  return herokuApi.get("notice/binance", {
-    headers: {
-      "Access-Control-Allow-Origin": "*",
-    },
-    withCredentials: true,
-  });
+  return getBinanceNotice();
 }
 function* loadBinanceNewListing() {
   try {
@@ -118,12 +111,7 @@ function* watchBinanceNewListing() {
 }
 
 function upbitNewCoinAPI(data) {
-  return api.post("coin/notice/upbit", data, {
-    headers: {
-      "Access-Control-Allow-Origin": "*",
-    },
-    withCredentials: true,
-  });
+  return updateUpbitNewCoin(data);
 }
 function* upbitNewCoin(action) {
   try {
@@ -349,12 +337,7 @@ function* watchSetKey() {
 }
 
 function loadTickersAPI() {
-  return api.get("coin/tickers", {
-    headers: {
-      "Access-Control-Allow-Origin": "*",
-    },
-    withCredentials: true,
-  });
+  return getCoinTicker();
 }
 function* loadTickers() {
   try {
