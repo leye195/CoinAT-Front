@@ -137,12 +137,17 @@ export default handleActions(
       }),
     [COIN_LIST_SUCCESS]: (state, action) =>
       produce(state, (draft) => {
-        const coinNames = action.payload.map((coin) => {
-          return coin.name;
-        });
-        const coinList = action.payload.map((coin) => {
-          return coin;
-        });
+        const coinNames = action.payload
+          .filter((coin) => (state.type === "BTC" ? !coin.KRW : coin.KRW))
+          .map((coin) => {
+            return coin.name;
+          });
+        const coinList = action.payload
+          .filter((coin) => (state.type === "BTC" ? !coin.KRW : coin.KRW))
+          .map((coin) => {
+            return coin;
+          });
+
         getAllList(coinList);
         draft.coinList = coinNames;
       }),
