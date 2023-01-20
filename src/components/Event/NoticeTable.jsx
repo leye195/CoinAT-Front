@@ -7,15 +7,19 @@ const Table = styled.table`
   width: 100%;
   margin: 0 auto;
   border-spacing: 0;
-  background: ${colors["white"]};
+  background: ${colors.white};
 `;
+
 const TableHead = styled.thead`
   background-color: ${colors["gray-100"]};
 `;
+
 const TableBody = styled.tbody`
   height: 588px;
 `;
+
 const TableRow = styled.tr``;
+
 const TableHeadCell = styled.th`
   padding: 10px 0;
   border-bottom: 1px solid ${colors["gray-100"]};

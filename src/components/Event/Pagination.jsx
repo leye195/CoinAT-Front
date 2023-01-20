@@ -11,9 +11,9 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 const Container = styled.div`
   position: absolute;
+  bottom: 0;
   width: 100%;
   padding: 0 0 1rem 0;
-  bottom: 0;
 `;
 
 const PaginationUl = styled.ul`
@@ -26,6 +26,7 @@ const PaginationUl = styled.ul`
 
 const PaginationLi = styled.li`
   background-color: #2c3e50;
+
   &:first-child {
     border-top-left-radius: 10px;
     border-bottom-left-radius: 10px;
@@ -71,39 +72,34 @@ const Pagination = ({
     return range(startPage, endPage + 1);
   }, [currentPage, pagesToShow, pagesLength]);
 
-  function moveTo(e, page) {
+  const handleMoveTo = (page) => (e) => {
     e.preventDefault();
     if (page < 1 || page > pagesLength) return;
     callback(page);
-  }
+  };
 
   return (
     <Container>
       <PaginationUl>
         <PaginationLi>
-          <Button type="button" onClick={(e) => moveTo(e, 1)}>
+          <Button type="button" onClick={handleMoveTo(1)}>
             <FontAwesomeIcon icon={faAngleDoubleLeft} />
           </Button>
         </PaginationLi>
         <PaginationLi>
-          <Button type="button" onClick={(e) => moveTo(e, currentPage - 1)}>
+          <Button type="button" onClick={handleMoveTo(currentPage - 1)}>
             <FontAwesomeIcon icon={faAngleLeft} />
           </Button>
         </PaginationLi>
         {pages.map((page) => (
           <PaginationLi key={page}>
-            <Button
-              type="button"
-              onClick={(e) => {
-                moveTo(e, page);
-              }}
-            >
+            <Button type="button" onClick={handleMoveTo(page)}>
               {page}
             </Button>
           </PaginationLi>
         ))}
         <PaginationLi>
-          <Button type="button" onClick={(e) => moveTo(e, currentPage + 1)}>
+          <Button type="button" onClick={handleMoveTo(currentPage + 1)}>
             <FontAwesomeIcon icon={faAngleRight} />
           </Button>
         </PaginationLi>
@@ -111,7 +107,7 @@ const Pagination = ({
           <Button type="button">
             <FontAwesomeIcon
               icon={faAngleDoubleRight}
-              onClick={(e) => moveTo(e, pagesLength)}
+              onClick={handleMoveTo(pagesLength)}
             />
           </Button>
         </PaginationLi>

@@ -1,9 +1,9 @@
-import Chart from "pages/Chart";
 import React from "react";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import Layout from "./components/Layout";
 import Event from "./pages/Event";
 import Home from "./pages/Home";
+import Chart from "./pages/Chart";
 
 export default () => (
   <Router>

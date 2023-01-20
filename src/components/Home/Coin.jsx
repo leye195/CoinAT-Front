@@ -1,59 +1,61 @@
 import React from "react";
 import styled from "styled-components";
+import { breakDown } from "styles/_mixin";
+import { colors } from "styles/_variables";
 
 const Container = styled.div`
-  cursor: ${(props) => (props.head ? "pointer" : "normal")};
-  width: 30%;
-  word-break: break-all;
-  font-size: 0.85rem;
-  color: black;
-  margin-left: 3px;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  padding: 0.1rem 0;
+  margin-left: 3px;
   margin: 0;
+  width: 30%;
+  min-height: 2rem;
+  word-break: break-all;
+  font-size: 0.85rem;
+  color: black;
   white-space: pre;
+  cursor: ${(props) => (props.head ? "pointer" : "normal")};
+
   @media (max-width: 768px) {
     font-size: 0.7rem;
   }
+
   &:first-child {
     flex-direction: row;
   }
+
   &:nth-child(2),
   &:nth-child(5) {
-    color: ${(props) => (props.head === true ? "black" : "#27ae60")};
-    font-weight: ${(props) => (props.head === true ? "800" : "600")};
+    color: ${(props) => (props.head ? "black" : colors.green)};
+    font-weight: ${(props) => (props.head ? "800" : "600")};
   }
+
   &:nth-child(3) {
     color: ${(props) =>
-      props.head === true
-        ? "black"
-        : props.up === true
-        ? "#e74c3c"
-        : "#0984e3"};
-    font-weight: ${(props) =>
-      props.head === true ? "800" : props.up === true ? "600" : "600"};
+      props.head ? "black" : props.up ? colors.red : colors.blue};
+    font-weight: ${(props) => (props.head ? "800" : props.up ? "600" : "600")};
     p {
       font-size: 0.85rem;
       margin-bottom: 0;
       margin-top: 0;
-      @media (max-width: 768px) {
-        font-size: 0.7rem;
-      }
-      @media (max-width: 425px) {
+
+      ${breakDown.md`
+         font-size: 0.7rem;
+      `};
+
+      ${breakDown.xs`
         align-self: flex-start;
-      }
+      `};
     }
   }
+
   &:nth-child(4),
   &:nth-child(6) {
     color: ${(props) =>
-      props.head === true
-        ? "black"
-        : props.up === true
-        ? "#e74c3c"
-        : "#0984e3"};
+      props.head ? "black" : props.up ? colors.red : colors.blue};
     border-radius: 10px;
   }
 
@@ -69,7 +71,7 @@ const Container = styled.div`
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 0 0;
+    padding: 0;
 
     & > button {
       padding-left: 0.5rem;

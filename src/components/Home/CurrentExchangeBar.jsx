@@ -2,7 +2,11 @@ import React, { useEffect, useMemo, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import styled, { css } from "styled-components";
 import { setBtc } from "reducers/coin";
+
 import WatchList from "components/Home/WatchList";
+
+import { colors } from "styles/_variables";
+import { breakDown } from "styles/_mixin";
 
 const ExchangeContainer = styled.section`
   ${(props) =>
@@ -21,35 +25,39 @@ const ExchangeContainer = styled.section`
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  background: #90abbf;
+  background: ${colors.blueSky};
   font-weight: 800;
-  color: white;
+  color: ${colors.white};
   text-shadow: 1px 1px 5px #545454;
   min-height: 35px;
   transition: all 0.5;
-  @media (max-width: 768px) {
+
+  ${breakDown.md`
     width: 100%;
     min-height: 6vh;
-  }
+  `};
 `;
 const InfoContainer = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
 `;
+
 const Info = styled.p`
   padding-left: 5px;
   padding-right: 2px;
   font-size: 1rem;
   margin: 0;
   padding: 4px;
-  @media (max-width: 768px) {
+
+  ${breakDown.md`
     font-size: 0.85rem;
     word-break: inherit;
     display: flex;
     align-items: center;
     justify-content: center;
-  }
+  `};
+
   @media (max-width: 581px) {
     font-size: 0.75rem;
   }
@@ -59,6 +67,7 @@ function CurrentExchangeBar({ nav, isFixed }) {
   const dispatch = useDispatch();
   const { upbitBitKrw, usdToKrw, binanceBitUsdt, bithumbBitKrw, watchList } =
     useSelector((state) => state.coin);
+
   const [differene, setDifference] = useState(0);
   const [usdtRate, setUsdtRate] = useState(0);
 
@@ -68,15 +77,15 @@ function CurrentExchangeBar({ nav, isFixed }) {
   }, [binanceBitUsdt, usdToKrw]);
 
   useEffect(() => {
-    const converted = convertUsdToKrw,
-      percent1 = (
-        ((parseFloat(upbitBitKrw, 10) - convertUsdToKrw) / convertUsdToKrw) *
-        100
-      ).toFixed(2),
-      percent2 = (
-        ((parseFloat(bithumbBitKrw, 10) - convertUsdToKrw) / convertUsdToKrw) *
-        100
-      ).toFixed(2);
+    const converted = convertUsdToKrw;
+    const percent1 = (
+      ((parseFloat(upbitBitKrw, 10) - convertUsdToKrw) / convertUsdToKrw) *
+      100
+    ).toFixed(2);
+    const percent2 = (
+      ((parseFloat(bithumbBitKrw, 10) - convertUsdToKrw) / convertUsdToKrw) *
+      100
+    ).toFixed(2);
 
     if (converted && upbitBitKrw) {
       const difference =

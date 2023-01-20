@@ -9,7 +9,7 @@ import {
 const BASE_URL =
   process.env.NODE_ENV !== "production"
     ? "http://localhost:4500/"
-    : "https://secure-waters-04189.herokuapp.com/"; //process.env.REACT_APP_HERO;
+    : "https://coinat.herokuapp.com/"; // process.env.REACT_APP_HERO;
 
 function loadNoticesAPI({ page = 1, type = "notice" }) {
   return type === "notice"
@@ -35,20 +35,23 @@ function* loadNotices(action) {
             title: post.text,
             updatedAt: post.start_date,
           }));
-    type === "notice"
-      ? yield put({
-          type: GET_NOTICE_SUCCESS,
-          payload: {
-            notices,
-            more: page < data.totalPage ? true : false,
-            page,
-            type,
-          },
-        })
-      : yield put({
-          type: GET_NOTICE_SUCCESS,
-          payload: { notices, more: data.data.more, page, type },
-        });
+
+    if (type === "notice") {
+      yield put({
+        type: GET_NOTICE_SUCCESS,
+        payload: {
+          notices,
+          more: page < data.totalPage,
+          page,
+          type,
+        },
+      });
+    } else {
+      yield put({
+        type: GET_NOTICE_SUCCESS,
+        payload: { notices, more: data.data.more, page, type },
+      });
+    }
   } catch (e) {
     yield put({
       type: GET_NOTICE_FAILURE,

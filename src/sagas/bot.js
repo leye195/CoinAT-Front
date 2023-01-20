@@ -1,5 +1,5 @@
 import { all, takeLatest, fork, put, call } from "redux-saga/effects";
-import axios from "axios";
+import { herokuApi } from "apis";
 import {
   SEND_MESSAGE_REQUEST,
   SEND_MESSAGE_FAILURE,
@@ -8,12 +8,11 @@ import {
   CANCEL_MESSAGE_FAILURE,
   CANCEL_MESSAGE_REQUEST,
 } from "../reducers/bot";
-import dotenv from "dotenv";
-dotenv.config();
-const API_URL = "https://secure-waters-04189.herokuapp.com/";
+
 function sendMessageAPI(data) {
-  return axios.post(`${API_URL}bot/start`, data);
+  return herokuApi.post("bot/start", data);
 }
+
 function* sendMessage(action) {
   try {
     const result = yield call(sendMessageAPI, action.payload);
@@ -33,7 +32,7 @@ function* watchSendMessage() {
 }
 
 function cancelMessageAPI(data) {
-  return axios.post(`${API_URL}bot/cancel`, data);
+  return herokuApi.post("bot/cancel", data);
 }
 function* cancelMessage(action) {
   try {

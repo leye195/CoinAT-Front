@@ -8,33 +8,24 @@ let wsBinance = null;
 let wsUpbit = null;
 let wsBithumb = null;
 
-let tickers1 = {};
-let tickers2 = {};
-let tickers3 = {};
+const tickers1 = {};
+const tickersBTC1 = {};
+const tickers2 = {};
+const tickers3 = {};
 
-export let coinTickers = { tickers: [], id: -1 };
+export const coinTickers = { tickers: [], id: -1, type: "KRW" };
 
 export const getPercent = (x, y) => {
   return ((x - y) / y) * 100;
 };
 
-export const getAllList = (coinList) => {
-  if (coinList.length > 0) {
-    const coinNames = coinList.map((coin) => coin.name);
-    //console.log("connedted");
-    if (wsUpbit === null) upbitWS(coinNames);
-    if (wsBinance === null) binanceWS(coinNames);
-    if (wsBithumb === null) bithumbWS(coinList);
-  }
-};
-//업비트 소켓 연결
+// 업비트 소켓 연결
 const upbitWS = async (coinList) => {
   if (wsUpbit === null) {
     const upbitList = (
       await axios.get("https://api.upbit.com/v1/market/all")
     ).data.filter(
-      (coin) =>
-        coin.market.includes("KRW") && coinList.includes(coin.market.slice(4)),
+      (coin) => coin.market.includes("KRW-") || coin.market.includes("BTC-"),
     );
     wsUpbit = new WebSocket("wss://api.upbit.com/websocket/v1");
     wsUpbit.binaryType = "arraybuffer";
@@ -52,27 +43,36 @@ const upbitWS = async (coinList) => {
       }
     };
     wsUpbit.onmessage = (e) => {
-      //if (wsUpbit !== null && wsUpbit.readyState === 1) {
+      // if (wsUpbit !== null && wsUpbit.readyState === 1) {
       const enc = new TextDecoder("utf-8");
       const arr = new Uint8Array(e.data);
       const {
         code,
-        trade_price,
-        opening_price,
-        high_price,
-        low_price,
-        trade_date,
+        trade_price: tradePrice,
+        opening_price: openPrice,
+        high_price: highPrice,
+        low_price: lowPrice,
+        trade_date: tradeDate,
       } = JSON.parse(enc.decode(arr));
       const symbol = code.slice(code.indexOf("-") + 1, code.length);
 
-      if (symbol === "BTC") upbitBTCKrw = trade_price;
-      tickers1[symbol] = {
-        tradePrice: trade_price,
-        highPrice: high_price,
-        lowPrice: low_price,
-        openPrice: opening_price,
-        date: trade_date,
-      };
+      if (code === "KRW-BTC" && symbol === "BTC") upbitBTCKrw = tradePrice;
+      if (code === `KRW-${symbol}`)
+        tickers1[symbol] = {
+          tradePrice,
+          highPrice,
+          lowPrice,
+          openPrice,
+          date: tradeDate,
+        };
+      if (code === `BTC-${symbol}`)
+        tickersBTC1[symbol] = {
+          tradePrice,
+          highPrice,
+          lowPrice,
+          openPrice,
+          date: tradeDate,
+        };
     };
     wsUpbit.onclose = () => {
       if (wsUpbit !== null) {
@@ -89,7 +89,7 @@ const upbitWS = async (coinList) => {
     };
   }
 };
-//바이낸스 소켓 연결
+// 바이낸스 소켓 연결
 const binanceWS = async (coinList) => {
   if (wsBinance === null) {
     let streams = "";
@@ -100,7 +100,7 @@ const binanceWS = async (coinList) => {
     }
     streams += `btcusdt@ticker`;
     wsBinance = new WebSocket(
-      `wss://stream.binance.com:9443/stream?streams=${streams}`, //ethbtc@ticker" //"
+      `wss://stream.binance.com:9443/stream?streams=${streams}`, // ethbtc@ticker" //"
     );
     wsBinance.onopen = () => {
       if (wsBinance !== null && wsBinance.readyState === 1) {
@@ -144,7 +144,7 @@ const binanceWS = async (coinList) => {
   }
 };
 
-//빗썸 소켓 연결
+// 빗썸 소켓 연결
 const bithumbWS = async (coinList) => {
   if (wsBithumb === null) {
     wsBithumb = new WebSocket(`wss://pubwss.bithumb.com/pub/ws`);
@@ -207,43 +207,76 @@ const bithumbWS = async (coinList) => {
   }
 };
 
-export const combineTickers = (currency, coinList) => {
+export const combineTickers = (currency, coinList, type = "KRW") => {
   const tickers = ["BTC", ...coinList].map((v) => {
+    if (type === "KRW" || v === "BTC") {
+      return {
+        symbol: v, // tickers1[`${v}/KRW`].symbol.slice(0, tickers1[v].symbol.indexOf("/")),
+        last: tickers1[`${v}`] === undefined ? 0 : tickers1[`${v}`].tradePrice,
+        blast: tickers2[`${v}`] === undefined ? 0 : tickers2[`${v}`].tradePrice,
+        convertedBlast:
+          tickers2[`${v}`] === undefined
+            ? 0
+            : parseFloat(
+                (tickers2[`${v}`].tradePrice * upbitBTCKrw).toFixed(2),
+                10,
+              ),
+        thumb: tickers3[`${v}`] === undefined ? 0 : tickers3[`${v}`].tradePrice,
+        per1:
+          tickers1[`${v}`] === undefined || tickers2[`${v}`] === undefined
+            ? undefined
+            : getPercent(
+                tickers1[`${v}`].tradePrice,
+                parseFloat(
+                  (tickers2[`${v}`].tradePrice * upbitBTCKrw).toFixed(2),
+                  10,
+                ),
+              ),
+        per2:
+          tickers3[`${v}`] === undefined || tickers2[`${v}`] === undefined
+            ? undefined
+            : getPercent(
+                tickers3[`${v}`].tradePrice,
+                parseFloat(
+                  (tickers2[`${v}`].tradePrice * upbitBTCKrw).toFixed(2),
+                  10,
+                ),
+              ),
+      };
+    }
+
     return {
-      symbol: v, //tickers1[`${v}/KRW`].symbol.slice(0, tickers1[v].symbol.indexOf("/")),
-      last: tickers1[`${v}`] === undefined ? 0 : tickers1[`${v}`].tradePrice,
+      symbol: v, // tickers1[`${v}/KRW`].symbol.slice(0, tickers1[v].symbol.indexOf("/")),
+      last:
+        tickersBTC1[`${v}`] === undefined ? 0 : tickersBTC1[`${v}`].tradePrice,
       blast: tickers2[`${v}`] === undefined ? 0 : tickers2[`${v}`].tradePrice,
-      convertedBlast:
-        tickers2[`${v}`] === undefined
-          ? 0
-          : parseFloat(
-              (tickers2[`${v}`].tradePrice * upbitBTCKrw).toFixed(2),
-              10,
-            ),
       thumb: tickers3[`${v}`] === undefined ? 0 : tickers3[`${v}`].tradePrice,
       per1:
-        tickers1[`${v}`] === undefined || tickers2[`${v}`] === undefined
+        tickersBTC1[`${v}`] === undefined || tickers2[`${v}`] === undefined
           ? undefined
           : getPercent(
-              tickers1[`${v}`].tradePrice,
-              parseFloat(
-                (tickers2[`${v}`].tradePrice * upbitBTCKrw).toFixed(2),
-                10,
-              ),
-            ),
-      per2:
-        tickers3[`${v}`] === undefined || tickers2[`${v}`] === undefined
-          ? undefined
-          : getPercent(
-              tickers3[`${v}`].tradePrice,
-              parseFloat(
-                (tickers2[`${v}`].tradePrice * upbitBTCKrw).toFixed(2),
-                10,
-              ),
+              tickersBTC1[`${v}`].tradePrice,
+              tickers2[`${v}`].tradePrice,
             ),
     };
   });
+
   coinTickers.tickers = tickers.length > 0 ? tickers : [];
+  coinTickers.type = type !== "KRW" ? "BTC" : "KRW";
   coinTickers.id = v4();
   return coinTickers;
+};
+
+export const getAllList = (coinList) => {
+  if (coinList.length > 0) {
+    const coinNames = coinList.map((coin) => coin.name);
+
+    wsUpbit = null;
+    wsBinance = null;
+
+    // console.log("connedted");
+    if (wsUpbit === null) upbitWS(coinNames);
+    if (wsBinance === null) binanceWS(coinNames);
+    if (wsBithumb === null) bithumbWS(coinList);
+  }
 };

@@ -22,10 +22,6 @@ export const CURRENCY_REQUEST = "CURRENCY_REQUEST";
 export const CURRENCY_SUCCESS = "CURRENCY_SUCCESS";
 export const CURRENCY_FAILURE = "CURRENCY_FAILURE";
 
-/*export const BINANCE_BITCOIN_USDT_REQUEST = "BINANCE_BITCOIN_USDT_REQUEST";
-export const BINANCE_BITCOIN_USDT_SUCCESS = "BINANCE_BITCOIN_USDT_SUCCESS";
-export const BINANCE_BITCOIN_USDT_FAILURE = "BINANCE_BITCOIN_USDT_FAILURE";*/
-
 export const UPBIT_BTC_NEWLISTING_REQUEST = "UPBIT_BTC_NEWLISTING_REQUEST";
 export const UPBIT_BTC_NEWLISTING_SUCCESS = "UPBIT_BTC_NEWLISTING_SUCCESS";
 export const UPBIT_BTC_NEWLISTING_FAILURE = "UPBIT_BTC_NEWLISTING_FAILURE";
@@ -117,6 +113,7 @@ const initialState = {
   coinList: [],
   tradeError: 0,
   watchList: [],
+  type: "KRW",
 };
 export default handleActions(
   {
@@ -128,25 +125,33 @@ export default handleActions(
       produce(state, (draft) => {
         draft.coinInfo = action.payload;
       }),
-    [TICKERS_REQUEST]: (state, action) => produce(state, (draft) => {}),
+    [TICKERS_REQUEST]: (state) => produce(state, () => {}),
     [TICKERS_SUCCESS]: (state, action) =>
       produce(state, (draft) => {
         draft.tickers = action.payload;
       }),
-    [TICKERS_FAILUER]: (state, action) => produce(state, (draft) => {}),
-    [COIN_LIST_REQUEST]: (state, action) => produce(state, (draft) => {}),
+    [TICKERS_FAILUER]: (state) => produce(state, () => {}),
+    [COIN_LIST_REQUEST]: (state, action) =>
+      produce(state, (draft) => {
+        draft.type = action.payload || "KRW";
+      }),
     [COIN_LIST_SUCCESS]: (state, action) =>
       produce(state, (draft) => {
-        const coinNames = action.payload.map((coin) => {
-          return coin.name;
-        });
-        const coinList = action.payload.map((coin) => {
-          return coin;
-        });
+        const coinNames = action.payload
+          .filter((coin) => (state.type === "BTC" ? !coin.KRW : coin.KRW))
+          .map((coin) => {
+            return coin.name;
+          });
+        const coinList = action.payload
+          .filter((coin) => (state.type === "BTC" ? !coin.KRW : coin.KRW))
+          .map((coin) => {
+            return coin;
+          });
+
         getAllList(coinList);
         draft.coinList = coinNames;
       }),
-    [COIN_LIST_FAILURE]: (state, action) => produce(state, (draft) => {}),
+    [COIN_LIST_FAILURE]: (state) => produce(state, () => {}),
     [BITHUMB_BITCOIN_KRW]: (state, action) =>
       produce(state, (draft) => {
         const { BTC } = action.payload;
@@ -159,7 +164,7 @@ export default handleActions(
         draft.isbitkrwLoading = true;
       }),
 
-    [CURRENCY_REQUEST]: (state, action) =>
+    [CURRENCY_REQUEST]: (state) =>
       produce(state, (draft) => {
         draft.isUsdToKrwLoading = true;
       }),
@@ -179,44 +184,29 @@ export default handleActions(
         draft.binanceBitUsdt = BTC;
         draft.isbitusdtLoading = false;
       }),
-    /*[BINANCE_BITCOIN_USDT_REQUEST]: (state, action) =>
-      produce(state, (draft) => {
-        draft.isbitusdtLoading = true;
-      }),
-    [BINANCE_BITCOIN_USDT_SUCCESS]: (state, action) =>
-      produce(state, (draft) => {
-        draft.binanceBitUsdt = action.payload[0].p;
-        draft.isbitusdtLoading = false;
-      }),
-    [BINANCE_BITCOIN_USDT_FAILURE]: (state, action) =>
-      produce(state, (draft) => {
-        draft.isbitusdtLoading = false;
-        draft.binanceBitUsdtError = action.error;
-      }),*/
-    [UPBIT_BTC_NEWLISTING_REQUEST]: (state, action) =>
+    [UPBIT_BTC_NEWLISTING_REQUEST]: (state) =>
       produce(state, (draft) => {
         draft.isUpbitNewListingLoading = true;
       }),
     [UPBIT_BTC_NEWLISTING_SUCCESS]: (state, action) =>
       produce(state, (draft) => {
         const { payload } = action;
-        //console.log(payload);
         const filteredList = payload.map((v) => {
           if (
             moment(v.created_at).format("YYYY-MM-DD") ===
             moment().format("YYYY-MM-DD")
           )
             return { new: true, notice: v };
-          else return { new: false, notice: v };
+          return { new: false, notice: v };
         });
         draft.upbitNewListing = filteredList;
         draft.isUpbitNewListingLoading = false;
       }),
-    [UPBIT_BTC_NEWLISTING_FAILURE]: (state, action) =>
+    [UPBIT_BTC_NEWLISTING_FAILURE]: (state) =>
       produce(state, (draft) => {
         draft.isUpbitNewListingLoading = false;
       }),
-    [BINANCE_NEWLISTING_REQUEST]: (state, action) =>
+    [BINANCE_NEWLISTING_REQUEST]: (state) =>
       produce(state, (draft) => {
         draft.isBinanceNewListingLoading = true;
       }),
@@ -225,7 +215,7 @@ export default handleActions(
         draft.binanceNewListing = action.payload;
         draft.isBinanceNewListingLoading = false;
       }),
-    [BINANCE_NEWLISTING_FAILURE]: (state, action) =>
+    [BINANCE_NEWLISTING_FAILURE]: (state) =>
       produce(state, (draft) => {
         draft.isBinanceNewListingLoading = false;
       }),
@@ -234,15 +224,15 @@ export default handleActions(
         draft.upbitApi = action.payload.upbitApi;
         draft.upbitSec = action.payload.upbitSec;
       }),
-    [UPBIT_SETTING_SUCCESS]: (state, action) => {},
-    [UPBIT_SETTING_FAILURE]: (state, action) => {},
+    [UPBIT_SETTING_SUCCESS]: () => {},
+    [UPBIT_SETTING_FAILURE]: () => {},
     [BINANCE_SETTING]: (state, action) =>
       produce(state, (draft) => {
         draft.binanceApi = action.payload.binanceApi;
         draft.binanceSec = action.payload.binanceSec;
       }),
-    [BINANCE_SETTING_SUCCESS]: (state, action) => {},
-    [BINANCE_SETTING_FAILURE]: (state, action) => {},
+    [BINANCE_SETTING_SUCCESS]: () => {},
+    [BINANCE_SETTING_FAILURE]: () => {},
     [KEY_SETTING_REQUEST]: (state, action) =>
       produce(state, (draft) => {
         draft.upbitApi = action.payload.upbitApi;
@@ -250,21 +240,15 @@ export default handleActions(
         draft.binanceApi = action.payload.binanceApi;
         draft.binanceSec = action.payload.binanceSec;
       }),
-    [KEY_SETTING_SUCCESS]: (state, action) => {},
-    [KEY_SETTING_FAILURE]: (state, action) => {},
-    [UPBIT_CHECK_COIN_REQUEST]: (state, action) =>
-      produce(state, (dratf) => {}),
-    [UPBIT_CHECK_COIN_SUCCESS]: (state, action) =>
-      produce(state, (dratf) => {}),
-    [UPBIT_CHECK_COIN_FAILURE]: (state, action) =>
-      produce(state, (draft) => {}),
-    [BINANCE_CHECK_COIN_REQUEST]: (state, action) =>
-      produce(state, (dratf) => {}),
-    [BINANCE_CHECK_COIN_SUCCESS]: (state, action) =>
-      produce(state, (dratf) => {}),
-    [BINANCE_CHECK_COIN_FAILURE]: (state, action) =>
-      produce(state, (draft) => {}),
-    [UPBIT_BID_REQUEST]: (state, action) => produce(state, (draft) => {}),
+    [KEY_SETTING_SUCCESS]: () => {},
+    [KEY_SETTING_FAILURE]: () => {},
+    [UPBIT_CHECK_COIN_REQUEST]: (state) => produce(state, () => {}),
+    [UPBIT_CHECK_COIN_SUCCESS]: (state) => produce(state, () => {}),
+    [UPBIT_CHECK_COIN_FAILURE]: (state) => produce(state, () => {}),
+    [BINANCE_CHECK_COIN_REQUEST]: (state) => produce(state, () => {}),
+    [BINANCE_CHECK_COIN_SUCCESS]: (state) => produce(state, () => {}),
+    [BINANCE_CHECK_COIN_FAILURE]: (state) => produce(state, () => {}),
+    [UPBIT_BID_REQUEST]: (state) => produce(state, () => {}),
     [UPBIT_BID_SUCCESS]: (state, action) =>
       produce(state, (draft) => {
         const {
@@ -272,11 +256,11 @@ export default handleActions(
         } = action;
         draft.tradeError = error;
       }),
-    [UPBIT_BID_FAILURE]: (state, action) =>
+    [UPBIT_BID_FAILURE]: (state) =>
       produce(state, (draft) => {
         draft.tradeError = 1;
       }),
-    [UPBIT_ASK_REQUEST]: (state, action) => produce(state, (draft) => {}),
+    [UPBIT_ASK_REQUEST]: (state) => produce(state, () => {}),
     [UPBIT_ASK_SUCCESS]: (state, action) =>
       produce(state, (draft) => {
         const {
@@ -284,11 +268,11 @@ export default handleActions(
         } = action;
         draft.tradeError = error;
       }),
-    [UPBIT_ASK_FAILURE]: (state, action) =>
+    [UPBIT_ASK_FAILURE]: (state) =>
       produce(state, (draft) => {
         draft.tradeError = 1;
       }),
-    [TRADE_ERROR_REQUEST]: (state, action) =>
+    [TRADE_ERROR_REQUEST]: (state) =>
       produce(state, (draft) => {
         draft.tradeError = 0;
       }),

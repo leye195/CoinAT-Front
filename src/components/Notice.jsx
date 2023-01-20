@@ -1,9 +1,8 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import styled from "styled-components";
 import { useDispatch, useSelector } from "react-redux";
 import { v4 } from "uuid";
-import { useCallback } from "react";
-import { colors } from "../styles/_variables";
+import { colors } from "styles/_variables";
 
 const Container = styled.section`
   display: inline-flex;
@@ -37,12 +36,10 @@ const ListItem = styled.div`
   display: flex;
   justify-content: center;
   padding: 5px;
+  height: 25px;
   white-space: pre;
   font-weight: bolder;
-  background-color: ${colors["white"]};
-  height: 25px;
-  @media screen and (max-width: 425px) {
-  }
+  background-color: ${colors.white};
 `;
 
 const Title = styled.p`
@@ -55,10 +52,12 @@ const Title = styled.p`
 
 const Listing = () => {
   const dispatch = useDispatch();
-  const listRef = useRef(null);
+
   const { upbitNewListing } = useSelector((state) => state.coin);
   const [innerWidth, setInnerWidth] = useState(window.innerWidth);
-  let cnt = useRef(0);
+
+  const listRef = useRef(null);
+  const cnt = useRef(0);
 
   const handleNoticeAnimation = useCallback(() => {
     setInterval(() => {
@@ -104,8 +103,7 @@ const Listing = () => {
   }, []);
 
   const handleResize = () => {
-    const innerWidth = window.innerWidth;
-    setInnerWidth(innerWidth);
+    if (window && window.innerWidth) setInnerWidth(window.innerWidth);
   };
 
   useEffect(() => {

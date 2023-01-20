@@ -4,9 +4,14 @@ import { useDispatch, useSelector } from "react-redux";
 import { AiOutlineStar, AiFillStar } from "react-icons/ai";
 import styled from "styled-components";
 import { v4 } from "uuid";
+
 import { setWatchList } from "reducers/coin";
-import Coin from "components/Home/Coin";
 import { getPercent } from "utills/utills";
+
+import Coin from "components/Home/Coin";
+
+import { colors } from "styles/_variables";
+import { breakDown } from "styles/_mixin";
 
 const CoinContainer = styled.section`
   display: flex;
@@ -20,7 +25,7 @@ const CoinContainer = styled.section`
   }
 
   & .watch {
-    color: #fbbc03;
+    color: ${colors.yellow};
   }
 `;
 
@@ -30,17 +35,23 @@ const CoinImage = styled.img`
   margin-right: 2px;
   border: 1px solid #e3e3e3;
   border-radius: 50%;
-  @media (max-width: 768px) {
+
+  ${breakDown.md`
     height: 10px;
     width: 10px;
-  }
+  `};
 `;
 
-const ExchangeInfo = ({ coinInfo = [], upbitBitKrw, fixList = [] }) => {
+const ExchangeInfo = ({
+  upbitBitKrw,
+  fixList = [],
+  coinInfo = [],
+  type = "KRW",
+}) => {
   const dispatch = useDispatch();
   const { watchList } = useSelector((state) => state.coin);
 
-  const handleWatchList = (symbol) => (e) => {
+  const handleWatchList = (symbol) => () => {
     dispatch(setWatchList(symbol));
   };
 
@@ -53,7 +64,10 @@ const ExchangeInfo = ({ coinInfo = [], upbitBitKrw, fixList = [] }) => {
         (v.blast * upbitBitKrw).toFixed(2),
         10,
       );
-      const percentUP = getPercent(v.last, convertedBinance).toFixed(2);
+      const percentUP = getPercent(
+        v.last,
+        type === "KRW" ? convertedBinance : v.blast,
+      ).toFixed(2);
       const percentBit = getPercent(v.thumb, convertedBinance).toFixed(2);
 
       return (
@@ -81,12 +95,12 @@ const ExchangeInfo = ({ coinInfo = [], upbitBitKrw, fixList = [] }) => {
             head={percentUP === "-100.00"}
             data-type={percentUP === "-100.00" ? "unlist" : "list"}
           >
-            {v.last}₩
+            {type !== "BTC" ? `${v.last}₩` : `${v.last.toFixed(8)}`}
           </Coin>
           <Coin up={percentUP > 0}>
             {v.blast && v.blast.toFixed(8)}
             {"\n"}
-            {convertedBinance}₩
+            {type !== "BTC" && `${convertedBinance}₩`}
           </Coin>
           <Coin head={percentUP === "-100.00"} up={percentUP > 0}>
             {percentUP !== "Infinity"
@@ -95,23 +109,27 @@ const ExchangeInfo = ({ coinInfo = [], upbitBitKrw, fixList = [] }) => {
                 : `${percentUP}%`
               : "로딩중"}
           </Coin>
-          <Coin
-            head={percentBit === "-100.00"}
-            data-type={percentBit === "-100.00" ? "unlist" : "list"}
-          >
-            {v.thumb}₩
-          </Coin>
-          <Coin
-            head={percentBit === "-100.00"}
-            up={percentBit > 0}
-            data-type={percentBit === "-100.00" ? "unlist" : "list"}
-          >
-            {percentBit !== "Infinity"
-              ? percentBit === "-100.00" || isNaN(percentUP)
-                ? "미 상장"
-                : `${percentBit}%`
-              : "로딩중"}
-          </Coin>
+          {type !== "BTC" && (
+            <Coin
+              head={percentBit === "-100.00"}
+              data-type={percentBit === "-100.00" ? "unlist" : "list"}
+            >
+              {v.thumb}₩
+            </Coin>
+          )}
+          {type !== "BTC" && (
+            <Coin
+              head={percentBit === "-100.00"}
+              up={percentBit > 0}
+              data-type={percentBit === "-100.00" ? "unlist" : "list"}
+            >
+              {percentBit !== "Infinity"
+                ? percentBit === "-100.00" || isNaN(percentUP)
+                  ? "미 상장"
+                  : `${percentBit}%`
+                : "로딩중"}
+            </Coin>
+          )}
         </CoinContainer>
       );
     });

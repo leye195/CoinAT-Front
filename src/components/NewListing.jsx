@@ -6,6 +6,7 @@ import { faMinus, faPlus } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { loadUpbitNewListing } from "reducers/coin";
 import { colors } from "styles/_variables";
+import { breakDown } from "styles/_mixin";
 
 const NewListingDiv = styled.div`
   display: flex;
@@ -28,16 +29,18 @@ const NewListingDiv = styled.div`
   @media (max-width: 1024px) {
     width: ${(props) => (props.hide ? "auto" : "250px")};
   }
-  @media (max-width: 768px) {
+
+  ${breakDown.md`
     width: ${(props) => (props.hide ? "auto" : "200px")};
     opacity: ${(props) => (props.hide ? "0.2" : "1.0")};
-  }
+  `}
 `;
 
 const FontDiv = styled.div`
   display: flex;
   align-self: flex-start;
   margin: 5px;
+
   svg {
     cursor: pointer;
   }
@@ -45,23 +48,23 @@ const FontDiv = styled.div`
 
 const NewListingUl = styled.ul`
   display: ${(props) => (props.hide ? "none" : "flex")};
-  padding: 0;
   align-items: center;
   justify-content: center;
-  text-align: center;
+  padding: 0;
   margin: 0;
-  border-bottom: 3px solid ${colors["white"]};
+  text-align: center;
+  border-bottom: 3px solid ${colors.white};
   cursor: pointer;
 `;
 const NewListingli = styled.li`
-  list-style: none;
   flex: 1;
   padding: 5px;
-  color: ${(props) =>
-    props.selected ? `${colors["black"]};` : `${colors["white"]};`};
-  font-weight: ${(props) => (props.selected ? "400" : "200")};
-  font-size: 0.8rem;
   margin-bottom: 5px;
+  color: ${(props) =>
+    props.selected ? `${colors.black};` : `${colors.white};`};
+  font-weight: ${(props) => (props.selected ? 400 : 200)};
+  font-size: 0.8rem;
+  list-style: none;
   word-break: keep-all;
 `;
 const InfoContainer = styled.div`
@@ -76,16 +79,16 @@ const UpbitInfoUl = styled.ul`
 `;
 
 const UpbitInfoli = styled.li`
-  list-style: none;
-  font-size: 0.8rem;
   margin-bottom: 5px;
-  font-weight: ${(props) => (props.new ? "600" : "300")};
+  font-size: 0.8rem;
+  font-weight: ${(props) => (props.new ? 600 : 300)};
+  list-style: none;
 `;
 
 const BinanceInfoUl = UpbitInfoUl.withComponent("ul");
 
 const BinanceInfoli = styled(UpbitInfoli.withComponent("li"))`
-  font-weight: ${(props) => (props.new ? "600" : "300")};
+  font-weight: ${(props) => (props.new ? 600 : 300)};
 `;
 
 function NewListing() {
@@ -94,9 +97,11 @@ function NewListing() {
   );
   const [selected, setSelected] = useState(0);
   const [isHide, setHide] = useState(false);
+
   const container = useRef();
   const timer = useRef();
   const dispatch = useDispatch();
+
   const onChangeSelect = useCallback((e) => {
     const {
       target: {
@@ -110,9 +115,8 @@ function NewListing() {
     setHide((cur) => !cur);
   }, []);
 
-  const checkSize = () => {
-    const innerWidth = window.innerWidth;
-    if (innerWidth <= 768) {
+  const handleResize = () => {
+    if (window.innerWidth <= 768) {
       setHide(true);
     }
   };
@@ -130,22 +134,19 @@ function NewListing() {
   useEffect(() => {
     checkSize();
     getNewListing();
-    window.addEventListener("resize", checkSize);
+
+    window.addEventListener("resize", handleResize);
     return () => {
-      window.removeEventListener("resize", checkSize);
+      window.removeEventListener("resize", handleResize);
     };
   }, [getNewListing]);
 
   return (
-    <NewListingDiv hide={isHide === true}>
+    <NewListingDiv hide={isHide}>
       <FontDiv>
-        {isHide ? (
-          <FontAwesomeIcon icon={faPlus} onClick={onToggle} />
-        ) : (
-          <FontAwesomeIcon icon={faMinus} onClick={onToggle} />
-        )}
+        <FontAwesomeIcon icon={isHide ? faPlus : faMinus} onClick={onToggle} />
       </FontDiv>
-      <NewListingUl hide={isHide === true}>
+      <NewListingUl hide={isHide}>
         <NewListingli
           data-id={0}
           onClick={onChangeSelect}
@@ -154,22 +155,20 @@ function NewListing() {
           업비트 상장
         </NewListingli>
       </NewListingUl>
-      <InfoContainer ref={container} hide={isHide === true}>
+      <InfoContainer ref={container} hide={isHide}>
         {selected === 0 ? (
           <UpbitInfoUl>
             {upbitNewListing &&
-              upbitNewListing.map((notice) => {
-                return (
-                  <UpbitInfoli key={v4()}>{notice.notice.title}</UpbitInfoli>
-                );
-              })}
+              upbitNewListing.map((notice) => (
+                <UpbitInfoli key={v4()}>{notice.notice.title}</UpbitInfoli>
+              ))}
           </UpbitInfoUl>
         ) : (
           <BinanceInfoUl>
             {binanceNewListing &&
-              binanceNewListing.map((notice) => {
-                return <BinanceInfoli key={v4()}>{notice.title}</BinanceInfoli>;
-              })}
+              binanceNewListing.map((notice) => (
+                <BinanceInfoli key={v4()}>{notice.title}</BinanceInfoli>
+              ))}
           </BinanceInfoUl>
         )}
       </InfoContainer>

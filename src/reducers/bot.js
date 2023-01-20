@@ -10,33 +10,34 @@ export const CANCEL_MESSAGE_FAILURE = "CANCEL_MESSAGE_FAILURE";
 
 export const sendMessage = createAction(SEND_MESSAGE_REQUEST);
 export const cancelMessage = createAction(CANCEL_MESSAGE_REQUEST);
+
 const initialState = {
   isSending: false,
 };
 
 export default handleActions(
   {
-    [SEND_MESSAGE_REQUEST]: (state, action) =>
+    [SEND_MESSAGE_REQUEST]: (state) =>
       produce(state, (draft) => {
         draft.isSending = true;
       }),
-    [SEND_MESSAGE_SUCCESS]: (state, action) =>
+    [SEND_MESSAGE_SUCCESS]: (state) =>
       produce(state, (draft) => {
         draft.isSending = false;
       }),
-    [SEND_MESSAGE_FAILURE]: (state, action) =>
+    [SEND_MESSAGE_FAILURE]: (state) =>
       produce(state, (draft) => {
         draft.isSending = false;
       }),
-    [CANCEL_MESSAGE_REQUEST]: (state, action) =>
+    [CANCEL_MESSAGE_REQUEST]: (state) =>
       produce(state, (draft) => {
         draft.isSending = true;
       }),
-    [CANCEL_MESSAGE_SUCCESS]: (state, action) =>
+    [CANCEL_MESSAGE_SUCCESS]: (state) =>
       produce(state, (draft) => {
         draft.isSending = false;
       }),
-    [CANCEL_MESSAGE_FAILURE]: (state, action) =>
+    [CANCEL_MESSAGE_FAILURE]: (state) =>
       produce(state, (draft) => {
         draft.isSending = false;
       }),
